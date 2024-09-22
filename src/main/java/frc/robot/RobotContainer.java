@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.commands.Climber.ClimberManualPosition;
 import frc.commands.Climber.ClimberStop;
 import frc.commands.Intake.IntakeSpinForward;
@@ -43,7 +44,6 @@ public class RobotContainer {
 
     // Game Controllers
     public JoystickButton drBtnA, drBtnB, drBtnX, drBtnY, drBtnLB, drBtnRB, drBtnStrt, drBtnSelect;
-
 
 
 

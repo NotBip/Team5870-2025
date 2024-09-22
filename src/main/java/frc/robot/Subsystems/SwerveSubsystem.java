@@ -4,10 +4,11 @@ package frc.robot.Subsystems;
 import java.sql.Driver;
 import java.sql.Struct;
 
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-
+import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -18,16 +19,16 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 
@@ -37,7 +38,6 @@ public class SwerveSubsystem extends SubsystemBase {
     private AHRS navx = new AHRS(SPI.Port.kMXP);
     public SwerveModule[] SwerveMods;
     private SwerveDriveOdometry odometer; 
-    StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault().getStructArrayTopic("Module States", SwerveModuleState.struct).publish();
 
     public SwerveSubsystem(){
         new Thread(() -> {
@@ -104,9 +104,9 @@ public class SwerveSubsystem extends SubsystemBase {
             }, this);
 
         SmartDashboard.putNumber("SimGyroRot", 0); 
-        SmartDashboard.putBoolean("Zeroed Gyro", false); 
-
+        SmartDashboard.putBoolean("Zeroed Gyro", false);
     }
+
 
 
     public void zeroHeading() {
@@ -134,7 +134,6 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         odometer.update(getRotation2d(), getModulePositions());
-        // publisher.set(getModuleStates());
     }
 
     public SwerveModulePosition[] getModulePositions(){
@@ -189,6 +188,26 @@ public class SwerveSubsystem extends SubsystemBase {
 
         SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(targetStates); 
+    }
+
+    SysIdRoutine routine = new SysIdRoutine(
+        new SysIdRoutine.Config(), 
+        new SysIdRoutine.Mechanism(
+            this::voltageDrive, null, this)); 
+
+    public void voltageDrive(Measure<Voltage> volts) { 
+        SwerveMods[0].getDriveMotor().setVoltage(volts.in(Volts));
+        SwerveMods[1].getDriveMotor().setVoltage(volts.in(Volts));
+        SwerveMods[2].getDriveMotor().setVoltage(volts.in(Volts));
+        SwerveMods[3].getDriveMotor().setVoltage(volts.in(Volts));
+    }
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return routine.quasistatic(direction);
+    }
+
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return routine.dynamic(direction);
     }
 
 

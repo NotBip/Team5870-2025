@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Voltage;
 import frc.robot.Constants;
 import frc.robot.Constants.ModuleConstants;
 
@@ -121,6 +122,10 @@ public class SwerveModule {
         state = SwerveModuleState.optimize(state, getState().angle);
         driveMotor.set(state.speedMetersPerSecond / Constants.DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
         turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
+    }
+
+    public CANSparkMax getDriveMotor() { 
+        return driveMotor; 
     }
 
     public SwerveModulePosition getPositions(){ 
