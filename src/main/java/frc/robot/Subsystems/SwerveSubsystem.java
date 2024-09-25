@@ -212,7 +212,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return Commands.run(() -> setModuleStates(DriveConstants.kDriveKinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 0.01))), this)
         .withTimeout(1)
-        .andThen(routine.quasistatic(direction));
+        .andThen(routine.dynamic(direction));
     }
 
 
