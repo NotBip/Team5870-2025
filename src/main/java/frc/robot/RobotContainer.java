@@ -77,6 +77,17 @@ public class RobotContainer {
     private void configureBindings() {
         drBtnStrt.onTrue(zeroGyro);
 
+        drBtnA.and(drBtnRB).whileTrue(swerveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward)); 
+        drBtnB.and(drBtnRB).whileTrue(swerveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        drBtnX.and(drBtnRB).whileTrue(swerveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward)); 
+        drBtnY.and(drBtnRB).whileTrue(swerveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
+        drBtnA.and(drBtnLB).whileTrue(swerveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward)); 
+        drBtnB.and(drBtnLB).whileTrue(swerveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        drBtnX.and(drBtnLB).whileTrue(swerveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward)); 
+        drBtnY.and(drBtnLB).whileTrue(swerveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
+
         
     }
 

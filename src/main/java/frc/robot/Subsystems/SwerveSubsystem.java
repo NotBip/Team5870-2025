@@ -104,8 +104,6 @@ public class SwerveSubsystem extends SubsystemBase {
                     return false;
             }, this);
 
-        SmartDashboard.putNumber("SimGyroRot", 0); 
-        SmartDashboard.putBoolean("Zeroed Gyro", false);
     }
 
 
