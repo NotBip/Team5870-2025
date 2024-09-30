@@ -1,0 +1,58 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.2095867048876965,
+        "y": 6.05
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.092311041764941,
+        "y": 4.2322272215973
+      },
+      "isLocked": false,
+      "linkedName": "AmpToMiddle5End"
+    },
+    {
+      "anchor": {
+        "x": 6.950905330382089,
+        "y": 3.9873725461736647
+      },
+      "prevControl": {
+        "x": 5.382343336115244,
+        "y": 3.8700968830509095
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 5.3145456699447315,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.1,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 3.0,
+    "rotation": 3.945186229037547,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "AmpSideToMiddleWoofer",
+  "previewStartingState": {
+    "rotation": 12.339087278326172,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
