@@ -8,6 +8,7 @@ public final class Constants {
         public static int armMotor2 = 8; 
     }
 
+    // Module for Climber Constants
     public static final class climberConstants { 
         public static final int leaderMotor = 14; 
         public static final int followerMotor = 13;
