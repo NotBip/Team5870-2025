@@ -43,7 +43,7 @@ public class RobotContainer {
     }
 
     /**
-     * This method should be used when binding controller to commands. 
+     * This method should be used when binding controller to commands. This method should be called at the END OF ROBOT CONTAINER
      */
     private void configureBindings() {
         opController.y().whileTrue(climberUp); // Assigning the Controller button "Y" to moving the climber up at a constant speed of .5
