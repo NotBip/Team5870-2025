@@ -25,7 +25,7 @@ public class Climber extends SubsystemBase {
         followerMotor.restoreFactoryDefaults(); 
 
         // Inverting the follower motor and having it follow the Leader. 
-        followerMotor.follow(leaderMotor, true);
+        followerMotor.follow(leaderMotor, true);    // Inverting the motor makes it so it spins the opposite direction of the leader motor. 
     }
 
     /**
@@ -48,7 +48,7 @@ public class Climber extends SubsystemBase {
      * Stops the climber from moving and having it on brake modes. Should be used as the default command for Climber. 
     */
     public void climberStop() { 
-        leaderMotor.set(0);
+        leaderMotor.set(0); 
         leaderMotor.setIdleMode(IdleMode.kBrake); 
         followerMotor.setIdleMode(IdleMode.kBrake); 
     }
