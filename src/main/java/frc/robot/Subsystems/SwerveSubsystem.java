@@ -13,23 +13,16 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 
@@ -133,12 +126,13 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         odometer.update(getRotation2d(), getModulePositions());
+        
     }
 
     public SwerveModulePosition[] getModulePositions(){
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
         for(SwerveModule mod : SwerveMods){
-             positions[mod.modNum] = mod.getPositions();
+            positions[mod.modNum] = mod.getPositions();
         }
         return positions;
     }
@@ -189,29 +183,6 @@ public class SwerveSubsystem extends SubsystemBase {
         setModuleStates(targetStates); 
     }
 
-    SysIdRoutine routine = new SysIdRoutine(
-        new SysIdRoutine.Config(), 
-        new SysIdRoutine.Mechanism(
-            this::voltageDrive, null, this)); 
-
-    public void voltageDrive(Measure<Voltage> volts) { 
-        SwerveMods[0].getDriveMotor().setVoltage(volts.in(Volts));
-        SwerveMods[1].getDriveMotor().setVoltage(volts.in(Volts));
-        SwerveMods[2].getDriveMotor().setVoltage(volts.in(Volts));
-        SwerveMods[3].getDriveMotor().setVoltage(volts.in(Volts));
-    }
-
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return Commands.run(() -> setModuleStates(DriveConstants.kDriveKinematics.toSwerveModuleStates(new ChassisSpeeds(0.01, 0, 0.0))), this)
-        .withTimeout(5)
-        .andThen(routine.quasistatic(direction));
-    }
-
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return Commands.run(() -> setModuleStates(DriveConstants.kDriveKinematics.toSwerveModuleStates(new ChassisSpeeds(0.01, 0, 0.0))), this)
-        .withTimeout(5)
-        .andThen(routine.dynamic(direction));
-    }
 
 
 } // end Class

@@ -20,7 +20,6 @@ public class ZeroGyro extends Command{
     @Override
     public void execute() {
         swerveSubsystem.zeroHeading();
-        SmartDashboard.putBoolean("Zeroed Gyro", true); 
     }
 
 

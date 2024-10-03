@@ -10,11 +10,9 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Subsystems.SwerveSubsystem;
 import frc.robot.commands.Swerve.SwerveJoystickCmd;
@@ -22,17 +20,19 @@ import frc.robot.commands.Swerve.ZeroGyro;
 
 public class RobotContainer {
 
+    // Initializing subsystems
     public SwerveSubsystem swerveSubsystem = new SwerveSubsystem(); 
+
+    // Initializing Swerve Commands
+    private final ZeroGyro zeroGyro = new ZeroGyro(swerveSubsystem);
+
+    // Initialzing Controllers
     private final Joystick driverJoystick = new Joystick(OIConstants.kDriverControllerPort);
     private final XboxController driverController = new XboxController(OIConstants.kDriverControllerPort); 
-  
-    private final ZeroGyro zeroGyro = new ZeroGyro(swerveSubsystem); 
 
 
     // Game Controllers
     public JoystickButton drBtnA, drBtnB, drBtnX, drBtnY, drBtnLB, drBtnRB, drBtnStrt, drBtnSelect;
-
-
 
     public RobotContainer() {
         configureNamedCommands();
@@ -72,5 +72,9 @@ public class RobotContainer {
             new InstantCommand(() -> swerveSubsystem.resetOdometry(PathPlannerAuto.getStaringPoseFromAutoFile("Straight"))),
             new InstantCommand(() -> swerveSubsystem.zeroHeading()), 
             new PathPlannerAuto("Straight"));
+    }
+
+    public Command selfTestCommand() { 
+        return new SwerveJoystickCmd(swerveSubsystem, () -> 0.0, () -> 0.0, () -> 2.0, () -> false, () -> false);
     }
 }
