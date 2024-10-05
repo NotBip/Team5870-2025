@@ -32,9 +32,11 @@ public class RobotContainer {
     private ShootNote shootNote = new ShootNote(intake); 
 
     // Initalizing the Controllers. 
-    private CommandXboxController opController = new CommandXboxController(1); 
+    private CommandXboxController driverController = new CommandXboxController(0); // controller used by the driver to drive the robot around. 
+    private CommandXboxController opController = new CommandXboxController(1); // controller used by the operator to run the subsystems. 
 
     public RobotContainer() {
+
         // setting the default commands for the subsystems.
         climber.setDefaultCommand(climberStop);
         intake.setDefaultCommand(intakeStop);
