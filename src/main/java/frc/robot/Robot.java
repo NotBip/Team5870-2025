@@ -65,7 +65,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
 
-    m_autonomousCommand = m_robotContainer.selfTestCommand();
+    m_autonomousCommand = m_robotContainer.getSelfTestCommand();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();

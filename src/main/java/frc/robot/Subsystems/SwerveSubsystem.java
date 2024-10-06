@@ -1,39 +1,50 @@
 package frc.robot.Subsystems;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-import java.sql.Driver;
-import java.sql.Struct;
-
-import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import static edu.wpi.first.units.Units.Volts;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
+
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 
-
+/**
+ * Class used to configure and run the Swerve Drive train (Must extend SubsystemBase). 
+ */
 public class SwerveSubsystem extends SubsystemBase {
     
-    private AHRS navx = new AHRS(SPI.Port.kMXP);
-    public SwerveModule[] SwerveMods;
-    private SwerveDriveOdometry odometer; 
+    private Lock odometryLock = new ReentrantLock(); 
+    private Notifier odometryThread; 
+    private Field2d field = new Field2d(); // Generate a 2D field to be used in smartDashboard later. 
+    private AHRS navx = new AHRS(SPI.Port.kMXP); // Gyro used to keep track of the robot's current heading (angle). 
+    public SwerveModule[] SwerveMods; // Making an array of the SwerveMods for a 4 wheel swerve drive. 
+    private SwerveDriveOdometry odometer; // Odometer used to keep track of the position of the robot on the field. 
+    private SwerveDrivePoseEstimator swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
+        DriveConstants.kDriveKinematics, 
+        getRotation2d(),
+        getModulePositions(), 
+        new Pose2d(new Translation2d(0, 0), Rotation2d.fromDegrees(0)));
 
     public SwerveSubsystem(){
+
+        // 1 Second after Initializing this class it will zero the heading reseting the absolute front position of the robot. 
         new Thread(() -> {
             try{
                 Thread.sleep(1000);
@@ -41,6 +52,7 @@ public class SwerveSubsystem extends SubsystemBase {
             } catch (Exception e){}
         }).start();
 
+            // Initalizing the array of Swerve Modules with the proper port ID's for each Swerve module. [FL, FR, BL, BR]. 
             SwerveMods = new SwerveModule[] {
                 new SwerveModule(
                     0,
@@ -80,15 +92,17 @@ public class SwerveSubsystem extends SubsystemBase {
                     DriveConstants.kBackRightDriveAbsoluteEncoderReversed)
         };
 
-        odometer = new SwerveDriveOdometry(Constants.DriveConstants.kDriveKinematics, new Rotation2d(0), getModulePositions());
+        odometer = new SwerveDriveOdometry(Constants.DriveConstants.kDriveKinematics, new Rotation2d(0), getModulePositions()); // Initialize the odometer with it's initial values. 
+        odometryThread = new Notifier(this::updateOdometry);
 
 
+        // Configure the autonmous builder for pathPlanner. 
         AutoBuilder.configureHolonomic(
             this::getPose, 
             this::resetOdometry, 
             this::getSpeeds, 
-            this::driveRobotRelative, 
-            AutoConstants.pathFollowerConfig, 
+            this::setChassisSpeed, 
+            AutoConstants.pathFollowerConfig, // Flip the autonmous path when changing alliance. 
             () -> { 
                 var alliance = DriverStation.getAlliance(); 
                 if(alliance.get() == DriverStation.Alliance.Red)
@@ -97,56 +111,114 @@ public class SwerveSubsystem extends SubsystemBase {
                     return false;
             }, this);
 
+            odometryThread.startPeriodic(0.02);
     }
 
 
-
+    /**
+     * This method is used the reset the gyro on the robot. Resetting it's absolute front position. 
+     */
     public void zeroHeading() {
         navx.reset(); 
     }
 
-
+    /**
+     * Method used to calculate the current heading of the robot (CCW Positive, 0 to 360) in degrees
+     * @return a double value which contains the current heading of the robot from 0 to 360 in degrees. 
+     */
     public double getHeading() {
         return Math.IEEEremainder(-navx.getAngle(), 360); 
     }
 
+    /** 
+     * Converts the heading to Rotation2D. 
+     * @return The Robot's current heading in Rotation2D. 
+     */
     public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(getHeading());
 
     }
 
+    /**
+     * Fetches the latest odometry heading. 
+     * @return The robot heading in Rotation2D. 
+     */
+    public Rotation2d getOdometerHeading() {
+        return swerveDrivePoseEstimator.getEstimatedPosition().getRotation(); 
+    }
+
+    /**
+     * Uses the odometer to get the current x and y position of the robot. 
+     * @return The current x and y position of the robot on the field based on the odometer in Pose2D
+     */
     public Pose2d getPose() { 
-        return odometer.getPoseMeters(); 
+        odometryLock.lock();
+        Pose2d poseEstimation = swerveDrivePoseEstimator.getEstimatedPosition(); 
+        odometryLock.unlock();
+        return poseEstimation; 
     }
 
+    /**
+     * Set the odometry update period in seconds. 
+     * @param period update period in seconds.  
+     */
+    public void setOdometryPeriod(double period) { 
+        odometryThread.stop();
+        odometryThread.startPeriodic(period);
+    }
+
+    /**
+     * Stops the odometry thread. 
+     */
+    public void stopOdometryThread() { 
+        odometryThread.stop();
+    }
+
+    /**
+     * Sets the odometer of the robot to whatever Pose2D you want. Typically used at the start of autonomous mode. 
+     * @param pose The new pose2D of the robot. 
+     */
     public void resetOdometry(Pose2d pose) { 
-        odometer.resetPosition(getRotation2d(), getModulePositions(), pose);
+        odometryLock.lock();
+        swerveDrivePoseEstimator.resetPosition(getRotation2d(), getModulePositions(), pose);
+        odometryLock.unlock();
+        DriveConstants.kDriveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, 0, getRotation2d())); 
     }
 
+    // This method runs periodically the whole time this class has been initalized. 
     @Override
     public void periodic() {
-        odometer.update(getRotation2d(), getModulePositions());
-        
+        field.setRobotPose(getPose()); // set the position of the robot in the 2D field generated for SmartDashboard. 
+        odometer.update(getRotation2d(), getModulePositions()); // constantly update the odometer with the current rotation and position of each module. 
     }
 
+    /**
+     * Goes through each of the Swerve Module to return their current positon. 
+     * @return The current position of each swerve module in an array [FL, FR, BL, BR]. 
+     */
     public SwerveModulePosition[] getModulePositions(){
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
         for(SwerveModule mod : SwerveMods){
-            positions[mod.modNum] = mod.getPositions();
+             positions[mod.modNum] = mod.getPositions();
         }
         return positions;
     }
 
-    
+    /**
+     * Goes through each of the Swerve Module to return their current state. 
+     * @return The current state of each swerve module in an array [FL, FR, BL, BR].
+     */
     public SwerveModuleState[] getModuleStates(){
-        SwerveModuleState[] positions = new SwerveModuleState[4];
+        SwerveModuleState[] state = new SwerveModuleState[4];
         for(SwerveModule mod : SwerveMods){
-             positions[mod.modNum] = mod.getState();
+            state[mod.modNum] = mod.getState();
         }
-        return positions;
+        return state;
     }
 
-
+    /**
+     * This method stops all the swerve modules by setting both their drive and turning motor speeds to 0
+     */
     public void stopModules() {
         SwerveMods[0].stop();
         SwerveMods[1].stop();
@@ -154,16 +226,21 @@ public class SwerveSubsystem extends SubsystemBase {
         SwerveMods[3].stop();
     }
 
-
+    /**
+     * This method puts a limit on the max speed for each swerve module and sets the desired state after. 
+     * @param desiredStates The state of each swerve module using the SwerveModuleState class [FL, FR, BL, BR].
+     */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMetersPerSecond); // Limits the speed 
         SwerveMods[0].setDesiredState(desiredStates[0], "Front Left");
         SwerveMods[1].setDesiredState(desiredStates[1], "Front Right");
         SwerveMods[2].setDesiredState(desiredStates[2], "Back Left");
         SwerveMods[3].setDesiredState(desiredStates[3], "Back Right");
-        SmartDashboard.putNumber("Wheel Speeds", desiredStates[0].speedMetersPerSecond); 
     }
 
+    /**
+     * Returns the absolute encoder value for each swerve module. This method is used initially to calibrate the front of each absolute encoder. 
+     */
     public void getAbsoluteEncoder() { 
         SmartDashboard.putNumber("Front Left", SwerveMods[0].getAbsoluteEncoderRad());
         SmartDashboard.putNumber("Front RIght", SwerveMods[1].getAbsoluteEncoderRad());
@@ -171,10 +248,18 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Back Right", SwerveMods[3].getAbsoluteEncoderRad());
     }
 
+    /**
+     * This method uses modules states and converts them to the overall chassis speed uses Swerve Drive Kinematics. 
+     * @return The speed of the Chassis. 
+     */
     public ChassisSpeeds getSpeeds() { 
         return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates()); 
     }
 
+    /**
+     * This method sets the target states for each module using field relative speeds. (Robot can turn and drive at the same time). This method is to be 
+     * mainly used in the autoBuilder.  
+     */
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) { 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-robotRelativeSpeeds.vxMetersPerSecond, -robotRelativeSpeeds.vyMetersPerSecond, -robotRelativeSpeeds.omegaRadiansPerSecond, getRotation2d());
         chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02); 
@@ -182,8 +267,19 @@ public class SwerveSubsystem extends SubsystemBase {
         SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(targetStates); 
     }
+    
+    public void setChassisSpeed(ChassisSpeeds chassisSpeeds) { 
+        setModuleStates(DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds));
+    }
 
-
+    /**
+     * Method used to update odometer
+     */
+    private void updateOdometry() { 
+        odometryLock.lock();
+        swerveDrivePoseEstimator.update(getRotation2d(), getModulePositions());    
+        odometryLock.unlock();  
+    }
 
 } // end Class
  
