@@ -35,7 +35,7 @@ public class SwerveSubsystem extends SubsystemBase {
     private Field2d field = new Field2d(); // Generate a 2D field to be used in smartDashboard later. 
     private AHRS navx = new AHRS(SPI.Port.kMXP); // Gyro used to keep track of the robot's current heading (angle). 
     public SwerveModule[] SwerveMods; // Making an array of the SwerveMods for a 4 wheel swerve drive. 
-    private SwerveDriveOdometry odometer; // Odometer used to keep track of the position of the robot on the field. 
+    // private SwerveDriveOdometry odometer; // Odometer used to keep track of the position of the robot on the field. 
     private SwerveDrivePoseEstimator swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
         DriveConstants.kDriveKinematics, 
         getRotation2d(),
@@ -92,7 +92,7 @@ public class SwerveSubsystem extends SubsystemBase {
                     DriveConstants.kBackRightDriveAbsoluteEncoderReversed)
         };
 
-        odometer = new SwerveDriveOdometry(Constants.DriveConstants.kDriveKinematics, new Rotation2d(0), getModulePositions()); // Initialize the odometer with it's initial values. 
+        // odometer = new SwerveDriveOdometry(Constants.DriveConstants.kDriveKinematics, new Rotation2d(0), getModulePositions()); // Initialize the odometer with it's initial values. 
         odometryThread = new Notifier(this::updateOdometry);
 
 
@@ -189,7 +189,8 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         field.setRobotPose(getPose()); // set the position of the robot in the 2D field generated for SmartDashboard. 
-        odometer.update(getRotation2d(), getModulePositions()); // constantly update the odometer with the current rotation and position of each module. 
+        // swerveDrivePoseEstimator.update(getRotation2d(), getModulePositions());
+        // odometer.update(getRotation2d(), getModulePositions()); // constantly update the odometer with the current rotation and position of each module. 
     }
 
     /**
