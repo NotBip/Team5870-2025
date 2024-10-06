@@ -1,14 +1,22 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Subsystems.SwerveSubsystem;
+import frc.robot.commands.Autos.DriveStraight10;
+import frc.robot.commands.Autos.DriveStraight5;
 import frc.robot.commands.Swerve.SwerveJoystickCmd;
 import frc.robot.commands.Swerve.ZeroGyro;
 
 public class RobotContainer {
     
+    // Initalizing a sendable chooser which will hold all the different autonomous modes to be later added onto smartdashboard
+    SendableChooser<Command> autoChooser = new SendableChooser<Command>();
+
+
     // Initializing Robot's Subsystems
     public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
@@ -21,6 +29,11 @@ public class RobotContainer {
     
     public RobotContainer() {
         
+        // Adding options to Auto Chooser 
+        autoChooser.setDefaultOption("Do Nothing", null);
+        autoChooser.addOption("Drive Straight 5m", new DriveStraight5(swerveSubsystem));
+        autoChooser.addOption("Drive Straight 10m", new DriveStraight10(swerveSubsystem));
+
         // Default command for this swerve drive so it always takes in controller input by default and is on standby. 
         swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
                 swerveSubsystem,
@@ -30,6 +43,7 @@ public class RobotContainer {
                 () -> !driverController.rightBumper().getAsBoolean(),          
                 () -> driverController.getRightTriggerAxis() > 0.5 ? true : false));     
 
+        Shuffleboard.getTab("SmartDashboard").add("Select Auto", autoChooser).withSize(2, 1); 
         configureButtonBindings(); // Bind all the controller buttons to commands. 
     }
 
@@ -49,7 +63,7 @@ public class RobotContainer {
      * @return Returns a autonmous routine chosen from smartDashboard whenever auto mode is enabled. 
      */
     public Command getAutonomousCommand() {                
-        return null; 
+        return autoChooser.getSelected(); 
     }        
 
     public Command getSelfTestCommand() { 
