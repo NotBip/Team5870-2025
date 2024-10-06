@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Subsystems.SwerveSubsystem;
 
 /**
- * This class is used to generate a command for driving straight for 5 metres. 
+ * This class is used to generate a command for driving straight for 10 metres. 
  */
 public class DriveStraight10 extends SequentialCommandGroup{
 
