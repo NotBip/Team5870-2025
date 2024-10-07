@@ -82,7 +82,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
         odometer = new SwerveDriveOdometry(Constants.DriveConstants.kDriveKinematics, new Rotation2d(0), getModulePositions());
 
-
         AutoBuilder.configureHolonomic(
             this::getPose, 
             this::resetOdometry, 
@@ -126,6 +125,7 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         odometer.update(getRotation2d(), getModulePositions());
+        SmartDashboard.putNumber("Wheel speed 1", SwerveMods[0].getDriveMotor().get());
         
     }
 
