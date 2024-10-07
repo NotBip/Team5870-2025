@@ -18,7 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Subsystems.SwerveSubsystem;
-import frc.robot.commands.SelfTest.SwerveRotTest;
+import frc.robot.commands.SelfTest.SwerveTest.SwerveDriveTest;
+import frc.robot.commands.SelfTest.SwerveTest.SwerveRotTest;
 import frc.robot.commands.Swerve.SwerveJoystickCmd;
 import frc.robot.commands.Swerve.ZeroGyro;
 
@@ -79,6 +80,10 @@ public class RobotContainer {
     }
 
     public Command selfTestCommand() {
-        return new SwerveRotTest(swerveSubsystem);
+        return new SequentialCommandGroup(
+            new SwerveRotTest(swerveSubsystem).withTimeout(5),
+            new SwerveDriveTest(swerveSubsystem).withTimeout(5)
+        ); 
+        //return new SwerveRotTest(swerveSubsystem);
     }
 }

@@ -126,6 +126,10 @@ public class SwerveSubsystem extends SubsystemBase {
     public void periodic() {
         odometer.update(getRotation2d(), getModulePositions());
         SmartDashboard.putNumber("Wheel speed 1", SwerveMods[0].getDriveMotor().get());
+        SmartDashboard.putNumber("Wheel speed 2", SwerveMods[1].getDriveMotor().get());
+        SmartDashboard.putNumber("Wheel speed 3", SwerveMods[2].getDriveMotor().get());
+        SmartDashboard.putNumber("Wheel speed 4", SwerveMods[3].getDriveMotor().get());
+
         
     }
 
@@ -161,7 +165,13 @@ public class SwerveSubsystem extends SubsystemBase {
         SwerveMods[1].setDesiredState(desiredStates[1], "Front Right");
         SwerveMods[2].setDesiredState(desiredStates[2], "Back Left");
         SwerveMods[3].setDesiredState(desiredStates[3], "Back Right");
-        SmartDashboard.putNumber("Wheel Speeds", desiredStates[0].speedMetersPerSecond); 
+        
+
+        // SmartDashboard.putNumber("Wheel 1 Angle", (desiredStates[0].angle.getDegrees()));
+        // SmartDashboard.putNumber("Wheel 2 Angle", (desiredStates[1].angle.getDegrees()));
+        // SmartDashboard.putNumber("Wheel 3 Angle", (desiredStates[2].angle.getDegrees()));
+        // SmartDashboard.putNumber("Wheel 4 Angle", (desiredStates[3].angle.getDegrees()));
+
     }
 
     public void getAbsoluteEncoder() { 

@@ -1,4 +1,4 @@
-package frc.robot.commands.SelfTest;
+package frc.robot.commands.SelfTest.SwerveTest;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -6,12 +6,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Subsystems.SwerveSubsystem;
 
-public class SwerveRotTest extends Command{
+public class SwerveDriveTest extends Command{
 
     private SwerveSubsystem swerveSubsystem;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
-    public SwerveRotTest(SwerveSubsystem swerveSubsystem) { 
+    public SwerveDriveTest(SwerveSubsystem swerveSubsystem) { 
         this.swerveSubsystem = swerveSubsystem; 
         this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
@@ -22,15 +22,15 @@ public class SwerveRotTest extends Command{
 
     @Override
     public void execute() {
-        double xSpeed = 0; 
+        double xSpeed = 1; 
         double ySpeed = 0;
-        double turningSpeed = 1;
+        double turningSpeed = 0;
 
         xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
         ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
         turningSpeed = turningLimiter.calculate(turningSpeed) * DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
 
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0,0, turningSpeed, swerveSubsystem.getRotation2d());    
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed,ySpeed, turningSpeed, swerveSubsystem.getRotation2d());    
         swerveSubsystem.setModuleStates(DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds));
     }
 
