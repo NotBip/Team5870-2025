@@ -5,6 +5,7 @@ import frc.robot.Subsystems.SwerveSubsystem;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -36,6 +37,7 @@ public class SwerveJoystickCmd extends Command{
 
     @Override
     public void initialize() {
+
     }
 
     @Override
@@ -44,8 +46,10 @@ public class SwerveJoystickCmd extends Command{
         double xSpeed = xSpdFunction.get();
         double ySpeed = ySpdFunction.get();
         double turningSpeed = turningSpdFunction.get();
+        
 
-
+        SmartDashboard.putNumber("X speed:", xSpeed);
+        SmartDashboard.putBoolean("isSlow", isSlowMode.get());
         // 2. Apply deadband
         xSpeed = Math.abs(xSpeed) > OIConstants.kDeadband ? xSpeed : 0.0;
         ySpeed = Math.abs(ySpeed) > OIConstants.kDeadband ? ySpeed : 0.0;
@@ -68,7 +72,7 @@ public class SwerveJoystickCmd extends Command{
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                         (xSpeed * ModuleConstants.slowModeMultiplier), (ySpeed * ModuleConstants.slowModeMultiplier), turningSpeed, swerveSubsystem.getRotation2d());
         }
-
+        
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
     }

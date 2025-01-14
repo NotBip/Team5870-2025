@@ -4,10 +4,12 @@ package frc.robot.Subsystems;
 import java.sql.Driver;
 import java.sql.Struct;
 
-import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
-import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.config.RobotConfig;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
+
 import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -22,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -29,7 +32,7 @@ import frc.robot.Constants.DriveConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
     
-    private AHRS navx = new AHRS(SPI.Port.kMXP);
+    private AHRS navx = new AHRS(NavXComType.kMXP_SPI);
     public SwerveModule[] SwerveMods;
     private SwerveDriveOdometry odometer; 
 
@@ -48,55 +51,73 @@ public class SwerveSubsystem extends SubsystemBase {
                     DriveConstants.kFrontLeftTurningMotorPort,
                     DriveConstants.kFrontLeftDriveEncoderReversed,
                     DriveConstants.kFrontLeftTurningEncoderReversed,
-                    DriveConstants.kFrontLeftDriveAbsoluteEncoderPort,
                     DriveConstants.kFrontLeftDriveAbsoluteEncoderOffsetRad,
-                    DriveConstants.kFrontLeftDriveAbsoluteEncoderReversed),
+                    DriveConstants.kFrontLeftDriveAbsoluteEncoderReversed, 
+                    DriveConstants.kFrontLeftDriveAbsoluteEncoderPort),
+                    
                 new SwerveModule(
                     1,
                     DriveConstants.kFrontRightDriveMotorPort,
                     DriveConstants.kFrontRightTurningMotorPort,
                     DriveConstants.kFrontRightDriveEncoderReversed,
                     DriveConstants.kFrontRightTurningEncoderReversed,
-                    DriveConstants.kFrontRightDriveAbsoluteEncoderPort,
                     DriveConstants.kFrontRightDriveAbsoluteEncoderOffsetRad,
-                    DriveConstants.kFrontRightDriveAbsoluteEncoderReversed),
+                    DriveConstants.kFrontRightDriveAbsoluteEncoderReversed,
+                    DriveConstants.kFrontRightDriveAbsoluteEncoderPort),
+
                 new SwerveModule(
                     2,
                     DriveConstants.kBackLeftDriveMotorPort,
                     DriveConstants.kBackLeftTurningMotorPort,
                     DriveConstants.kBackLeftDriveEncoderReversed,
                     DriveConstants.kBackLeftTurningEncoderReversed,
-                    DriveConstants.kBackLeftDriveAbsoluteEncoderPort,
                     DriveConstants.kBackLeftDriveAbsoluteEncoderOffsetRad,
-                    DriveConstants.kBackLeftDriveAbsoluteEncoderReversed),
+                    DriveConstants.kBackLeftDriveAbsoluteEncoderReversed,
+                    DriveConstants.kBackLeftDriveAbsoluteEncoderPort),
+
                 new SwerveModule(
                     3,
                     DriveConstants.kBackRightDriveMotorPort,
                     DriveConstants.kBackRightTurningMotorPort,
                     DriveConstants.kBackRightDriveEncoderReversed,
                     DriveConstants.kBackRightTurningEncoderReversed,
-                    DriveConstants.kBackRightDriveAbsoluteEncoderPort,
                     DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad,
-                    DriveConstants.kBackRightDriveAbsoluteEncoderReversed)
+                    DriveConstants.kBackRightDriveAbsoluteEncoderReversed,
+                    DriveConstants.kBackRightDriveAbsoluteEncoderPort),
+
         };
 
         odometer = new SwerveDriveOdometry(Constants.DriveConstants.kDriveKinematics, new Rotation2d(0), getModulePositions());
 
+        RobotConfig config;
 
-        AutoBuilder.configureHolonomic(
-            this::getPose, 
-            this::resetOdometry, 
-            this::getSpeeds, 
-            this::driveRobotRelative, 
-            AutoConstants.pathFollowerConfig, 
-            () -> { 
-                var alliance = DriverStation.getAlliance(); 
-                if(alliance.get() == DriverStation.Alliance.Red)
-                    return true; 
-                else
+        try{
+          config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+          // Handle exception as needed
+          config = null;
+          e.printStackTrace();
+        }
+            AutoBuilder.configure(
+                this::getPose, 
+                this::resetOdometry, 
+                this::getSpeeds, 
+                (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards, 
+                AutoConstants.ppConfig, 
+                config, 
+                () -> {
+                    // Boolean supplier that controls when the path will be mirrored for the red alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+        
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
                     return false;
-            }, this);
-
+                },
+                this
+              );
     }
 
 
@@ -107,7 +128,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 
     public double getHeading() {
-        return Math.IEEEremainder(-navx.getAngle(), 360); 
+        return Math.IEEEremainder(-navx.getAngle(), 360);
     }
 
     public Rotation2d getRotation2d() {
@@ -126,8 +147,39 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         odometer.update(getRotation2d(), getModulePositions());
-        
+        getAbsoluteEncoder();
+
+        // SmartDashboard.putData("Set PID", new InstantCommand(() -> reconfigureAuto())); 
     }
+
+    // private void reconfigureAuto() { 
+        
+    //     double driveP = SmartDashboard.getNumber("Drive P: ", 0.0); 
+    //     double driveI = SmartDashboard.getNumber("Drive I: ", 0.0); 
+    //     double driveD = SmartDashboard.getNumber("Drive D: ", 0.0); 
+
+    //     double angleP = SmartDashboard.getNumber("Turning P: ", 0.0); 
+    //     double angleI = SmartDashboard.getNumber("Turning I: ", 0.0); 
+    //     double angleD = SmartDashboard.getNumber("Turning D: ", 0.0); 
+
+    //     AutoBuilder.configureHolonomic(
+    //         this::getPose, 
+    //         this::resetOdometry, 
+    //         this::getSpeeds, 
+    //         this::driveRobotRelative, 
+    //      new HolonomicPathFollowerConfig(
+    //         new PIDConstants(driveP, driveI, driveD),
+    //         new PIDConstants(angleP, angleI, angleD),
+    //         5, 
+    //         0.682498, // Drive base radius (distance from center to furthest module) 
+    //         new ReplanningConfig()), 
+    //                    () -> { 
+    //             var alliance = DriverStation.getAlliance(); 
+    //             if(alliance.get() == DriverStation.Alliance.Red)
+    //                 return true; 
+    //             else
+    //                 return false;
+    //         }, this);    }
 
     public SwerveModulePosition[] getModulePositions(){
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
@@ -162,13 +214,15 @@ public class SwerveSubsystem extends SubsystemBase {
         SwerveMods[2].setDesiredState(desiredStates[2], "Back Left");
         SwerveMods[3].setDesiredState(desiredStates[3], "Back Right");
         SmartDashboard.putNumber("Wheel Speeds", desiredStates[0].speedMetersPerSecond); 
+        SmartDashboard.putNumber("Wheel Angle", desiredStates[0].angle.getDegrees()); 
+
     }
 
     public void getAbsoluteEncoder() { 
-        SmartDashboard.putNumber("Front Left", SwerveMods[0].getAbsoluteEncoderRad());
-        SmartDashboard.putNumber("Front RIght", SwerveMods[1].getAbsoluteEncoderRad());
-        SmartDashboard.putNumber("Back Left", SwerveMods[2].getAbsoluteEncoderRad());
-        SmartDashboard.putNumber("Back Right", SwerveMods[3].getAbsoluteEncoderRad());
+        SmartDashboard.putNumber("Front Left", SwerveMods[0].getTurningPosition());
+        SmartDashboard.putNumber("Front RIght", SwerveMods[1].getTurningPosition());
+        SmartDashboard.putNumber("Back Left", SwerveMods[2].getTurningPosition());
+        SmartDashboard.putNumber("Back Right", SwerveMods[3].getTurningPosition());
     }
 
     public ChassisSpeeds getSpeeds() { 
@@ -176,11 +230,10 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) { 
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-robotRelativeSpeeds.vxMetersPerSecond, -robotRelativeSpeeds.vyMetersPerSecond, -robotRelativeSpeeds.omegaRadiansPerSecond, getRotation2d());
-        chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02); 
+        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
-        SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-        setModuleStates(targetStates); 
+        SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
+        setModuleStates(targetStates);
     }
 
 

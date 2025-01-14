@@ -4,8 +4,10 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -63,15 +65,22 @@ public class RobotContainer {
         drBtnStrt.onTrue(zeroGyro);
     }
 
+    
+
     public void configureNamedCommands() { 
         NamedCommands.registerCommand("ZeroGyro", zeroGyro);
     }
 
     public Command getAutonomousCommand() {
-        return new SequentialCommandGroup(
-            new InstantCommand(() -> swerveSubsystem.resetOdometry(PathPlannerAuto.getStaringPoseFromAutoFile("Straight"))),
-            new InstantCommand(() -> swerveSubsystem.zeroHeading()), 
-            new PathPlannerAuto("Straight"));
+
+        try { 
+            PathPlannerPath path = PathPlannerPath.fromPathFile("Straight");
+            return AutoBuilder.followPath(path); 
+        } catch (Exception e)  {
+            System.out.println("Failed to get Path.");
+            return null; 
+        }
+
     }
 
     public Command selfTestCommand() { 
