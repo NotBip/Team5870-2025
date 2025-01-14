@@ -84,6 +84,14 @@ public class SwerveSim extends SubsystemBase {
       yaw += move; 
   }
 
+  public Pose3d getPose3d() { 
+    return new Pose3d(
+      odometry.getPoseMeters().getX(),
+      odometry.getPoseMeters().getY(), 
+      0, 
+      new Rotation3d(0,0,0)); 
+  }
+
   public ChassisSpeeds getSpeeds() {
     return kinematics.toChassisSpeeds(getModuleStates());
   }
