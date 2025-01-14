@@ -2,12 +2,13 @@ package frc.robot.commands.Swerve;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Subsystems.SwerveSim;
 import frc.robot.Subsystems.SwerveSubsystem;
 
 public class ZeroGyro extends Command{
-    private SwerveSubsystem swerveSubsystem;
+    private SwerveSim swerveSubsystem;
     
-    public ZeroGyro(SwerveSubsystem swerveSubsystem) { 
+    public ZeroGyro(SwerveSim swerveSubsystem) { 
         this.swerveSubsystem = swerveSubsystem; 
     }
 
@@ -19,7 +20,7 @@ public class ZeroGyro extends Command{
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        swerveSubsystem.zeroHeading();
+        swerveSubsystem.resetGyro();
     }
 
 

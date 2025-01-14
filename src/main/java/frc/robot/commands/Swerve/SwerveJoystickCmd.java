@@ -1,43 +1,40 @@
 package frc.robot.commands.Swerve;
 
+
 import java.util.function.Supplier;
-import frc.robot.Subsystems.SwerveSubsystem;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Subsystems.SwerveSim;
 
 public class SwerveJoystickCmd extends Command{
 
-    private final SwerveSubsystem swerveSubsystem;
-    private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
-    private final Supplier<Boolean> fieldOrientedFunction, isSlowMode;
+    private final SwerveSim swerveSim;
+    private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction, zSpdFuntion, zSpdFuntion2;
+    private final Supplier<Boolean> fieldOrientedFunction, reversed;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
     
-    public SwerveJoystickCmd(SwerveSubsystem swerveSubsystem,
+    public SwerveJoystickCmd(SwerveSim swerveSim, Supplier<Double> zSpdFunction, Supplier<Double> zSpdFunction2, Supplier<Boolean> reversed,
         Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
-        Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> isSlowMode) {
-        this.swerveSubsystem = swerveSubsystem;
+        Supplier<Boolean> fieldOrientedFunction) {
+        this.swerveSim = swerveSim;
+        this.zSpdFuntion2 = zSpdFunction2; 
+        this.zSpdFuntion = zSpdFunction; 
+        this.reversed = reversed; 
         this.xSpdFunction = xSpdFunction;
         this.ySpdFunction = ySpdFunction;
         this.turningSpdFunction = turningSpdFunction;
         this.fieldOrientedFunction = fieldOrientedFunction;
-        this.isSlowMode = isSlowMode; 
         this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
-
-
-        addRequirements(swerveSubsystem);
+        addRequirements(swerveSim);
     }
 
     @Override
     public void initialize() {
-
     }
 
     @Override
@@ -46,10 +43,7 @@ public class SwerveJoystickCmd extends Command{
         double xSpeed = xSpdFunction.get();
         double ySpeed = ySpdFunction.get();
         double turningSpeed = turningSpdFunction.get();
-        
 
-        SmartDashboard.putNumber("X speed:", xSpeed);
-        SmartDashboard.putBoolean("isSlow", isSlowMode.get());
         // 2. Apply deadband
         xSpeed = Math.abs(xSpeed) > OIConstants.kDeadband ? xSpeed : 0.0;
         ySpeed = Math.abs(ySpeed) > OIConstants.kDeadband ? ySpeed : 0.0;
@@ -60,26 +54,26 @@ public class SwerveJoystickCmd extends Command{
         ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
         turningSpeed = turningLimiter.calculate(turningSpeed) * DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
                 
-
+        // 4. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;
-
-        if(!isSlowMode.get()) { 
-            
-                chassisSpeeds = fieldOrientedFunction.get() ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                            xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d()) : new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
-        } else { 
-            // Activate Slow Mode
-            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                        (xSpeed * ModuleConstants.slowModeMultiplier), (ySpeed * ModuleConstants.slowModeMultiplier), turningSpeed, swerveSubsystem.getRotation2d());
+        if (fieldOrientedFunction.get()) {
+            // Relative to field
+            swerveSim.driveFieldRelative(new ChassisSpeeds(xSpeed, ySpeed, turningSpeed));
+       } else {
+            // Relative to robot
+            swerveSim.driveFieldRelative(new ChassisSpeeds(xSpeed*.5, ySpeed*.5, turningSpeed)); 
         }
-        
-        SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-        swerveSubsystem.setModuleStates(moduleStates);
-    }
+
+        if(zSpdFuntion.get() >= 1 || zSpdFuntion2.get() >= 1){ 
+            swerveSim.updatePose3d(reversed.get(), .01); 
+
+        }
+
+        }
+
 
     @Override
     public void end(boolean interrupted) {
-        swerveSubsystem.stopModules();
     }
 
     @Override

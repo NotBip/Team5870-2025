@@ -4,18 +4,25 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Subsystems.SwerveSim;
 import frc.robot.Subsystems.SwerveSubsystem;
 import frc.robot.commands.Swerve.SwerveJoystickCmd;
 import frc.robot.commands.Swerve.ZeroGyro;
@@ -23,7 +30,7 @@ import frc.robot.commands.Swerve.ZeroGyro;
 public class RobotContainer {
 
     // Initializing subsystems
-    public SwerveSubsystem swerveSubsystem = new SwerveSubsystem(); 
+    public SwerveSim swerveSubsystem = new SwerveSim(); 
 
     // Initializing Swerve Commands
     private final ZeroGyro zeroGyro = new ZeroGyro(swerveSubsystem);
@@ -37,14 +44,15 @@ public class RobotContainer {
     public JoystickButton drBtnA, drBtnB, drBtnX, drBtnY, drBtnLB, drBtnRB, drBtnStrt, drBtnSelect;
 
     public RobotContainer() {
-        configureNamedCommands();
         swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
-            swerveSubsystem, 
-            () -> driverJoystick.getRawAxis(OIConstants.kDriverYAxis), 
-            () -> driverJoystick.getRawAxis(OIConstants.kDriverXAxis), 
-            () -> -driverJoystick.getRawAxis(OIConstants.kDriverRotAxis), 
-            () -> !driverJoystick.getRawButton(6), 
-            () -> driverController.getRightTriggerAxis() > 0.5 ? true : false));
+            swerveSubsystem,
+            () -> driverJoystick.getRawAxis(3), 
+            () -> driverJoystick.getRawAxis(2), 
+            () -> driverJoystick.getRawAxis(2) == 1 ? true : false, 
+            () -> -driverJoystick.getRawAxis(OIConstants.kDriverYAxis),
+            () -> -driverJoystick.getRawAxis(OIConstants.kDriverXAxis),
+            () -> -driverJoystick.getRawAxis(OIConstants.kDriverRotAxis),
+            () -> !driverJoystick.getRawButton(OIConstants.kDriverFieldOrientedButtonIdx)));
 
 
         // Xbox Driver Controller Buttons
@@ -65,10 +73,53 @@ public class RobotContainer {
         drBtnStrt.onTrue(zeroGyro);
     }
 
-    
+    double z = -.2; 
+    double y = 0;
+
+    public void simClimber() { 
+
+        if(driverController.getRightTriggerAxis() > .5) { 
+            System.out.println("RIGHT");
+           z += .01;
+        }
+
+        if(driverController.getLeftTriggerAxis() > .5) { 
+            System.out.println("L:EFT");
+            z -= .01;
+        }
+
+        if (z > 0.6) z = .6; 
+        if (z < -0.2) z = -0.2;
+
+        if(driverController.getLeftBumperButton()) { 
+            System.out.println("RIGHT");
+            y += .01; 
+        }
+
+        if(driverController.getRightBumperButton()) { 
+            System.out.println("L:EFT");
+            y -= .01; 
+        }
+        if (y > .370) y = .370;
+        if (y < 0) y = 0; 
+
+        Logger.recordOutput("Robot Pose", new Pose2d());
+        Logger.recordOutput("Zeroed Component Poses", new Pose3d[] {new Pose3d()}); 
+        Logger.recordOutput("Final Component Poses", new Pose3d[] { 
+        // max height 0.6
+        // min height -.2
+
+        new Pose3d(
+            0 , 0, z, new Rotation3d(0,0,0)
+        ), 
+        new Pose3d(
+            0, y, z, new Rotation3d(0, 0, 0)
+        )
+        });
+    }
 
     public void configureNamedCommands() { 
-        NamedCommands.registerCommand("ZeroGyro", zeroGyro);
+        // NamedCommands.registerCommand("ZeroGyro", zeroGyro);
     }
 
     public Command getAutonomousCommand() {
@@ -81,9 +132,5 @@ public class RobotContainer {
             return null; 
         }
 
-    }
-
-    public Command selfTestCommand() { 
-        return new SwerveJoystickCmd(swerveSubsystem, () -> 0.0, () -> 0.0, () -> 2.0, () -> false, () -> false);
     }
 }

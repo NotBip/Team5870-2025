@@ -4,6 +4,8 @@ package frc.robot.Subsystems;
 import java.sql.Driver;
 import java.sql.Struct;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.RobotConfig;
@@ -52,9 +54,7 @@ public class SwerveSubsystem extends SubsystemBase {
                     DriveConstants.kFrontLeftDriveEncoderReversed,
                     DriveConstants.kFrontLeftTurningEncoderReversed,
                     DriveConstants.kFrontLeftDriveAbsoluteEncoderOffsetRad,
-                    DriveConstants.kFrontLeftDriveAbsoluteEncoderReversed, 
-                    DriveConstants.kFrontLeftDriveAbsoluteEncoderPort),
-                    
+                    DriveConstants.kFrontLeftDriveAbsoluteEncoderReversed),
                 new SwerveModule(
                     1,
                     DriveConstants.kFrontRightDriveMotorPort,
@@ -62,9 +62,7 @@ public class SwerveSubsystem extends SubsystemBase {
                     DriveConstants.kFrontRightDriveEncoderReversed,
                     DriveConstants.kFrontRightTurningEncoderReversed,
                     DriveConstants.kFrontRightDriveAbsoluteEncoderOffsetRad,
-                    DriveConstants.kFrontRightDriveAbsoluteEncoderReversed,
-                    DriveConstants.kFrontRightDriveAbsoluteEncoderPort),
-
+                    DriveConstants.kFrontRightDriveAbsoluteEncoderReversed),
                 new SwerveModule(
                     2,
                     DriveConstants.kBackLeftDriveMotorPort,
@@ -72,9 +70,7 @@ public class SwerveSubsystem extends SubsystemBase {
                     DriveConstants.kBackLeftDriveEncoderReversed,
                     DriveConstants.kBackLeftTurningEncoderReversed,
                     DriveConstants.kBackLeftDriveAbsoluteEncoderOffsetRad,
-                    DriveConstants.kBackLeftDriveAbsoluteEncoderReversed,
-                    DriveConstants.kBackLeftDriveAbsoluteEncoderPort),
-
+                    DriveConstants.kBackLeftDriveAbsoluteEncoderReversed),
                 new SwerveModule(
                     3,
                     DriveConstants.kBackRightDriveMotorPort,
@@ -82,29 +78,22 @@ public class SwerveSubsystem extends SubsystemBase {
                     DriveConstants.kBackRightDriveEncoderReversed,
                     DriveConstants.kBackRightTurningEncoderReversed,
                     DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad,
-                    DriveConstants.kBackRightDriveAbsoluteEncoderReversed,
-                    DriveConstants.kBackRightDriveAbsoluteEncoderPort),
-
+                    DriveConstants.kBackRightDriveAbsoluteEncoderReversed)
         };
 
         odometer = new SwerveDriveOdometry(Constants.DriveConstants.kDriveKinematics, new Rotation2d(0), getModulePositions());
 
-        RobotConfig config;
+        try { 
 
-        try{
-          config = RobotConfig.fromGUISettings();
-        } catch (Exception e) {
-          // Handle exception as needed
-          config = null;
-          e.printStackTrace();
-        }
+            RobotConfig robotConfig = RobotConfig.fromGUISettings(); 
+
             AutoBuilder.configure(
                 this::getPose, 
                 this::resetOdometry, 
                 this::getSpeeds, 
-                (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards, 
+                this::driveRobotRelative, 
                 AutoConstants.ppConfig, 
-                config, 
+                robotConfig, 
                 () -> {
                     // Boolean supplier that controls when the path will be mirrored for the red alliance
                     // This will flip the path being followed to the red side of the field.
@@ -118,6 +107,11 @@ public class SwerveSubsystem extends SubsystemBase {
                 },
                 this
               );
+
+        } catch (Exception e) { 
+            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder ", e.getStackTrace());
+        }
+
     }
 
 
@@ -209,6 +203,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+        Logger.recordOutput("RPose", odometer.getPoseMeters());
         SwerveMods[0].setDesiredState(desiredStates[0], "Front Left");
         SwerveMods[1].setDesiredState(desiredStates[1], "Front Right");
         SwerveMods[2].setDesiredState(desiredStates[2], "Back Left");
@@ -230,10 +225,11 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) { 
-        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-robotRelativeSpeeds.vxMetersPerSecond, -robotRelativeSpeeds.vyMetersPerSecond, -robotRelativeSpeeds.omegaRadiansPerSecond, getRotation2d());
+        chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02); 
 
-        SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
-        setModuleStates(targetStates);
+        SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+        setModuleStates(targetStates); 
     }
 
 
