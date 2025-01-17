@@ -71,9 +71,6 @@ public class SwerveModule {
         driveMotor = new SparkMax(driveMotorId, MotorType.kBrushless);
         turningMotor = new SparkMax(turningMotorId, MotorType.kBrushless);
 
-        // Get encoder values for both drive and turning motors. 
-        driveEncoder = driveMotor.getEncoder(); 
-        turningEncoder = turningMotor.getEncoder();
         
 
         driveConfig.idleMode(IdleMode.kBrake); 
@@ -92,12 +89,13 @@ public class SwerveModule {
 
         turningConfig
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(20);
+        .smartCurrentLimit(40);
 
 
         turningConfig.encoder
         .positionConversionFactor(ModuleConstants.kTurningEncoderRot2Rad)
         .velocityConversionFactor(ModuleConstants.kTurningEncoderRPM2RadPerSec);
+
 
         turningConfig.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
@@ -108,13 +106,16 @@ public class SwerveModule {
 
 
         // Initialzing PID Controller. 
-        turningPidController = new PIDController(ModuleConstants.kPTurning, 0, 0);
+        turningPidController = new PIDController(ModuleConstants.kPTurning, 0, ModuleConstants.kDTurning);
         turningPidController.enableContinuousInput(-Math.PI, Math.PI);
 
         var toApply = new CANcoderConfiguration();
-        absoluteEncoder.getConfigurator().apply(toApply);
+        // absoluteEncoder.getConfigurator().apply(toApply);
 
         // Reset Encoders at the start. 
+                // Get encoder values for both drive and turning motors. 
+        driveEncoder = driveMotor.getEncoder(); 
+        turningEncoder = turningMotor.getEncoder();
         resetEncoders();
     }
 
@@ -125,6 +126,10 @@ public class SwerveModule {
 
     public double getDriveVelocity() {
         return driveEncoder.getVelocity();
+    }
+
+    public double getAbsoluteEncoder() { 
+        return absoluteEncoder.getAbsolutePosition().getValueAsDouble();
     }
 
    
