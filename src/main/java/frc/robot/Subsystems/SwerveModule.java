@@ -1,5 +1,6 @@
 package frc.robot.Subsystems;
 
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
@@ -46,7 +47,8 @@ public class SwerveModule {
     private final boolean absoluteEncoderReversed;
     private double absoluteEncoderOffsetRad;
     public double offset = 0; 
-
+    //https://github.com/FRCCriticalCircuits/CRITICAL-CONDUCTOR-2024/blob/main/src/main/java/frc/team9062/robot/Subsystems/Drive/Module.java#L242
+    // for help
 
     /**g
      * Constructor for each Swerve Module. 
@@ -105,8 +107,13 @@ public class SwerveModule {
         turningPidController = new PIDController(ModuleConstants.kPTurning, 0, ModuleConstants.kDTurning);
         turningPidController.enableContinuousInput(-Math.PI, Math.PI);
 
-        var toApply = new CANcoderConfiguration();
-        // absoluteEncoder.getConfigurator().apply(toApply);
+        absoluteEncoder.getConfigurator().apply(
+            new MagnetSensorConfigs()
+                .withAbsoluteSensorDiscontinuityPoint(.5)
+                .withSensorDirection(
+                        SensorDirectionValue.CounterClockwise_Positive
+                ).withMagnetOffset(offset)
+        );
 
         // Reset Encoders at the start. 
                 // Get encoder values for both drive and turning motors. 
