@@ -80,9 +80,7 @@ public class SwerveModule {
         turningConfig.inverted(turningMotorReversed);
 
         // Convert Encoder values. 
-        driveConfig.encoder
-        .positionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter)
-        .velocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec); 
+        driveConfig.encoder.velocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec); 
 
         driveConfig.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
@@ -93,9 +91,7 @@ public class SwerveModule {
 
 
         turningConfig.encoder
-        .positionConversionFactor(ModuleConstants.kTurningEncoderRot2Rad)
-        .velocityConversionFactor(ModuleConstants.kTurningEncoderRPM2RadPerSec);
-
+        .positionConversionFactor(ModuleConstants.kTurningEncoderRot2Rad);
 
         turningConfig.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
@@ -132,10 +128,6 @@ public class SwerveModule {
         return absoluteEncoder.getAbsolutePosition().getValueAsDouble();
     }
 
-   
-    public double getTurningVelocity() {
-        return turningEncoder.getVelocity(); 
-    }
 
     public double getAbsoluteEncoderRad() { 
         double angle = absoluteEncoder.getAbsolutePosition().getValueAsDouble();
