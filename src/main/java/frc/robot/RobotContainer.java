@@ -41,28 +41,13 @@ public class RobotContainer {
     private final Joystick driverJoystick = new Joystick(OIConstants.kDriverControllerPort);
     private final XboxController driverController = new XboxController(OIConstants.kDriverControllerPort); 
 
-    // Climber Sim Values
-    double z = -.2; 
-    double y = 0;
 
-    // Algae Rotation
-    double algaeIntakeRot = 0; 
+    // Sim Values 
+    double innerZ = .96; 
+    double outerZ = .84; 
 
-    // GAME PIECES
-
-    double xRot = 0; 
-
-    // ALGAE 1
-    double x1 = 1.25;
-    double y1 = 6.5;
-
-    // ALGAE 2
-    double x2 = 1.25; 
-    double y2 = 4.5; 
-
-    // ALGAE 3
-    double x3 = 1.25; 
-    double y3 = 2.5; 
+    double intakeRot = -.04; 
+    double armRot = 0.0; 
     
 
 
@@ -103,85 +88,92 @@ public class RobotContainer {
 
     public void simMovement() { 
 
-        // CLIMBER
-        if(driverController.getRightTriggerAxis() > .5) { 
-            System.out.println("RIGHT");
-           z += .01;
+        if (driverController.getRightBumperButton()) { 
+            intakeRot += 0.06; 
+        } else if (driverController.getLeftBumperButton()) { 
+            intakeRot -= .06; 
         }
 
-        if(driverController.getLeftTriggerAxis() > .5) { 
-            System.out.println("L:EFT");
-            z -= .01;
+        if (driverController.getBButton()) { 
+            armRot += .06; 
+        } else if (driverController.getXButton()) { 
+            armRot -= .06;
         }
 
-        if (z > 0.6) z = .6; 
-        if (z < -0.2) z = -0.2;
+        if(driverController.getYButton()) { 
+            if (outerZ - innerZ < .1) { 
+                innerZ += .01;
+                outerZ += .02;
+            } else { 
+                innerZ += .01; 
+            }
+        }
+        if(driverController.getAButton()) { 
+            if (outerZ - innerZ > .5) { 
+                innerZ -= .01;
+                outerZ -= .02;
+            } else { 
+                innerZ -= .01; 
+            }
 
-        if(driverController.getLeftBumperButton()) { 
-            System.out.println("RIGHT");
-            y += .01; 
+            if (innerZ <= 0) { 
+                outerZ -= .02;
+            }
+
         }
 
-        if(driverController.getRightBumperButton()) { 
-            System.out.println("L:EFT");
-            y -= .01; 
-        }
-        if (y > .370) y = .370;
-        if (y < 0) y = 0; 
-        
-        // ALGAE INTAKE
-        if (driverController.getPOV() == 90) { 
-            algaeIntakeRot -= 0.02;    
-        } 
-        if (driverController.getPOV() == 270) { 
-            algaeIntakeRot += 0.02;    
-        }
-
-        if (algaeIntakeRot > .15) algaeIntakeRot = .15; 
-        if (algaeIntakeRot < -.15) algaeIntakeRot = -.15; 
+        if (innerZ > .96) innerZ = .96; 
+        if (innerZ < 0) innerZ = 0; 
+        if (outerZ > .84) outerZ = .84; 
+        if (outerZ < 0) outerZ = 0; 
+        if (intakeRot < -2.4) intakeRot = -2.4; 
+        if (intakeRot > -0.04) intakeRot = -0.04; 
+        if (armRot > 2.2) armRot = 2.2; 
+        if (armRot < 0) armRot = 0; 
 
 
-
-        // ALGAE
-        Logger.recordOutput("Algae Sim", new Pose3d[] { 
-            new Pose3d(x1, y1, .2, new Rotation3d(xRot, xRot, xRot)),
-            new Pose3d(x2, y2, .2, new Rotation3d(xRot, xRot, xRot)),
-            new Pose3d(x3, y3, .2, new Rotation3d(xRot, xRot, xRot))
-        });  
-        
-        double gpDist1 = dist(swerveSubsystem.getPose(), new Pose2d(x1, y1, new Rotation2d()));
-        double gpDist2 = dist(swerveSubsystem.getPose(), new Pose2d(x2, y2, new Rotation2d()));
-        double gpDist3 = dist(swerveSubsystem.getPose(), new Pose2d(x3, y3, new Rotation2d()));
-
-        xRot = swerveSubsystem.getPose().getRotation().getRadians();
-
-        if(gpDist1 < .25 && algaeIntakeRot < -.1) { 
-            x1 = swerveSubsystem.getPose().getX() - .3; 
-            y1 = swerveSubsystem.getPose().getY(); 
-        } else if (gpDist2 < .25 && algaeIntakeRot < -.1) { 
-            x2 = swerveSubsystem.getPose().getX() - .3; 
-            y2 = swerveSubsystem.getPose().getY(); 
-        } else if (gpDist3 < .25 && algaeIntakeRot < -.1) { 
-            x3 = swerveSubsystem.getPose().getX() - .3; 
-            y3 = swerveSubsystem.getPose().getY(); 
-        }
-        // Logger.recordOutput("Algae Sim", new Pose3d(1.25, 4.5, .2, new Rotation3d(0, 0, 0)));        
-        // Logger.recordOutput("Algae Sim", new Pose3d(1.25, 2.5, .2, new Rotation3d(0, 0, 0)));        
 
 
         Logger.recordOutput("Final Component Poses", new Pose3d[] { 
-        // Climber
+        // intake mount
         new Pose3d(
-            0 , 0, z, new Rotation3d(0,0,0)
-        ), 
+            0 , 0, 0, new Rotation3d(0,0,0)
+        ),
+        // intake 
+        // pitch max -2.4
+        // pitch min -.04
         new Pose3d(
-            0, y, z, new Rotation3d(0, 0, 0)
-        ), 
-        // Algae Intake
+            0.22 , 0, 0.11, new Rotation3d(0,intakeRot,0)
+        ),
+        // outtake mount
         new Pose3d(
-            0, 0, 0, new Rotation3d(0, algaeIntakeRot, 0)
+            0 , 0,   0 + innerZ, new Rotation3d(0,0,0)
+        ),
+        // outtake
+        // mmax roll 2.2
+        // min roll 0
+        new Pose3d(
+            -0.05 , 0, 0.8 + innerZ, new Rotation3d(armRot,0,0)
+        ),
+        // base
+        // max z 0
+        // min z 0
+        new Pose3d(
+            0 , 0, 0, new Rotation3d(0,0,0)
+        ),
+        // 2nd
+        // max z .84
+        // min z 0
+        new Pose3d(
+            0 , 0, outerZ, new Rotation3d(0,0,0)
+        ),
+        // inner
+        // max z .96
+        // min z 0
+        new Pose3d(
+            0 , 0, innerZ, new Rotation3d(0,0,0)
         )
-        });
+    }); 
     }
 
     public void configureNamedCommands() { 
