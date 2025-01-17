@@ -148,6 +148,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public void periodic() {
         odometer.update(getRotation2d(), getModulePositions());
         getAbsoluteEncoder();
+        getTurningEnc();
 
         // SmartDashboard.putData("Set PID", new InstantCommand(() -> reconfigureAuto())); 
     }
@@ -219,10 +220,17 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void getAbsoluteEncoder() { 
-        SmartDashboard.putNumber("Front Left", SwerveMods[0].getTurningPosition());
-        SmartDashboard.putNumber("Front RIght", SwerveMods[1].getTurningPosition());
-        SmartDashboard.putNumber("Back Left", SwerveMods[2].getTurningPosition());
-        SmartDashboard.putNumber("Back Right", SwerveMods[3].getTurningPosition());
+        SmartDashboard.putNumber("Front Left", SwerveMods[0].getAbsoluteEncoderRad());
+        SmartDashboard.putNumber("Front RIght", SwerveMods[1].getAbsoluteEncoderRad());
+        SmartDashboard.putNumber("Back Left", SwerveMods[2].getAbsoluteEncoderRad());
+        SmartDashboard.putNumber("Back Right", SwerveMods[3].getAbsoluteEncoderRad());
+    }
+
+    public void getTurningEnc() { 
+        SmartDashboard.putNumber("Front Left Turn", SwerveMods[0].getTurningPosition());
+        SmartDashboard.putNumber("Front RIght Turn", SwerveMods[1].getTurningPosition());
+        SmartDashboard.putNumber("Back Left Turn ", SwerveMods[2].getTurningPosition());
+        SmartDashboard.putNumber("Back Right Turn", SwerveMods[3].getTurningPosition());
     }
 
     public ChassisSpeeds getSpeeds() { 
