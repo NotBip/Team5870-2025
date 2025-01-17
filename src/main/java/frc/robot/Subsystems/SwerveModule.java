@@ -112,7 +112,7 @@ public class SwerveModule {
                 .withAbsoluteSensorDiscontinuityPoint(.5)
                 .withSensorDirection(
                         SensorDirectionValue.CounterClockwise_Positive
-                ).withMagnetOffset(offset)
+                )
         );
 
         // Reset Encoders at the start. 
