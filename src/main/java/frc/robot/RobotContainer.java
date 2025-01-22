@@ -9,6 +9,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Subsystems.SwerveSubsystem;
+import frc.robot.commands.Swerve.ResetOdom;
 import frc.robot.commands.Swerve.SwerveJoystickCmd;
 import frc.robot.commands.Swerve.ZeroGyro;
 
@@ -27,6 +30,7 @@ public class RobotContainer {
 
     // Initializing Swerve Commands
     private final ZeroGyro zeroGyro = new ZeroGyro(swerveSubsystem);
+    private final ResetOdom resetOdom = new ResetOdom(swerveSubsystem); 
 
     // Initialzing Controllers
     private final Joystick driverJoystick = new Joystick(OIConstants.kDriverControllerPort);
@@ -63,19 +67,25 @@ public class RobotContainer {
 
     private void configureBindings() {
         drBtnStrt.onTrue(zeroGyro);
+        drBtnA.onTrue(resetOdom);
     }
 
     
 
     public void configureNamedCommands() { 
         NamedCommands.registerCommand("ZeroGyro", zeroGyro);
+        // NamedCommands.registerCommand("", resetOdom);
     }
 
     public Command getAutonomousCommand() {
 
         try { 
             PathPlannerPath path = PathPlannerPath.fromPathFile("Straight");
-            return AutoBuilder.followPath(path); 
+            return new SequentialCommandGroup(
+                new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
+                AutoBuilder.followPath(path)
+            );
+            
         } catch (Exception e)  {
             System.out.println("Failed to get Path.");
             return null; 

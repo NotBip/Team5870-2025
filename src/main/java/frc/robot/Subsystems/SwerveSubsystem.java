@@ -4,14 +4,18 @@ package frc.robot.Subsystems;
 import java.sql.Driver;
 import java.sql.Struct;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.RobotConfig;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
 import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,6 +24,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
@@ -35,6 +40,7 @@ public class SwerveSubsystem extends SubsystemBase {
     private AHRS navx = new AHRS(NavXComType.kMXP_SPI);
     public SwerveModule[] SwerveMods;
     private SwerveDriveOdometry odometer; 
+    private SwerveDrivePoseEstimator poseEstimator; 
 
     public SwerveSubsystem(){
         new Thread(() -> {
@@ -87,7 +93,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
         };
 
-        odometer = new SwerveDriveOdometry(Constants.DriveConstants.kDriveKinematics, new Rotation2d(0), getModulePositions());
+        odometer = new SwerveDriveOdometry(Constants.DriveConstants.kDriveKinematics, getRotation2d(), getModulePositions());
+        poseEstimator = new SwerveDrivePoseEstimator(Constants.DriveConstants.kDriveKinematics, getRotation2d(), getModulePositions(), getPose());
 
         RobotConfig config;
 
@@ -118,6 +125,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 },
                 this
               );
+        PathfindingCommand.warmupCommand().schedule();  
     }
 
 
@@ -147,6 +155,9 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         odometer.update(getRotation2d(), getModulePositions());
+        Logger.recordOutput("Pose", getPose());
+        Logger.recordOutput("Mod Positions", getModulePositions());
+
         getAbsoluteEncoder();
         getTurningEnc();
 
@@ -207,6 +218,14 @@ public class SwerveSubsystem extends SubsystemBase {
         SwerveMods[3].stop();
     }
 
+    public void resetPoseEst(Pose2d pose) { 
+        poseEstimator.resetPosition(getRotation2d(), getModulePositions(), pose);
+    }
+
+    public void updatePoseEst() { 
+            poseEstimator.update(getRotation2d(), getModulePositions());
+    }
+
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
@@ -238,10 +257,13 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) { 
-        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+        // ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
-        SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
-        setModuleStates(targetStates);
+        // SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
+        // setModuleStates(targetStates);
+        ChassisSpeeds newSpeeds = new ChassisSpeeds(-robotRelativeSpeeds.vxMetersPerSecond,- robotRelativeSpeeds.vyMetersPerSecond, -robotRelativeSpeeds.omegaRadiansPerSecond);
+        SwerveModuleState[] states = DriveConstants.kDriveKinematics.toSwerveModuleStates(newSpeeds); 
+        setModuleStates(states);
     }
 
 

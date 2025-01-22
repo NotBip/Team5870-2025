@@ -1,5 +1,7 @@
 package frc.robot;
 
+import org.opencv.core.Mat;
+
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -13,8 +15,11 @@ public final class Constants {
         public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
         public static final double kDriveMotorGearRatio = 6.75;
         public static final double kTurningMotorGearRatio = (150.0/7); 
-        public static final double kTurningEncoderRot2Rad = 360 / kTurningMotorGearRatio;
-        public static final double kDriveEncoderRPM2MeterPerSec = (Math.PI * kWheelDiameterMeters) / 6.75;
+        public static final double TurnpositionConversionFactor = (1 / kTurningMotorGearRatio) * Math.PI * 2;
+        public static final double TurnVelocityConversionFactor = TurnpositionConversionFactor / 60;
+        public static final double kDrivePositionFactor = (1 / kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters);
+        // public static final double kDrivePositionFactor = Units.inchesToMeters(4) * Math.PI * kDriveMotorGearRatio;
+        public static final double kDriveVelocityFactor = kDrivePositionFactor/60; 
         public static final double kPTurning = 0.4; 
         public static final double kDTurning = 0.0; 
         public static final double slowModeMultiplier = 0.5;           
@@ -84,10 +89,10 @@ public final class Constants {
         public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
         public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = -0.36767578125;
-        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = -0.24560546875;
-        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = -0.31591796875;
-        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = -0.45458984375; 
+        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = -2.307107104980004;
+        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = -1.52017496079467;
+        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = -1.954291523766307;
+        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = -2.88234990043712; 
 
         public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
@@ -103,7 +108,9 @@ public final class Constants {
     // Module for Autonomous Mode. 
     public static final class AutoConstants {
         public static final PPHolonomicDriveController ppConfig = new PPHolonomicDriveController(
-        new PIDConstants(0.01, 0, 0), 
+            // test .137
+        new PIDConstants(1.00, 0, 0), 
+        // .13
         new PIDConstants(0, 0, 0)
         ); 
     }
