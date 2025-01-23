@@ -108,10 +108,10 @@ public final class Constants {
     // Module for Autonomous Mode. 
     public static final class AutoConstants {
         public static final PPHolonomicDriveController ppConfig = new PPHolonomicDriveController(
-            // test .137
-        new PIDConstants(1.00, 0, 0), 
-        // .13
-        new PIDConstants(0, 0, 0)
+        // test .137 
+        new PIDConstants(.1427,.01073,0), 
+        // .137
+        new PIDConstants( .7, 0, 0)
         ); 
     }
 
