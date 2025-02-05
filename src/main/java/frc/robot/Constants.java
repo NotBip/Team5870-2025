@@ -24,7 +24,7 @@ public final class Constants {
         public static final double kDTurning = 0.0; 
         public static final double slowModeMultiplier = 0.5;           
     }
-
+        
     // Module for Intake Constants
     public static final class IntakeConstants { 
         public static double intakeSpeed = 0.5; 
