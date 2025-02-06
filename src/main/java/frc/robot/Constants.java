@@ -109,9 +109,9 @@ public final class Constants {
     public static final class AutoConstants {
         public static final PPHolonomicDriveController ppConfig = new PPHolonomicDriveController(
         // test .137 
-        new PIDConstants(.1427,.01073,0), 
+        new PIDConstants(.0197,0,.0095), 
         // .137
-        new PIDConstants( .7, 0, 0)
+        new PIDConstants( 1.5, 0, 0)
         ); 
     }
 

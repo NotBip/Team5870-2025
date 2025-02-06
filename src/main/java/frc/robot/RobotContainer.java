@@ -13,6 +13,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -40,8 +42,22 @@ public class RobotContainer {
     // Game Controllers
     public JoystickButton drBtnA, drBtnB, drBtnX, drBtnY, drBtnLB, drBtnRB, drBtnStrt, drBtnSelect;
 
+    private SendableChooser<Command> sendableChooser = new SendableChooser<Command>(); 
+
     public RobotContainer() {
+
+
+
+
         configureNamedCommands();
+
+        sendableChooser.setDefaultOption("NOTHING", null);
+        sendableChooser.addOption("drive Straight", AutoBuilder.buildAuto("Straight"));
+        sendableChooser.addOption("drive straight 180", AutoBuilder.buildAuto("180"));
+        sendableChooser.addOption("diagonalstuff", AutoBuilder.buildAuto("complexauto"));
+        SmartDashboard.putData(sendableChooser);
+
+
         swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
             swerveSubsystem, 
             () -> driverJoystick.getRawAxis(OIConstants.kDriverYAxis), 
@@ -79,11 +95,12 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
 
+
         try { 
-            PathPlannerPath path = PathPlannerPath.fromPathFile("Straight");
+            PathPlannerPath newPath = PathPlannerPath.fromPathFile("path 1");
             return new SequentialCommandGroup(
                 new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
-                AutoBuilder.followPath(path)
+                sendableChooser.getSelected()
             );
             
         } catch (Exception e)  {
