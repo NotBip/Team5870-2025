@@ -105,6 +105,14 @@ public final class Constants {
     }
 
 
+    public static final double transP = 0; 
+    public static final double transI = 0; 
+    public static final double transD = 0; 
+    public static final double rotP = 0; 
+    public static final double rotI = 0; 
+    public static final double rotD = 0; 
+
+    
     // Module for Autonomous Mode. 
     public static final class AutoConstants {
         public static final PPHolonomicDriveController ppConfig = new PPHolonomicDriveController(

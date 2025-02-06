@@ -1,22 +1,13 @@
 package frc.robot.Subsystems;
 
-
-import java.sql.Driver;
-import java.sql.Struct;
-
 import org.littletonrobotics.junction.Logger;
-
+import org.photonvision.PhotonCamera;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.RobotConfig;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
-
-import static edu.wpi.first.units.Units.Volts;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -24,12 +15,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -41,8 +29,13 @@ public class SwerveSubsystem extends SubsystemBase {
     public SwerveModule[] SwerveMods;
     private SwerveDriveOdometry odometer; 
     private SwerveDrivePoseEstimator poseEstimator; 
+    // ARDUCAM INIT
+    private PhotonCamera photonCamera; 
 
     public SwerveSubsystem(){
+
+        photonCamera = new PhotonCamera("CAMERA NAME GOES HERE LOL");
+
         new Thread(() -> {
             try{
                 Thread.sleep(1000);
@@ -160,38 +153,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
         getAbsoluteEncoder();
         getTurningEnc();
-
-        // SmartDashboard.putData("Set PID", new InstantCommand(() -> reconfigureAuto())); 
     }
 
-    // private void reconfigureAuto() { 
-        
-    //     double driveP = SmartDashboard.getNumber("Drive P: ", 0.0); 
-    //     double driveI = SmartDashboard.getNumber("Drive I: ", 0.0); 
-    //     double driveD = SmartDashboard.getNumber("Drive D: ", 0.0); 
-
-    //     double angleP = SmartDashboard.getNumber("Turning P: ", 0.0); 
-    //     double angleI = SmartDashboard.getNumber("Turning I: ", 0.0); 
-    //     double angleD = SmartDashboard.getNumber("Turning D: ", 0.0); 
-
-    //     AutoBuilder.configureHolonomic(
-    //         this::getPose, 
-    //         this::resetOdometry, 
-    //         this::getSpeeds, 
-    //         this::driveRobotRelative, 
-    //      new HolonomicPathFollowerConfig(
-    //         new PIDConstants(driveP, driveI, driveD),
-    //         new PIDConstants(angleP, angleI, angleD),
-    //         5, 
-    //         0.682498, // Drive base radius (distance from center to furthest module) 
-    //         new ReplanningConfig()), 
-    //                    () -> { 
-    //             var alliance = DriverStation.getAlliance(); 
-    //             if(alliance.get() == DriverStation.Alliance.Red)
-    //                 return true; 
-    //             else
-    //                 return false;
-    //         }, this);    }
 
     public SwerveModulePosition[] getModulePositions(){
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
@@ -257,15 +220,48 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) { 
-        // ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
-
-        // SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
-        // setModuleStates(targetStates);
         ChassisSpeeds newSpeeds = new ChassisSpeeds(-robotRelativeSpeeds.vxMetersPerSecond,- robotRelativeSpeeds.vyMetersPerSecond, -robotRelativeSpeeds.omegaRadiansPerSecond);
         SwerveModuleState[] states = DriveConstants.kDriveKinematics.toSwerveModuleStates(newSpeeds); 
         setModuleStates(states);
     }
 
+
+    // ARDUCAM STUFF
+    public double getAprilTagX(int ID) {
+        if (photonCamera.getLatestResult().hasTargets()) {  
+            var results = photonCamera.getLatestResult().getTargets();
+            for (int i = 0; i < results.size(); i++) {
+                if (results.get(i).getFiducialId() == ID) {
+                return results.get(i).getYaw();
+                }
+            }
+        } else {
+            return 0;
+        }
+        return 0;
+    }
+
+
+    public boolean hasAprilTagTarget() {
+        if (photonCamera.getLatestResult().hasTargets()) { 
+            return true;
+        }
+        return false;
+    }
+
+    public double getAprilTagY(int ID) {
+        if (photonCamera.getLatestResult().hasTargets()) { 
+            var results = photonCamera.getLatestResult().getTargets();
+            for (int i = 0; i < results.size(); i++) {
+                if (results.get(i).getFiducialId() == ID) {
+                return results.get(i).getPitch();
+                }
+            }
+        } else {
+            return 0;
+        }
+        return 0;
+    }
 
 
 } // end Class

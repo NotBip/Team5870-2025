@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Subsystems.SwerveSubsystem;
+import frc.robot.commands.Swerve.AprilTagTracking;
 import frc.robot.commands.Swerve.ResetOdom;
 import frc.robot.commands.Swerve.SwerveJoystickCmd;
 import frc.robot.commands.Swerve.ZeroGyro;
@@ -37,7 +38,8 @@ public class RobotContainer {
     // Initialzing Controllers
     private final Joystick driverJoystick = new Joystick(OIConstants.kDriverControllerPort);
     private final XboxController driverController = new XboxController(OIConstants.kDriverControllerPort); 
-
+    
+    private final AprilTagTracking aprilTagTracking = new AprilTagTracking(swerveSubsystem); 
 
     // Game Controllers
     public JoystickButton drBtnA, drBtnB, drBtnX, drBtnY, drBtnLB, drBtnRB, drBtnStrt, drBtnSelect;
@@ -55,6 +57,7 @@ public class RobotContainer {
         sendableChooser.addOption("drive Straight", AutoBuilder.buildAuto("Straight"));
         sendableChooser.addOption("drive straight 180", AutoBuilder.buildAuto("180"));
         sendableChooser.addOption("diagonalstuff", AutoBuilder.buildAuto("complexauto"));
+        sendableChooser.addOption("April Tag Tracking", aprilTagTracking);
         SmartDashboard.putData(sendableChooser);
 
 
