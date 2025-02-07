@@ -86,7 +86,8 @@ public class RobotContainer {
 
     private void configureBindings() {
         drBtnStrt.onTrue(zeroGyro);
-        drBtnA.onTrue(resetOdom);
+        // drBtnA.onTrue(resetOdom);
+        drBtnA.whileTrue(aprilTagTracking); 
     }
 
     
@@ -98,18 +99,24 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
 
+        return null; 
 
-        try { 
-            PathPlannerPath newPath = PathPlannerPath.fromPathFile("path 1");
-            return new SequentialCommandGroup(
-                new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
-                sendableChooser.getSelected()
-            );
+        // return new SequentialCommandGroup(
+        // new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
+        // aprilTagTracking
+        // );  
+        // return null;
+        // try { 
+        //     PathPlannerPath newPath = PathPlannerPath.fromPathFile("path 1");
+        //     return new SequentialCommandGroup(
+        //         new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
+        //         sendableChooser.getSelected()
+        //     );
             
-        } catch (Exception e)  {
-            System.out.println("Failed to get Path.");
-            return null; 
-        }
+        // } catch (Exception e)  {
+        //     System.out.println("Failed to get Path.");
+        //     return null; 
+        // }
 
     }
 

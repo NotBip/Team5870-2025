@@ -34,7 +34,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public SwerveSubsystem(){
 
-        photonCamera = new PhotonCamera("CAMERA NAME GOES HERE LOL");
+        photonCamera = new PhotonCamera("photoncam");
 
         new Thread(() -> {
             try{
@@ -232,7 +232,7 @@ public class SwerveSubsystem extends SubsystemBase {
             var results = photonCamera.getLatestResult().getTargets();
             for (int i = 0; i < results.size(); i++) {
                 if (results.get(i).getFiducialId() == ID) {
-                return results.get(i).getYaw();
+                return results.get(i).getArea();
                 }
             }
         } else {
@@ -254,7 +254,7 @@ public class SwerveSubsystem extends SubsystemBase {
             var results = photonCamera.getLatestResult().getTargets();
             for (int i = 0; i < results.size(); i++) {
                 if (results.get(i).getFiducialId() == ID) {
-                return results.get(i).getPitch();
+                return results.get(i).getYaw();
                 }
             }
         } else {
