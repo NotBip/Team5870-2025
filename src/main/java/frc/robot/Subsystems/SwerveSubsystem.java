@@ -19,6 +19,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -145,7 +146,10 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public Pose2d getPose() { 
+
         return odometer.getPoseMeters(); 
+
+        //return new Pose2d(new Translation2d(-odometer.getPoseMeters().getX(), -odometer.getPoseMeters().getY()), odometer.getPoseMeters().getRotation());
     }
 
     public void resetOdometry(Pose2d pose) { 

@@ -19,8 +19,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Subsystems.PhotonVision;
 import frc.robot.Subsystems.SwerveSubsystem;
+import frc.robot.commands.AprilTagTracking;
 import frc.robot.commands.Swerve.ResetOdom;
 import frc.robot.commands.Swerve.SwerveJoystickCmd;
 import frc.robot.commands.Swerve.ZeroGyro;
@@ -38,6 +41,8 @@ public class RobotContainer {
     private final Joystick driverJoystick = new Joystick(OIConstants.kDriverControllerPort);
     private final XboxController driverController = new XboxController(OIConstants.kDriverControllerPort); 
 
+    private final PhotonVision photonVision = new PhotonVision();
+    private final AprilTagTracking aprilTagDetection = new AprilTagTracking(photonVision, getAutonomousCommand());
 
     // Game Controllers
     public JoystickButton drBtnA, drBtnB, drBtnX, drBtnY, drBtnLB, drBtnRB, drBtnStrt, drBtnSelect;
@@ -55,6 +60,18 @@ public class RobotContainer {
         sendableChooser.addOption("drive Straight", AutoBuilder.buildAuto("Straight"));
         sendableChooser.addOption("drive straight 180", AutoBuilder.buildAuto("180"));
         sendableChooser.addOption("diagonalstuff", AutoBuilder.buildAuto("complexauto"));
+        sendableChooser.addOption("PhotonVision 1", aprilTagDetection);
+
+        // Trigger aprilTagDetected = new Trigger(photonVision::seeingAprilTag);
+        // aprilTagDetected.onTrue(AutoBuilder.buildAuto("complexauto"));
+        
+        Trigger id21Detected = new Trigger(photonVision::seeingID21);
+        id21Detected.onTrue(AutoBuilder.buildAuto("complexfirst"));
+
+        
+        Trigger id22Detected = new Trigger(photonVision::seeingID22);
+        id22Detected.onTrue(AutoBuilder.buildAuto("complexfirst"));
+
         SmartDashboard.putData(sendableChooser);
 
 
@@ -97,7 +114,7 @@ public class RobotContainer {
 
 
         try { 
-            PathPlannerPath newPath = PathPlannerPath.fromPathFile("path 1");
+            PathPlannerPath newPath = PathPlannerPath.fromPathFile("complex1");
             return new SequentialCommandGroup(
                 new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
                 sendableChooser.getSelected()
