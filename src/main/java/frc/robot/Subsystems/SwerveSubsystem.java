@@ -2,6 +2,8 @@ package frc.robot.Subsystems;
 
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.RobotConfig;
@@ -31,6 +33,7 @@ public class SwerveSubsystem extends SubsystemBase {
     private SwerveDrivePoseEstimator poseEstimator; 
     // ARDUCAM INIT
     private PhotonCamera photonCamera; 
+    private PhotonPipelineResult latestResults; 
 
     public SwerveSubsystem(){
 
@@ -90,7 +93,6 @@ public class SwerveSubsystem extends SubsystemBase {
         poseEstimator = new SwerveDrivePoseEstimator(Constants.DriveConstants.kDriveKinematics, getRotation2d(), getModulePositions(), getPose());
 
         RobotConfig config;
-
         try{
           config = RobotConfig.fromGUISettings();
         } catch (Exception e) {
@@ -147,6 +149,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        latestResults=photonCamera.getLatestResult(); 
         odometer.update(getRotation2d(), getModulePositions());
         Logger.recordOutput("Pose", getPose());
         Logger.recordOutput("Mod Positions", getModulePositions());
@@ -228,8 +232,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     // ARDUCAM STUFF
     public double getAprilTagX(int ID) {
-        if (photonCamera.getLatestResult().hasTargets()) {  
-            var results = photonCamera.getLatestResult().getTargets();
+        if (latestResults.hasTargets()) {  
+            var results = latestResults.getTargets();
             for (int i = 0; i < results.size(); i++) {
                 if (results.get(i).getFiducialId() == ID) {
                 return results.get(i).getArea();
@@ -243,15 +247,15 @@ public class SwerveSubsystem extends SubsystemBase {
 
 
     public boolean hasAprilTagTarget() {
-        if (photonCamera.getLatestResult().hasTargets()) { 
+        if (latestResults.hasTargets()) { 
             return true;
         }
         return false;
     }
 
     public double getAprilTagY(int ID) {
-        if (photonCamera.getLatestResult().hasTargets()) { 
-            var results = photonCamera.getLatestResult().getTargets();
+        if (latestResults.hasTargets()) { 
+            var results = latestResults.getTargets();
             for (int i = 0; i < results.size(); i++) {
                 if (results.get(i).getFiducialId() == ID) {
                 return results.get(i).getYaw();

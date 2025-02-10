@@ -26,28 +26,35 @@ public class AprilTagTracking extends Command {
 
     @Override
     public void execute() {
-        if(swerveSubsystem.hasAprilTagTarget()) {
-            SmartDashboard.putNumber("APRILTAGX", swerveSubsystem.getAprilTagX(22)); 
-            double xSpeed = translationController.calculate(swerveSubsystem.getAprilTagY(22), 1);
-            SlewRateLimiter limiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
-
-            // xSpeed = limiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
-
-            // if(xSpeed > 1 && xSpeed != 0) { 
-            //     xSpeed = 1; 
-            // } else if(xSpeed < 1 && xSpeed !=0) { 
-            //     xSpeed = -1; 
-            // }
-
-
-            ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, 0, 0, swerveSubsystem.getRotation2d()); 
+        try { 
+            if(swerveSubsystem.hasAprilTagTarget()) {
+                SmartDashboard.putNumber("APRILTAGX", swerveSubsystem.getAprilTagX(22)); 
+                double xSpeed = translationController.calculate(swerveSubsystem.getAprilTagY(22), 1);
+                SlewRateLimiter limiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
+                SmartDashboard.putNumber("x speed", xSpeed);
+                // xSpeed = limiter.calculate(xSpeed); 
     
-            SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-            swerveSubsystem.setModuleStates(moduleStates);   
-
-        } else { 
-            swerveSubsystem.stopModules();
+                // xSpeed = limiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+    
+                // if(xSpeed > 1 && xSpeed != 0) { 
+                //     xSpeed = 1; 
+                // } else if(xSpeed < 1 && xSpeed !=0) { 
+                //     xSpeed = -1; 
+                // }
+    
+    
+                ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, 0, 0, swerveSubsystem.getRotation2d()); 
+        
+                SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+                swerveSubsystem.setModuleStates(moduleStates);   
+    
+            } else { 
+                swerveSubsystem.stopModules();
+            }
+        } catch (Exception e) { 
+            e.printStackTrace();
         }
+        
     }
     
 }
