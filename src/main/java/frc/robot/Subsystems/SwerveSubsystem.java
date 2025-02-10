@@ -236,7 +236,7 @@ public class SwerveSubsystem extends SubsystemBase {
             var results = latestResults.getTargets();
             for (int i = 0; i < results.size(); i++) {
                 if (results.get(i).getFiducialId() == ID) {
-                return results.get(i).getArea();
+                return results.get(i).getBestCameraToTarget().getX();
                 }
             }
         } else {
@@ -258,7 +258,7 @@ public class SwerveSubsystem extends SubsystemBase {
             var results = latestResults.getTargets();
             for (int i = 0; i < results.size(); i++) {
                 if (results.get(i).getFiducialId() == ID) {
-                return results.get(i).getYaw();
+                return results.get(i).getBestCameraToTarget().getY();
                 }
             }
         } else {

@@ -28,10 +28,36 @@ public class AprilTagTracking extends Command {
     public void execute() {
         try { 
             if(swerveSubsystem.hasAprilTagTarget()) {
-                SmartDashboard.putNumber("APRILTAGX", swerveSubsystem.getAprilTagX(22)); 
-                double xSpeed = translationController.calculate(swerveSubsystem.getAprilTagY(22), 1);
-                SlewRateLimiter limiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
-                SmartDashboard.putNumber("x speed", xSpeed);
+                // SmartDashboard.putNumber("APRILTAGX", swerveSubsystem.getAprilTagX(22)); 
+                double xDist = swerveSubsystem.getAprilTagX(22); 
+                double yDist = swerveSubsystem.getAprilTagY(22);
+                double xNormalized = 0; 
+                double yNormalized = 0; 
+                // System.out.println(xDist);
+
+                // 3 Max Dist
+                // 0.3 is min Dist
+                // if(xDist > 1.05 && xDist < 3) { 
+                //     xNormalized = xDist - 1 * (3/2); 
+                // } else if (xDist < .95) { 
+                //     xNormalized = 3.0 * (xDist - (0.3 / (1.0 -0.3))); 
+                // }
+                xNormalized = -xDist;  
+                // SmartDashboard.putNumber("XDISTAFTER", xDist);
+
+                // 0.6 is Minimum and Max horizontal Dist
+                // 3 is Max Speed
+                yNormalized = (yDist); 
+
+
+                double xSpeed = translationController.calculate(xDist, 1);
+                double ySpeed = translationController.calculate(yDist, 0); 
+
+                
+
+                // double ySpeed = translationController.calculate(swerveSubsystem.getAprilTagY(22), 0);
+                // SlewRateLimiter limiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
+                // SmartDashboard.putNumber("x speed", xSpeed);
                 // xSpeed = limiter.calculate(xSpeed); 
     
                 // xSpeed = limiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
@@ -43,7 +69,7 @@ public class AprilTagTracking extends Command {
                 // }
     
     
-                ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, 0, 0, swerveSubsystem.getRotation2d()); 
+                ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, -xSpeed, 0, swerveSubsystem.getRotation2d()); 
         
                 SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
                 swerveSubsystem.setModuleStates(moduleStates);   

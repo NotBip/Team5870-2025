@@ -105,8 +105,8 @@ public final class Constants {
     }
 
 
-    public static final double transP = .3; 
-    public static final double transI = 0.0; 
+    public static final double transP = 2; 
+    public static final double transI = 0.1; 
     public static final double transD = 0; 
     public static final double rotP = 0; 
     public static final double rotI = 0; 
