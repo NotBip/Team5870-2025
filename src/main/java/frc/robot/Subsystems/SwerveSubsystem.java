@@ -3,6 +3,7 @@ package frc.robot.Subsystems;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -265,6 +266,20 @@ public class SwerveSubsystem extends SubsystemBase {
             return 0;
         }
         return 0;
+    }
+
+    public double getAprilTagTheta(int ID) { 
+        if(latestResults.hasTargets()) { 
+            var results = latestResults.getTargets(); 
+            for(int i = 0; i < results.size(); i++) { 
+                if(results.get(i).getFiducialId() == ID) { 
+                    return results.get(i).getBestCameraToTarget().getRotation().getZ();
+                }
+            }
+        } else { 
+            return 0; 
+        }
+        return 0; 
     }
 
 

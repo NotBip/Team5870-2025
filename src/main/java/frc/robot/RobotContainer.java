@@ -39,7 +39,7 @@ public class RobotContainer {
     private final Joystick driverJoystick = new Joystick(OIConstants.kDriverControllerPort);
     private final XboxController driverController = new XboxController(OIConstants.kDriverControllerPort); 
     
-    private final AprilTagTracking aprilTagTracking = new AprilTagTracking(swerveSubsystem); 
+    private final AprilTagTracking aprilTagTracking = new AprilTagTracking(swerveSubsystem, 22); 
 
     // Game Controllers
     public JoystickButton drBtnA, drBtnB, drBtnX, drBtnY, drBtnLB, drBtnRB, drBtnStrt, drBtnSelect;
