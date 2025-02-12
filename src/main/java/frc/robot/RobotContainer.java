@@ -4,77 +4,79 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.OIConstants;
-import frc.robot.Subsystems.SwerveSubsystem;
-import frc.robot.commands.Swerve.SwerveJoystickCmd;
-import frc.robot.commands.Swerve.ZeroGyro;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+
+import frc.robot.Subsystems.Intake;
+import frc.robot.Commands.Intake.RotateIntakeBackward;
+import frc.robot.Commands.Intake.RotateIntakeForward;
+import frc.robot.Commands.Intake.RotateWheels;
+import frc.robot.Commands.Intake.RotateWheelsReverse;
+import frc.robot.Commands.Intake.Stop;
+
+import frc.robot.Subsystems.Delivery;
+import frc.robot.Commands.Delivery.RotatingArm;
+
+import frc.robot.Subsystems.Pneumatics;
+import frc.robot.Commands.Pneumatics.RotatingArmGrab;
+import frc.robot.Commands.Pneumatics.RotatingArmRelease;
 
 public class RobotContainer {
 
-    // Initializing subsystems
-    public SwerveSubsystem swerveSubsystem = new SwerveSubsystem(); 
+  private CommandXboxController xboxController = new CommandXboxController(0);
+  
+  private Intake intake = new Intake();
+  private Delivery delivery = new Delivery();
+  private Pneumatics pneumatics = new Pneumatics();
 
-    // Initializing Swerve Commands
-    private final ZeroGyro zeroGyro = new ZeroGyro(swerveSubsystem);
+  private RotateIntakeBackward RotateIntakeBackward = new RotateIntakeBackward(intake);
+  private RotateIntakeForward RotateIntakeForward = new RotateIntakeForward(intake);
+  private RotateWheels RotateWheels = new RotateWheels(intake);
+  private RotateWheelsReverse RotateWheelsReverse = new RotateWheelsReverse(intake);
+  private Stop Stop = new Stop(intake);
 
-    // Initialzing Controllers
-    private final Joystick driverJoystick = new Joystick(OIConstants.kDriverControllerPort);
-    private final XboxController driverController = new XboxController(OIConstants.kDriverControllerPort); 
+  private RotatingArm RotatingArm = new RotatingArm(delivery);
+
+  private RotatingArmRelease RotatingArmRelease = new RotatingArmRelease(pneumatics);
+  private RotatingArmGrab RotatingArmGrab = new RotatingArmGrab(pneumatics);
+
+  public RobotContainer() {
+
+    intake.setDefaultCommand(Stop);
+
+    configureBindings();
+  }
+
+  private void configureBindings() {
+
+   //xboxController.a().onTrue(RotateIntakeForward);
+    xboxController.a().whileTrue(RotateIntakeForward);
+
+   //xboxController.b().onTrue(RotateWheels);
+    xboxController.b().whileTrue(RotateWheels);
+
+    //xboxController.x().onTrue(RotateIntakeBackward);
+    xboxController.x().whileTrue(RotateIntakeBackward);
 
 
-    // Game Controllers
-    public JoystickButton drBtnA, drBtnB, drBtnX, drBtnY, drBtnLB, drBtnRB, drBtnStrt, drBtnSelect;
-
-    public RobotContainer() {
-        configureNamedCommands();
-        swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
-            swerveSubsystem, 
-            () -> driverJoystick.getRawAxis(OIConstants.kDriverYAxis), 
-            () -> driverJoystick.getRawAxis(OIConstants.kDriverXAxis), 
-            () -> -driverJoystick.getRawAxis(OIConstants.kDriverRotAxis), 
-            () -> !driverJoystick.getRawButton(6), 
-            () -> driverController.getRightTriggerAxis() > 0.5 ? true : false));
+    //xboxController.y().onTrue(RotateWheelsReverse);
+    xboxController.y().whileTrue(RotateWheelsReverse);
 
 
-        // Xbox Driver Controller Buttons
-        drBtnA = new JoystickButton(driverJoystick, OIConstants.KXboxButtonA);
-        drBtnB = new JoystickButton(driverJoystick, OIConstants.KXboxButtonB);
-        drBtnX = new JoystickButton(driverJoystick, OIConstants.KXboxButtonX);
-        drBtnY = new JoystickButton(driverJoystick, OIConstants.KXboxButtonY);
-        drBtnLB = new JoystickButton(driverJoystick, OIConstants.KXboxLeftBumper);
-        drBtnRB = new JoystickButton(driverJoystick, OIConstants.KXboxRightBumper);
-        drBtnSelect = new JoystickButton(driverJoystick, OIConstants.KXboxSelectButton);
-        drBtnStrt = new JoystickButton(driverJoystick, OIConstants.KXboxStartButton);
 
-                
-        configureBindings(); 
-    }
+    // xboxController.a().onTrue(RotatingArmRelease);
+    // xboxController.a().whileTrue(RotatingArmRelease);
 
-    private void configureBindings() {
-        drBtnStrt.onTrue(zeroGyro);
-    }
+    // xboxController.b().onTrue(RotatingArmGrab);
+    // xboxController.b().whileTrue(RotatingArmGrab);
 
-    public void configureNamedCommands() { 
-        NamedCommands.registerCommand("ZeroGyro", zeroGyro);
-    }
+    // xboxController.x().onTrue(RotatingArm);
+    // xboxController.x().whileTrue(RotatingArm);
+  }
 
-    public Command getAutonomousCommand() {
-        return new SequentialCommandGroup(
-            new InstantCommand(() -> swerveSubsystem.resetOdometry(PathPlannerAuto.getStaringPoseFromAutoFile("Straight"))),
-            new InstantCommand(() -> swerveSubsystem.zeroHeading()), 
-            new PathPlannerAuto("Straight"));
-    }
-
-    public Command selfTestCommand() { 
-        return new SwerveJoystickCmd(swerveSubsystem, () -> 0.0, () -> 0.0, () -> 2.0, () -> false, () -> false);
-    }
+  public Command getAutonomousCommand() {
+  
+    return Commands.print("No autonomous command configured");
+  }
 }
