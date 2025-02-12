@@ -7,6 +7,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constant;
 import frc.robot.Constant.*;
@@ -34,6 +35,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void moveMotorUp(){
+        System.out.println("Elevator moving");
         leaderMotor.set(0.5);
     }
 
@@ -42,6 +44,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void stopMotor(){
+        // SmartDashboard.putBoolean("MOVING", false);
         leaderMotor.set(0);
     }
 
