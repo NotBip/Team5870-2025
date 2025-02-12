@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Subsystem.Climber;
+import frc.robot.Commands.Climber.ClimberDown;
+import frc.robot.Commands.Climber.ClimberStop;
 import frc.robot.Commands.Climber.MoveUp;
 
 
@@ -17,22 +19,24 @@ public class RobotContainer {
 
   // Subsystems. 
   private Climber climber = new Climber(); 
-  // private Intake intake = new Intake();
-
+  
   // Climber commands
   private MoveUp moveUp = new MoveUp(climber); 
+  private ClimberStop climberStop = new ClimberStop(climber); 
+  private ClimberDown climberDown = new ClimberDown(climber);
 
 
 
   public RobotContainer() {
 
-    // climber.setDefaultCommand(climberStop);
+    climber.setDefaultCommand(climberStop);
 
     configureBindings();
   }
 
   private void configureBindings() {
-    xboxController.a().whileTrue(moveUp);    
+    xboxController.y().whileTrue(moveUp);   
+    xboxController.a().whileTrue(climberDown); 
   }
 
   public Command getAutonomousCommand() {
