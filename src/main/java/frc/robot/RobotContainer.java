@@ -35,7 +35,7 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    xboxController.a().whileTrue(moveMotorUp);
+    xboxController.y().whileTrue(moveMotorUp);
     xboxController.b().whileTrue(moveMotorDown);
   }
 

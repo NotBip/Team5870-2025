@@ -35,16 +35,17 @@ public class Elevator extends SubsystemBase {
     }
 
     public void moveMotorUp(){
-        System.out.println("Elevator moving");
+        SmartDashboard.putNumber("Elevator", .5);
         leaderMotor.set(0.5);
     }
 
     public void moveMotorDown(){
+        SmartDashboard.putNumber("Elevator", -.5);
         leaderMotor.set(-0.5);
     }
 
     public void stopMotor(){
-        // SmartDashboard.putBoolean("MOVING", false);
+        SmartDashboard.putNumber("Elevator", .0);
         leaderMotor.set(0);
     }
 
