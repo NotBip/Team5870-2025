@@ -1,0 +1,59 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.2095867048876965,
+        "y": 6.05
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.250408215102145,
+        "y": 6.445805363039297
+      },
+      "isLocked": false,
+      "linkedName": "AmpToMiddle5End"
+    },
+    {
+      "anchor": {
+        "x": 7.463986356544141,
+        "y": 5.248085924743279
+      },
+      "prevControl": {
+        "x": 6.962659310132006,
+        "y": 6.136633966961628
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.2,
+      "rotationDegrees": -39.32670404037049
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.1,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 3.0,
+    "rotation": -52.12501634890175
+  },
+  "reversed": false,
+  "folder": "AmpSideStraightToMiddle",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}
