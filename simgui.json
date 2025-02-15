@@ -10,7 +10,9 @@
     "types": {
       "/AdvantageKit/RealOutputs/Alerts": "Alerts",
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Alerts": "Alerts"
+      "/SmartDashboard/Alerts": "Alerts",
+      "/SmartDashboard/field": "Field2d",
+      "/SmartDashboard/simulation field": "Field2d"
     }
   },
   "NetworkTables Info": {
