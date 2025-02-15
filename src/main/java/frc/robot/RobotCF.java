@@ -21,13 +21,13 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
-public class Robot extends TimedRobot {
+public class RobotCF extends TimedRobot {
   private SparkMax motor;
   private SparkMaxConfig motorConfig;
   private SparkClosedLoopController closedLoopController;
   private RelativeEncoder encoder;
 
-  public Robot() {
+  public RobotCF() {
     /*
      * Initialize the SPARK MAX and get its encoder and closed loop controller
      * objects for later use.
