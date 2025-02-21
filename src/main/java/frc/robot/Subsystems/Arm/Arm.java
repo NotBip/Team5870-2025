@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Swerve.Arm;
+package frc.robot.Subsystems.Arm;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;

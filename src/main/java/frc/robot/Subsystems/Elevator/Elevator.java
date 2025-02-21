@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Swerve.Elevator;
+package frc.robot.Subsystems.Elevator;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;

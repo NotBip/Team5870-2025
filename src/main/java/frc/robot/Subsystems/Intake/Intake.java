@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Swerve.Intake;
+package frc.robot.Subsystems.Intake;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ResetMode;
