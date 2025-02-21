@@ -3,6 +3,7 @@ package frc.robot.Subsystems.Elevator;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -10,6 +11,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -47,6 +49,34 @@ public class Elevator extends SubsystemBase {
         leaderMotor.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
         followerMotor.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
     }
+
+    public void elevatorUp(double speed) { 
+        leaderMotor.set(Math.abs(speed)); 
+    }
+
+    public void elevatorDown(double speed) { 
+        leaderMotor.set(-(Math.abs(speed)));
+    }
+
+    public void stopElevator() { 
+        leaderMotor.set(0);
+    }
+
+    public void setPoint(double position) { 
+        elevatorController.setReference(position, ControlType.kPosition); 
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Elevator Encoder", elevatorEncoder.getPosition()); 
+    }
+
+    public void setElevatorPID(double P, double I, double D) { 
+        leaderConfig.closedLoop
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            .pid(P, I, D); 
+    }
+
 
     
 

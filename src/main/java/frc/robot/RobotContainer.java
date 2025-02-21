@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Subsystems.Arm.Arm;
+import frc.robot.Subsystems.Elevator.Elevator;
+import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Swerve.SwerveSubsystem;
 import frc.robot.commands.Swerve.SwerveJoystickCmd;
 import frc.robot.commands.Swerve.ZeroGyro;
@@ -21,10 +24,15 @@ import frc.robot.commands.Swerve.ZeroGyro;
 public class RobotContainer {
 
     // Initializing subsystems
-    public SwerveSubsystem swerveSubsystem = new SwerveSubsystem(); 
+    private SwerveSubsystem swerveSubsystem = new SwerveSubsystem(); 
+    private Elevator elevator = new Elevator(); 
+    private Intake intake = new Intake(); 
+    private Arm arm = new Arm(); 
 
     // Initializing Swerve Commands
     private final ZeroGyro zeroGyro = new ZeroGyro(swerveSubsystem);
+
+
 
     // Initialzing Controllers
     private final Joystick driverJoystick = new Joystick(OIConstants.kDriverControllerPort);
@@ -77,6 +85,18 @@ public class RobotContainer {
         drBtnStrt.onTrue(zeroGyro);
     }
 
+    public void updateArmPID(double P, double I, double D) { 
+        arm.setArmPID(P, I, D);
+    }
+
+    public void updateElevatorPID(double P, double I, double D) { 
+        elevator.setElevatorPID(P, I, D);
+    }
+
+    public void updateIntakePID(double P, double I, double D) { 
+        intake.setAnglePID(P, I, D);
+    }
+
     
 
     public void configureNamedCommands() { 
@@ -84,8 +104,9 @@ public class RobotContainer {
         // NamedCommands.registerCommand("", resetOdom);
     }
 
-    public Command getAutonomousCommand() {
 
+
+    public Command getAutonomousCommand() {
         return sendableChooser.getSelected();
 
     }
