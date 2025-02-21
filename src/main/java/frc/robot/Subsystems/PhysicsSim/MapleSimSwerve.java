@@ -14,14 +14,12 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.Constants;
 import frc.robot.Telemetry;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.*;
 import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
 import org.ironmaple.simulation.drivesims.configs.SwerveModuleSimulationConfig;
 import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnField;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnField;
 import org.littletonrobotics.junction.Logger;
 
 public class MapleSimSwerve implements SwerveDrive {
@@ -49,10 +47,6 @@ public class MapleSimSwerve implements SwerveDrive {
 
         // register the drivetrain simulation to the simulation world
         SimulatedArena.getInstance().addDriveTrainSimulation(simulatedDrive.getDriveTrainSimulation());
-        SimulatedArena.getInstance().addGamePiece(new ReefscapeCoralOnField(
-    // We must specify a heading since the coral is a tube
-    new Pose2d(2, 2, Rotation2d.fromDegrees(90))));
-
 SimulatedArena.getInstance().addGamePiece(new ReefscapeAlgaeOnField(new Translation2d(2,2)));
     }
 
