@@ -30,10 +30,10 @@ public class AprilTagTracking extends Command {
     @Override
     public void execute() {
         try { 
-            if(swerveSubsystem.hasAprilTagTarget()) {
+            if(swerveSubsystem.hasPhotonAprilTagTarget()) {
 
-                double xDist = swerveSubsystem.getAprilTagX(trackerID); 
-                double yDist = swerveSubsystem.getAprilTagY(trackerID);
+                double xDist = swerveSubsystem.getPhotonAprilTagX(trackerID); 
+                double yDist = swerveSubsystem.getPhotonAprilTagY(trackerID);
 
                 double xSpeed = translationController.calculate(xDist, 1);
                 double ySpeed = translationController.calculate(yDist, 0); 

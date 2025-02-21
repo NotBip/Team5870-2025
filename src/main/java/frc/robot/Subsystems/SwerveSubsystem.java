@@ -13,17 +13,23 @@ import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -33,12 +39,16 @@ public class SwerveSubsystem extends SubsystemBase {
     private SwerveDriveOdometry odometer; 
     private SwerveDrivePoseEstimator poseEstimator; 
     // ARDUCAM INIT
-    private PhotonCamera photonCamera; 
-    private PhotonPipelineResult latestResults; 
+    private PhotonCamera photonCamera;
+    private NetworkTable limelightCamera;
+    
+    private PhotonPipelineResult photonResults; 
+    private LimelightResults limelightResults;
 
     public SwerveSubsystem(){
 
         photonCamera = new PhotonCamera("photoncam");
+        limelightCamera = NetworkTableInstance.getDefault().getTable("limelight");
 
         new Thread(() -> {
             try{
@@ -151,13 +161,19 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        latestResults=photonCamera.getLatestResult(); 
+        photonResults=photonCamera.getLatestResult(); 
+        limelightResults = LimelightHelpers.getLatestResults("");
+
         odometer.update(getRotation2d(), getModulePositions());
         Logger.recordOutput("Pose", getPose());
         Logger.recordOutput("Mod Positions", getModulePositions());
 
         getAbsoluteEncoder();
         getTurningEnc();
+
+        SmartDashboard.putNumber("Limelight X:", getLimelightAprilTagX(12));
+        SmartDashboard.putNumber("Limelight Y:", getLimelightAprilTagY(12));
+        SmartDashboard.putNumber("Limelight T:", getLimelightAprilTagTheta(12));
     }
 
 
@@ -232,9 +248,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
 
     // ARDUCAM STUFF
-    public double getAprilTagX(int ID) {
-        if (latestResults.hasTargets()) {  
-            var results = latestResults.getTargets();
+    public double getPhotonAprilTagX(int ID) {
+        if (photonResults.hasTargets()) {  
+            var results = photonResults.getTargets();
             for (int i = 0; i < results.size(); i++) {
                 if (results.get(i).getFiducialId() == ID) {
                 return results.get(i).getBestCameraToTarget().getX();
@@ -247,16 +263,16 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
 
-    public boolean hasAprilTagTarget() {
-        if (latestResults.hasTargets()) { 
+    public boolean hasPhotonAprilTagTarget() {
+        if (photonResults.hasTargets()) { 
             return true;
         }
         return false;
     }
 
-    public double getAprilTagY(int ID) {
-        if (latestResults.hasTargets()) { 
-            var results = latestResults.getTargets();
+    public double getPhotonAprilTagY(int ID) {
+        if (photonResults.hasTargets()) { 
+            var results = photonResults.getTargets();
             for (int i = 0; i < results.size(); i++) {
                 if (results.get(i).getFiducialId() == ID) {
                 return results.get(i).getBestCameraToTarget().getY();
@@ -268,9 +284,9 @@ public class SwerveSubsystem extends SubsystemBase {
         return 0;
     }
 
-    public double getAprilTagTheta(int ID) { 
-        if(latestResults.hasTargets()) { 
-            var results = latestResults.getTargets(); 
+    public double getPhotonAprilTagTheta(int ID) { 
+        if(photonResults.hasTargets()) { 
+            var results = photonResults.getTargets(); 
             for(int i = 0; i < results.size(); i++) { 
                 if(results.get(i).getFiducialId() == ID) { 
                     return results.get(i).getBestCameraToTarget().getRotation().getZ();
@@ -280,6 +296,58 @@ public class SwerveSubsystem extends SubsystemBase {
             return 0; 
         }
         return 0; 
+    }
+    
+    public double getLimelightAprilTagX(int ID) {
+        if (!limelightResults.valid) {
+            return 0;
+        }
+
+        LimelightTarget_Fiducial[] targets = limelightResults.targets_Fiducials;
+
+        for (LimelightTarget_Fiducial target : targets) {
+            if ((int) target.fiducialID != ID) {
+                continue;
+            }
+            return target.getCameraPose_TargetSpace().getX();
+        }
+        return 0;
+    }
+
+    public double getLimelightAprilTagY(int ID) {
+        if (!limelightResults.valid) {
+            return 0;
+        }
+
+        LimelightTarget_Fiducial[] targets = limelightResults.targets_Fiducials;
+
+        for (LimelightTarget_Fiducial target : targets) {
+            if ((int) target.fiducialID != ID) {
+                continue;
+            }
+            return target.getCameraPose_TargetSpace().getY();
+        }
+        return 0;
+    }
+
+    public boolean hasLimelightAprilTagTarget() {
+        return limelightResults.valid && limelightResults.targets_Fiducials.length > 0;
+    }
+
+    public double getLimelightAprilTagTheta(int ID) {
+        if (!limelightResults.valid) {
+            return 0;
+        }
+
+        LimelightTarget_Fiducial[] targets = limelightResults.targets_Fiducials;
+
+        for (LimelightTarget_Fiducial target : targets) {
+            if ((int) target.fiducialID != ID) {
+                continue;
+            }
+            return target.getCameraPose_TargetSpace().getRotation().getZ();
+        }
+        return 0;
     }
 
 
