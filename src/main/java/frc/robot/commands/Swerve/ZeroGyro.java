@@ -1,8 +1,7 @@
 package frc.robot.commands.Swerve;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Subsystems.SwerveSubsystem;
+import frc.robot.Subsystems.Swerve.SwerveSubsystem;
 
 public class ZeroGyro extends Command{
     private SwerveSubsystem swerveSubsystem;

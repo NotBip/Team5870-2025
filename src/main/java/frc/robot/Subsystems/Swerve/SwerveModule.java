@@ -1,12 +1,8 @@
-package frc.robot.Subsystems;
+package frc.robot.Subsystems.Swerve;
 
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -19,7 +15,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 import frc.robot.Constants.ModuleConstants;
 
@@ -44,7 +39,6 @@ public class SwerveModule {
     private final CANcoder absoluteEncoder; 
 
     // Initalizing ports for encoder. 
-    private final boolean absoluteEncoderReversed;
     private double absoluteEncoderOffsetRad;
     public double offset = 0; 
     //https://github.com/FRCCriticalCircuits/CRITICAL-CONDUCTOR-2024/blob/main/src/main/java/frc/team9062/robot/Subsystems/Drive/Module.java#L242
@@ -65,8 +59,6 @@ public class SwerveModule {
         // Set Absolute Encoder Port. 
         this.modNum = modNum; 
         this.absoluteEncoderOffsetRad = absoluteEncoderOffset; 
-        this.absoluteEncoderReversed = absoluteEncoderReversed; 
-
         this.absoluteEncoder = new CANcoder(absoluteEncoderId);
 
         // Set drive Motor and turning Motor type and port.
@@ -158,8 +150,6 @@ public class SwerveModule {
             stop();
             return;
         }
-        // SwerveModuleState moduleState = new SwerveModuleState(getState().speedMetersPerSecond, getState().angle);
-        // moduleState.optimize(getState().angle);
         state = SwerveModuleState.optimize(state, getState().angle);
         driveMotor.set(state.speedMetersPerSecond / Constants.DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
         turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));

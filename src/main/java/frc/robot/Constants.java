@@ -20,21 +20,6 @@ public final class Constants {
         public static final double slowModeMultiplier = 0.5;           
     }
 
-    // Module for Intake Constants
-    public static final class IntakeConstants { 
-        public static double intakeSpeed = 0.5; 
-        public static int armMotor1 = 9; 
-        public static int armMotor2 = 8; 
-    }
-
-    public static final class PneumaticsConstants { 
-        public static int solenoidExtend1ID = 0; 
-        public static int solenoidExtend2ID = 2; 
-        public static int solenoidDetract1ID = 1; 
-        public static int solenoidDetract2ID = 4; 
-        public static int compressorID = 0; 
-    }
-
     // Module for Swerve Drive. 
     public static final class DriveConstants {
 
@@ -135,10 +120,64 @@ public final class Constants {
         
     }
 
-    public static final class climberConstants { 
-        public static final int leaderMotor = 14; 
-        public static final int followerMotor = 13;
-        public static final int bottomLimitSwitch = 0; 
-        public static final int topLimitSwitch = 0;  
-    } 
+    public static final class IntakeConstants { 
+        public static final int angleMotorID = 1; 
+        public static final int intakeMotorID = 2; 
+
+        public static final double groundPosition = 0; 
+        public static final double feedPosition = 0; 
+
+        public static final double angleP = 0; 
+        public static final double angleI = 0; 
+        public static final double angleD = 0; 
+        
+    }
+
+    public static final class DeliveryConstants { 
+        public static final int armMotorID = 3; 
+        
+        public static final int gripperForwardChannel = 1;
+        public static final int gripperReverseChannel = 2; 
+        public static final int pneumaticHubID = 0; 
+
+        public static final double restPosition = 0; 
+        public static final double level1Position = 0; 
+        public static final double level2Position = 0; 
+        public static final double level3Position = 0; 
+        public static final double level4Position = 0; 
+        public static final double maxPosition = 0; 
+        public static final double minPosition = 0; 
+
+        public static final double armP = 0;
+        public static final double armI = 0; 
+        public static final double armD = 0; 
+    }
+
+    public static final class ElevatorConstants { 
+        public static final int leaderMotorID = 4; 
+        public static final int followerMotorID = 5;
+        
+        public static final double restPosition = 0; 
+        public static final double level1Position = 0; 
+        public static final double level2Position = 0; 
+        public static final double level3Position = 0; 
+        public static final double level4Position = 0; 
+
+        public static final double elevatorP = 0; 
+        public static final double elevatorI = 0; 
+        public static final double elevatorD = 0;
+    }
+
+    public static final class LimelightConstants { 
+        public static final double limelightP = 0; 
+        public static final double limelightI = 0; 
+        public static final double limelightD = 0; 
+    }
+
+    public static final class photonVisionConstants { 
+        public static final double objDetectionP = 0; 
+        public static final double objDetectionI = 0; 
+        public static final double objDetectionD = 0; 
+    }
+
 }
