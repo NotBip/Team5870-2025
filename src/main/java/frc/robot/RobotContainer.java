@@ -9,6 +9,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
@@ -32,8 +34,22 @@ public class RobotContainer {
     // Game Controllers
     public JoystickButton drBtnA, drBtnB, drBtnX, drBtnY, drBtnLB, drBtnRB, drBtnStrt, drBtnSelect;
 
+    private SendableChooser<Command> sendableChooser = new SendableChooser<Command>(); 
+
     public RobotContainer() {
+
+
+
+
         configureNamedCommands();
+
+        sendableChooser.setDefaultOption("NOTHING", null);
+        sendableChooser.addOption("drive Straight", AutoBuilder.buildAuto("Straight"));
+        sendableChooser.addOption("drive straight 180", AutoBuilder.buildAuto("180"));
+        sendableChooser.addOption("diagonalstuff", AutoBuilder.buildAuto("complexauto"));
+        SmartDashboard.putData(sendableChooser);
+
+
         swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
             swerveSubsystem, 
             () -> driverJoystick.getRawAxis(OIConstants.kDriverYAxis), 
@@ -65,17 +81,12 @@ public class RobotContainer {
 
     public void configureNamedCommands() { 
         NamedCommands.registerCommand("ZeroGyro", zeroGyro);
+        // NamedCommands.registerCommand("", resetOdom);
     }
 
     public Command getAutonomousCommand() {
 
-        try { 
-            PathPlannerPath path = PathPlannerPath.fromPathFile("Straight");
-            return AutoBuilder.followPath(path); 
-        } catch (Exception e)  {
-            System.out.println("Failed to get Path.");
-            return null; 
-        }
+        return sendableChooser.getSelected();
 
     }
 

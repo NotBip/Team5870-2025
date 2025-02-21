@@ -1,7 +1,10 @@
 package frc.robot.Subsystems.Swerve;
 
 
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.RobotConfig;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
@@ -13,6 +16,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -78,7 +82,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
         };
 
-        odometer = new SwerveDriveOdometry(Constants.DriveConstants.kDriveKinematics, new Rotation2d(0), getModulePositions());
+        odometer = new SwerveDriveOdometry(Constants.DriveConstants.kDriveKinematics, getRotation2d(), getModulePositions());
 
         RobotConfig config;
 
@@ -109,6 +113,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 },
                 this
               );
+        PathfindingCommand.warmupCommand().schedule();  
     }
 
 
@@ -138,40 +143,13 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         odometer.update(getRotation2d(), getModulePositions());
+        Logger.recordOutput("Pose", getPose());
+        Logger.recordOutput("Mod Positions", getModulePositions());
+
         getAbsoluteEncoder();
         getTurningEnc();
-
-        // SmartDashboard.putData("Set PID", new InstantCommand(() -> reconfigureAuto())); 
     }
 
-    // private void reconfigureAuto() { 
-        
-    //     double driveP = SmartDashboard.getNumber("Drive P: ", 0.0); 
-    //     double driveI = SmartDashboard.getNumber("Drive I: ", 0.0); 
-    //     double driveD = SmartDashboard.getNumber("Drive D: ", 0.0); 
-
-    //     double angleP = SmartDashboard.getNumber("Turning P: ", 0.0); 
-    //     double angleI = SmartDashboard.getNumber("Turning I: ", 0.0); 
-    //     double angleD = SmartDashboard.getNumber("Turning D: ", 0.0); 
-
-    //     AutoBuilder.configureHolonomic(
-    //         this::getPose, 
-    //         this::resetOdometry, 
-    //         this::getSpeeds, 
-    //         this::driveRobotRelative, 
-    //      new HolonomicPathFollowerConfig(
-    //         new PIDConstants(driveP, driveI, driveD),
-    //         new PIDConstants(angleP, angleI, angleD),
-    //         5, 
-    //         0.682498, // Drive base radius (distance from center to furthest module) 
-    //         new ReplanningConfig()), 
-    //                    () -> { 
-    //             var alliance = DriverStation.getAlliance(); 
-    //             if(alliance.get() == DriverStation.Alliance.Red)
-    //                 return true; 
-    //             else
-    //                 return false;
-    //         }, this);    }
 
     public SwerveModulePosition[] getModulePositions(){
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
@@ -229,10 +207,13 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) { 
-        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+        // ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
-        SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
-        setModuleStates(targetStates);
+        // SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
+        // setModuleStates(targetStates);
+        ChassisSpeeds newSpeeds = new ChassisSpeeds(-robotRelativeSpeeds.vxMetersPerSecond,- robotRelativeSpeeds.vyMetersPerSecond, -robotRelativeSpeeds.omegaRadiansPerSecond);
+        SwerveModuleState[] states = DriveConstants.kDriveKinematics.toSwerveModuleStates(newSpeeds); 
+        setModuleStates(states);
     }
 
 
