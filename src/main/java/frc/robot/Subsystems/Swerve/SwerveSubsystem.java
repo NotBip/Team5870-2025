@@ -148,6 +148,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
         getAbsoluteEncoder();
         getTurningEnc();
+        getDriveEnc();
     }
 
 
@@ -202,15 +203,19 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Back Right Turn", SwerveMods[3].getTurningPosition());
     }
 
+    
+    public void getDriveEnc() { 
+        SmartDashboard.putNumber("Front Left Drive", SwerveMods[0].getDrivePosition());
+        SmartDashboard.putNumber("Front RIght Drive", SwerveMods[1].getDrivePosition());
+        SmartDashboard.putNumber("Back Left Drive ", SwerveMods[2].getDrivePosition());
+        SmartDashboard.putNumber("Back Right Drive", SwerveMods[3].getDrivePosition());
+    }
+
     public ChassisSpeeds getSpeeds() { 
         return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates()); 
     }
 
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) { 
-        // ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
-
-        // SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
-        // setModuleStates(targetStates);
         ChassisSpeeds newSpeeds = new ChassisSpeeds(-robotRelativeSpeeds.vxMetersPerSecond,- robotRelativeSpeeds.vyMetersPerSecond, -robotRelativeSpeeds.omegaRadiansPerSecond);
         SwerveModuleState[] states = DriveConstants.kDriveKinematics.toSwerveModuleStates(newSpeeds); 
         setModuleStates(states);

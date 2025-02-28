@@ -51,11 +51,21 @@ public class Elevator extends SubsystemBase {
     }
 
     public void elevatorUp(double speed) { 
-        leaderMotor.set(Math.abs(speed)); 
+        // 170
+        // temp 160
+        if(elevatorEncoder.getPosition() > 160){
+            leaderMotor.set(-.5);
+        } else { 
+            leaderMotor.set(Math.abs(speed)); 
+        }
     }
 
     public void elevatorDown(double speed) { 
-        leaderMotor.set(-(Math.abs(speed)));
+        if(elevatorEncoder.getPosition() < 0) { 
+            leaderMotor.set(.5);
+        } else { 
+            leaderMotor.set(-(Math.abs(speed)));
+        }
     }
 
     public void stopElevator() { 

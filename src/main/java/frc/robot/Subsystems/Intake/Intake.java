@@ -1,5 +1,7 @@
 package frc.robot.Subsystems.Intake;
 
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -11,6 +13,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -19,7 +22,7 @@ public class Intake extends SubsystemBase {
 
     // Initialize Motors
     private SparkMax angleMotor = new SparkMax(Constants.IntakeConstants.angleMotorID, MotorType.kBrushless); 
-    private SparkMax intakeMotor = new SparkMax(Constants.IntakeConstants.intakeMotorID, MotorType.kBrushless); 
+    private VictorSPX intakeMotor = new VictorSPX(Constants.IntakeConstants.intakeMotorID); 
 
     // Define Relative Encoder. 
     private RelativeEncoder angleEncoder; 
@@ -31,7 +34,7 @@ public class Intake extends SubsystemBase {
     private SparkMaxConfig m_Config = new SparkMaxConfig(); 
 
     public Intake() { 
-        angleEncoder = intakeMotor.getEncoder(); 
+        angleEncoder = angleMotor.getEncoder(); 
         angleController = angleMotor.getClosedLoopController(); 
 
         m_Config
@@ -53,8 +56,12 @@ public class Intake extends SubsystemBase {
         angleMotor.set(-.2);
     }
 
-    public void spinWheels(double speed) { 
-        intakeMotor.set(speed);
+    public void spinWheelsFoward(double speed) { 
+        intakeMotor.set(VictorSPXControlMode.PercentOutput, Math.abs(speed));
+    }
+
+    public void spinWheelsReverse(double speed) { 
+        intakeMotor.set(VictorSPXControlMode.PercentOutput,-Math.abs(speed));
     }
 
     public void setPosition(double position) { 
@@ -74,6 +81,14 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Ground Intake Encoder", angleEncoder.getPosition()); 
+    }
+
+    public void intakeStop() { 
+        angleMotor.set(0);
+    }
+
+    public void intakeWheelsStop() { 
+        intakeMotor.set(VictorSPXControlMode.PercentOutput, 0);
     }
 
 }

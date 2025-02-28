@@ -19,6 +19,7 @@ public class ElevatorUp extends Command {
     public void execute() {
         double speed = rightTrigger.get();
         elevator.elevatorUp(speed);
+        System.out.println(speed);
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -26,13 +27,11 @@ public class Arm extends SubsystemBase {
     private RelativeEncoder armEncoder; 
     private SparkClosedLoopController armController;
     
-    private PneumaticHub pneumaticHub = new PneumaticHub(Constants.DeliveryConstants.pneumaticHubID);
-    private Solenoid closeChannel = new Solenoid(PneumaticsModuleType.REVPH, Constants.DeliveryConstants.gripperForwardChannel);
-    private Solenoid openChannel = new Solenoid(PneumaticsModuleType.REVPH, Constants.DeliveryConstants.gripperReverseChannel); 
-
+    private Solenoid openChannel = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.DeliveryConstants.gripperReverseChannel); 
+    private Compressor c; 
 
     public Arm() { 
-
+       // c =  new Compressor(PneumaticsModuleType.CTREPCM); 
         armEncoder = armMotor.getEncoder(); 
         armController = armMotor.getClosedLoopController(); 
 
@@ -46,7 +45,8 @@ public class Arm extends SubsystemBase {
 
         armMotor.configure(m_Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
 
-        pneumaticHub.enableCompressorDigital();
+        //c.enableDigital();
+        // pneumaticHub.enableCompressorDigital();
     }
 
     public void rotateArm() { 
@@ -54,16 +54,25 @@ public class Arm extends SubsystemBase {
     }
 
     public void rotateArmReverse() { 
+        if(armEncoder.getPosition() < 0){
+            armMotor.set(.3);
+        }
+        else{
+            //arm rotation encoder values for specific hights
+            //0
+            //42
+            //
+            //
+            //
         armMotor.set(-0.2);
+        }
     }
 
     public void closeGripper() { 
-        closeChannel.set(true);
         openChannel.set(false);
     }
 
     public void openGripper() { 
-        closeChannel.set(false);
         openChannel.set(true);
     }   
 
@@ -84,6 +93,10 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Arm Encoder", armEncoder.getPosition()); 
+    }
+
+    public void armStop() { 
+        armMotor.stopMotor();
     }
 
 

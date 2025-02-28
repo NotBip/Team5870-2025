@@ -128,9 +128,6 @@ public class SwerveModule {
         return driveEncoder.getPosition(); 
     }
 
-    public double getAbsoluteEncoder() { 
-        return absoluteEncoder.getAbsolutePosition().getValueAsDouble();
-    }
 
 
     public double getAbsoluteEncoderRad() { 

@@ -1,7 +1,5 @@
 package frc.robot;
 
-import org.opencv.core.Mat;
-
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -18,7 +16,6 @@ public final class Constants {
         public static final double TurnpositionConversionFactor = (1 / kTurningMotorGearRatio) * Math.PI * 2;
         public static final double TurnVelocityConversionFactor = TurnpositionConversionFactor / 60;
         public static final double kDrivePositionFactor = (1 / kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters);
-        // public static final double kDrivePositionFactor = Units.inchesToMeters(4) * Math.PI * kDriveMotorGearRatio;
         public static final double kDriveVelocityFactor = kDrivePositionFactor/60; 
         public static final double kPTurning = 0.4; 
         public static final double kDTurning = 0.0; 
@@ -29,10 +26,10 @@ public final class Constants {
     public static final class DriveConstants {
 
         // Distance between right and left wheels
-        public static final double kTrackWidth = Units.inchesToMeters(13.5);
+        public static final double kTrackWidth = Units.inchesToMeters(19.5);
 
         // Distance between front and back wheels
-        public static final double kWheelBase = Units.inchesToMeters(13.5);
+        public static final double kWheelBase = Units.inchesToMeters(29.5);
         
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
             // front left
@@ -44,47 +41,47 @@ public final class Constants {
             // back right
             new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
-        public static final int kFrontLeftDriveMotorPort = 3; // 3
-        public static final int kBackLeftDriveMotorPort = 5; // 5
-        public static final int kBackRightDriveMotorPort = 7; // 7
-        public static final int kFrontRightDriveMotorPort = 1; // 1
+        public static final int kFrontLeftDriveMotorPort = 2; // 3
+        public static final int kBackLeftDriveMotorPort = 8; // 5
+        public static final int kBackRightDriveMotorPort = 6; // 7
+        public static final int kFrontRightDriveMotorPort = 4; // 1
 
-        public static final int kFrontLeftTurningMotorPort = 4; // 4
-        public static final int kBackLeftTurningMotorPort = 6; // 6
-        public static final int kBackRightTurningMotorPort = 8;//  8
-        public static final int kFrontRightTurningMotorPort = 2; // 2
+        public static final int kFrontLeftTurningMotorPort = 1; // 4
+        public static final int kBackLeftTurningMotorPort = 7; // 6
+        public static final int kBackRightTurningMotorPort = 5;//  8
+        public static final int kFrontRightTurningMotorPort = 3; // 2
 
         public static final boolean kFrontLeftTurningEncoderReversed = true;
         public static final boolean kBackLeftTurningEncoderReversed = true;
         public static final boolean kFrontRightTurningEncoderReversed = true;
         public static final boolean kBackRightTurningEncoderReversed = true;
 
-        public static final boolean kFrontLeftDriveEncoderReversed = false;
-        public static final boolean kBackLeftDriveEncoderReversed = false;
-        public static final boolean kFrontRightDriveEncoderReversed = false;
-        public static final boolean kBackRightDriveEncoderReversed = false;
+        public static final boolean kFrontLeftDriveEncoderReversed = true;
+        public static final boolean kBackLeftDriveEncoderReversed = true;
+        public static final boolean kFrontRightDriveEncoderReversed = true;
+        public static final boolean kBackRightDriveEncoderReversed = true;
 
-        public static final int kFrontLeftDriveAbsoluteEncoderPort = 10;
-        public static final int kBackLeftDriveAbsoluteEncoderPort = 12;
-        public static final int kFrontRightDriveAbsoluteEncoderPort = 11;
-        public static final int kBackRightDriveAbsoluteEncoderPort = 9;
+        public static final int kFrontLeftDriveAbsoluteEncoderPort = 9; // 10
+        public static final int kBackLeftDriveAbsoluteEncoderPort = 11;
+        public static final int kFrontRightDriveAbsoluteEncoderPort = 10; // 11
+        public static final int kBackRightDriveAbsoluteEncoderPort = 12; // 9
 
         public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = false;
         public static final boolean kBackLeftDriveAbsoluteEncoderReversed = false;
         public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
         public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = -2.307107104980004;
-        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = -1.52017496079467;
-        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = -1.954291523766307;
-        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = -2.88234990043712; 
+        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 0.237767022122274;
+        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 1.138213744611146;
+        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = -0.751650586063964;
+        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = -3.02654409449837; 
 
         public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
 
         public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond/2;
         public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = //
-                kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
+                kPhysicalMaxAngularSpeedRadiansPerSecond / 4;   
         public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
         public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
     }
@@ -128,8 +125,8 @@ public final class Constants {
     }
 
     public static final class IntakeConstants { 
-        public static final int angleMotorID = 1; 
-        public static final int intakeMotorID = 2; 
+        public static final int angleMotorID = 14; 
+        public static final int intakeMotorID = 11; 
 
         public static final double groundPosition = 0; 
         public static final double feedPosition = 0; 
@@ -141,17 +138,16 @@ public final class Constants {
     }
 
     public static final class DeliveryConstants { 
-        public static final int armMotorID = 3; 
+        public static final int armMotorID = 15; 
         
-        public static final int gripperForwardChannel = 1;
-        public static final int gripperReverseChannel = 2; 
+        public static final int gripperReverseChannel = 7; 
         public static final int pneumaticHubID = 0; 
 
         public static final double restPosition = 0; 
-        public static final double level1Position = 0; 
-        public static final double level2Position = 0; 
-        public static final double level3Position = 0; 
-        public static final double level4Position = 0; 
+        public static final double level1Position = 9.8; 
+        public static final double level2Position = 36.2; 
+        public static final double level3Position = 33; 
+        public static final double level4Position = 30; 
         public static final double maxPosition = 0; 
         public static final double minPosition = 0; 
 
@@ -161,14 +157,14 @@ public final class Constants {
     }
 
     public static final class ElevatorConstants { 
-        public static final int leaderMotorID = 4; 
-        public static final int followerMotorID = 5;
+        public static final int leaderMotorID = 13; 
+        public static final int followerMotorID = 10;
         
         public static final double restPosition = 0; 
-        public static final double level1Position = 0; 
+        public static final double level1Position = 75.5; 
         public static final double level2Position = 0; 
-        public static final double level3Position = 0; 
-        public static final double level4Position = 0; 
+        public static final double level3Position = 34; 
+        public static final double level4Position = 110; 
 
         public static final double elevatorP = 0; 
         public static final double elevatorI = 0; 
