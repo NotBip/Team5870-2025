@@ -73,7 +73,8 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setPoint(double position) { 
-        elevatorController.setReference(position, ControlType.kPosition); 
+        System.out.println(position);
+        elevatorController.setReference(position, ControlType.kPosition);
     }
 
     @Override

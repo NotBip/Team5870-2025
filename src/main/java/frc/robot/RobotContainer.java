@@ -139,6 +139,7 @@ public class RobotContainer {
         driverController.povUp().onTrue(gripperOpen); 
         driverController.povDown().onTrue(gripperClose);
 
+        driverController.y().whileTrue(elevatorLevel4); 
         // operatorController.axisGreaterThan(2, .1).whileTrue(new IntakeWheelsFoward(intake, () -> operatorController.getRawAxis(2)));
         // operatorController.axisGreaterThan(3, .1).whileTrue(new IntakeWheelsReverse(intake, () -> operatorController.getRawAxis(3)));
 

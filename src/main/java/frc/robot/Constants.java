@@ -166,7 +166,7 @@ public final class Constants {
         public static final double level3Position = 34; 
         public static final double level4Position = 110; 
 
-        public static final double elevatorP = 0; 
+        public static final double elevatorP = 0.03; 
         public static final double elevatorI = 0; 
         public static final double elevatorD = 0;
     }
