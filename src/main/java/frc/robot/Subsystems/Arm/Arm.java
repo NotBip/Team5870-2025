@@ -56,17 +56,15 @@ public class Arm extends SubsystemBase {
         return armEncoder.getPosition();
     }
 
+    public boolean getGripper() { 
+        return openChannel.get(); 
+    }
+
     public void rotateArmReverse() { 
         if(armEncoder.getPosition() < 0){
             armMotor.set(.3);
         }
         else{
-            //arm rotation encoder values for specific hights
-            //0
-            //42
-            //
-            //
-            //
         armMotor.set(-0.2);
         }
     }

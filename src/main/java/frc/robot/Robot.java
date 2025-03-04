@@ -43,13 +43,13 @@ public class Robot extends LoggedRobot {
     Logger.start();
     m_robotContainer = new RobotContainer();
 
-    tunePID_KP = 0; 
-    tunePID_KI = 0; 
-    tunePID_KD = 0; 
+    // tunePID_KP = 0; 
+    // tunePID_KI = 0; 
+    // tunePID_KD = 0; 
 
-    SmartDashboard.putNumber("Tune PID P Gain", tunePID_KP); 
-    SmartDashboard.putNumber("Tune PID I Gain", tunePID_KI); 
-    SmartDashboard.putNumber("Tune PID D Gain", tunePID_KD); 
+    // SmartDashboard.putNumber("Tune PID P Gain", tunePID_KP); 
+    // SmartDashboard.putNumber("Tune PID I Gain", tunePID_KI); 
+    // SmartDashboard.putNumber("Tune PID D Gain", tunePID_KD); 
   }
 
   @Override
@@ -92,27 +92,27 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {
 
-    SmartDashboard.putData("PID tuning Choices", pidTuner);
+  //   SmartDashboard.putData("PID tuning Choices", pidTuner);
 
-    double tunePID_Dashboard_P = SmartDashboard.getNumber("Tune PID P Gain", 0); 
-    double tunePID_Dashboard_I = SmartDashboard.getNumber("Tune PID I Gain", 0); 
-    double tunePID_Dashboard_D = SmartDashboard.getNumber("Tune PID D Gain", 0); 
+  //   double tunePID_Dashboard_P = SmartDashboard.getNumber("Tune PID P Gain", 0); 
+  //   double tunePID_Dashboard_I = SmartDashboard.getNumber("Tune PID I Gain", 0); 
+  //   double tunePID_Dashboard_D = SmartDashboard.getNumber("Tune PID D Gain", 0); 
 
-   if (tunePID_Dashboard_P != tunePID_KP || tunePID_Dashboard_I != tunePID_KI || tunePID_Dashboard_D != tunePID_KD) {
-      if (pidTuner.getSelected().equals("Arm PID")){
-         m_robotContainer.updateArmPID(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D); 
-      }
-      else if (pidTuner.getSelected().equals("Elevator PID")){
-         m_robotContainer.updateElevatorPID(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D);
-      }
-      // else if (pidTuner.getSelected().equals("Intake PID")){
-      //    m_robotContainer.updateIntakePID(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D); 
-      // }
-    }
+  //  if (tunePID_Dashboard_P != tunePID_KP || tunePID_Dashboard_I != tunePID_KI || tunePID_Dashboard_D != tunePID_KD) {
+  //     if (pidTuner.getSelected().equals("Arm PID")){
+  //        m_robotContainer.updateArmPID(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D); 
+  //     }
+  //     else if (pidTuner.getSelected().equals("Elevator PID")){
+  //        m_robotContainer.updateElevatorPID(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D);
+  //     }
+  //     // else if (pidTuner.getSelected().equals("Intake PID")){
+  //     //    m_robotContainer.updateIntakePID(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D); 
+  //     // }
+  //   }
 
-      tunePID_KP = tunePID_Dashboard_P;
-      tunePID_KI = tunePID_Dashboard_I;
-      tunePID_KD = tunePID_Dashboard_D;
+  //     tunePID_KP = tunePID_Dashboard_P;
+  //     tunePID_KI = tunePID_Dashboard_I;
+  //     tunePID_KD = tunePID_Dashboard_D;
 
   }
 
