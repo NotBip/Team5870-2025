@@ -1,4 +1,8 @@
-package frc.robot;
+ package frc.robot;
+
+import javax.imageio.plugins.tiff.FaxTIFFTagSet;
+
+import org.w3c.dom.html.HTMLAnchorElement;
 
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -71,10 +75,10 @@ public final class Constants {
         public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
         public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 0.237767022122274;
-        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 1.138213744611146;
-        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = -0.751650586063964;
-        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = -3.02654409449837; 
+        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 0.246970906849588;
+        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 1.118271994368632;
+        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = -0.733242816609336;
+        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = -3.015806228983171; 
 
         public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
@@ -91,9 +95,9 @@ public final class Constants {
     public static final class AutoConstants {
         public static final PPHolonomicDriveController ppConfig = new PPHolonomicDriveController(
         // test .137 
-        new PIDConstants(.0197,0,.0095), 
+        new PIDConstants(0,0,0), 
         // .137
-        new PIDConstants( 1.5, 0, 0)
+        new PIDConstants( 0, 0, 0)
         ); 
     }
 
@@ -143,15 +147,15 @@ public final class Constants {
         public static final int gripperReverseChannel = 7; 
         public static final int pneumaticHubID = 0; 
 
-        public static final double restPosition = 0; 
-        public static final double level1Position = 9.8; 
-        public static final double level2Position = 36.2; 
-        public static final double level3Position = 33; 
-        public static final double level4Position = 30; 
+        public static final double restPosition = 42; 
+        public static final double level1Position = 12; 
+        public static final double level2Position = 13; 
+        public static final double level3Position = 18; 
+        public static final double level4Position = 18; 
         public static final double maxPosition = 0; 
         public static final double minPosition = 0; 
 
-        public static final double armP = 0;
+        public static final double armP = 0.09;
         public static final double armI = 0; 
         public static final double armD = 0; 
     }
@@ -160,12 +164,12 @@ public final class Constants {
         public static final int leaderMotorID = 13; 
         public static final int followerMotorID = 10;
         
-        public static final double restPosition = 0; 
-        public static final double level1Position = 75.5; 
+        public static final double restPosition = 102.97858428955078; 
+        public static final double level1Position = 0; 
         public static final double level2Position = 0; 
-        public static final double level3Position = 34; 
-        public static final double level4Position = 110; 
-
+        public static final double level3Position = 0; 
+        public static final double level4Position = 145; 
+ 
         public static final double elevatorP = 0.03; 
         public static final double elevatorI = 0; 
         public static final double elevatorD = 0;
@@ -177,10 +181,13 @@ public final class Constants {
         public static final double limelightD = 0; 
     }
 
-    public static final class photonVisionConstants { 
-        public static final double objDetectionP = 0; 
-        public static final double objDetectionI = 0; 
-        public static final double objDetectionD = 0; 
+    public static final class photonVisionConstants {
+        public static final double driveP = 0; 
+        public static final double driveI = 0; 
+        public static final double driveD = 0;  
+        public static final double rotP = 0; 
+        public static final double rotI = 0; 
+        public static final double rotD = 0; 
     }
 
 }

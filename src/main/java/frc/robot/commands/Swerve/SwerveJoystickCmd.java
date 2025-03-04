@@ -67,7 +67,7 @@ public class SwerveJoystickCmd extends Command{
         if(!isSlowMode.get()) { 
             
                 chassisSpeeds = fieldOrientedFunction.get() ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                            xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d()) : new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+                            xSpeed, ySpeed, -turningSpeed, swerveSubsystem.getRotation2d()) : new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
         } else { 
             // Activate Slow Mode
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(

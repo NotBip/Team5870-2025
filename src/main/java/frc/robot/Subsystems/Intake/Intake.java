@@ -57,11 +57,11 @@ public class Intake extends SubsystemBase {
     }
 
     public void spinWheelsFoward(double speed) { 
-        intakeMotor.set(VictorSPXControlMode.PercentOutput, Math.abs(speed));
+        intakeMotor.set(VictorSPXControlMode.PercentOutput, .75);
     }
 
     public void spinWheelsReverse(double speed) { 
-        intakeMotor.set(VictorSPXControlMode.PercentOutput,-Math.abs(speed));
+        intakeMotor.set(VictorSPXControlMode.PercentOutput,-.75);
     }
 
     public void setPosition(double position) { 

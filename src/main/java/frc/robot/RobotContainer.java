@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
@@ -47,7 +48,7 @@ public class RobotContainer {
     // Initializing subsystems
     private SwerveSubsystem swerveSubsystem = new SwerveSubsystem(); 
     private Elevator elevator = new Elevator(); 
-    private Intake intake = new Intake(); 
+    // private Intake intake = new Intake(); 
     private Arm arm = new Arm(); 
 
     // Initializing Swerve Commands
@@ -67,17 +68,17 @@ public class RobotContainer {
     private final ElevatorLevel2 elevatorLevel2 = new ElevatorLevel2(elevator, Constants.ElevatorConstants.level2Position);
     private final ElevatorLevel3 elevatorLevel3 = new ElevatorLevel3(elevator, Constants.ElevatorConstants.level3Position);
     private final ElevatorLevel4 elevatorLevel4 = new ElevatorLevel4(elevator, Constants.ElevatorConstants.level4Position);
-    private final ElevatorRest elevatorRest = new ElevatorRest(elevator, Constants.ElevatorConstants.restPosition);
+    private final ElevatorRest elevatorRest = new ElevatorRest(elevator, Constants.ElevatorConstants.restPosition, arm);
     
     // Initializing  Gripper Commmands
     // private final GripperClose gripperClose = new GripperClose(arm); 
     // private final GripperOpen gripperOpen = new GripperOpen(arm); 
 
     // Initializing Intake Commands
-    private final IntakeFeedPosition intakeFeedPosition = new IntakeFeedPosition(intake, Constants.IntakeConstants.feedPosition); 
-    private final IntakeRest intakeRest = new IntakeRest(intake, Constants.IntakeConstants.groundPosition); 
-    private final IntakeUp intakeUp = new IntakeUp(intake); 
-    private final IntakeDown intakeDown = new IntakeDown(intake); 
+    // private final IntakeFeedPosition intakeFeedPosition = new IntakeFeedPosition(intake, Constants.IntakeConstants.feedPosition); 
+    // private final IntakeRest intakeRest = new IntakeRest(intake, Constants.IntakeConstants.groundPosition); 
+    // private final IntakeUp intakeUp = new IntakeUp(intake); 
+    // private final IntakeDown intakeDown = new IntakeDown(intake); 
     private final GripperOpen gripperOpen = new GripperOpen(arm); 
     private final GripperClose gripperClose = new GripperClose(arm); 
 
@@ -132,18 +133,15 @@ public class RobotContainer {
         driverController.leftBumper().whileTrue(armLeft); 
         driverController.rightBumper().whileTrue(armRight); 
 
-        driverController.povLeft().whileTrue(intakeDown); 
-        driverController.povRight().whileTrue(intakeUp); 
-
-        
         driverController.povUp().onTrue(gripperOpen); 
         driverController.povDown().onTrue(gripperClose);
 
-        driverController.y().whileTrue(elevatorLevel4); 
-        // operatorController.axisGreaterThan(2, .1).whileTrue(new IntakeWheelsFoward(intake, () -> operatorController.getRawAxis(2)));
-        // operatorController.axisGreaterThan(3, .1).whileTrue(new IntakeWheelsReverse(intake, () -> operatorController.getRawAxis(3)));
+        driverController.y().whileTrue(new SequentialCommandGroup(elevatorLevel4.alongWith(armLevel4)));
+        driverController.povRight().whileTrue(new SequentialCommandGroup(elevatorLevel3.alongWith(armLevel3)));
+        driverController.x().whileTrue(new SequentialCommandGroup(elevatorLevel2.alongWith(armLevel2)));
+        driverController.b().whileTrue(new SequentialCommandGroup(elevatorLevel1.alongWith(armLevel1)));
 
-
+        driverController.a().whileTrue(elevatorRest); 
     }
 
     public void updateArmPID(double P, double I, double D) { 
@@ -154,9 +152,6 @@ public class RobotContainer {
         elevator.setElevatorPID(P, I, D);
     }
 
-    public void updateIntakePID(double P, double I, double D) { 
-        intake.setAnglePID(P, I, D);
-    }
 
     
 

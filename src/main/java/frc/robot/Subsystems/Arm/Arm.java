@@ -28,7 +28,6 @@ public class Arm extends SubsystemBase {
     private SparkClosedLoopController armController;
     
     private Solenoid openChannel = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.DeliveryConstants.gripperReverseChannel); 
-    private Compressor c; 
 
     public Arm() { 
        // c =  new Compressor(PneumaticsModuleType.CTREPCM); 
@@ -40,7 +39,7 @@ public class Arm extends SubsystemBase {
             .inverted(false); 
         m_Config.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .outputRange(-.5,.5)
+            .outputRange(-.3,.3)
             .pid(Constants.DeliveryConstants.armP, Constants.DeliveryConstants.armI, Constants.DeliveryConstants.armD); 
 
         armMotor.configure(m_Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
@@ -51,6 +50,10 @@ public class Arm extends SubsystemBase {
 
     public void rotateArm() { 
         armMotor.set(0.2);
+    }
+
+    public double getArmEncoder() { 
+        return armEncoder.getPosition();
     }
 
     public void rotateArmReverse() { 

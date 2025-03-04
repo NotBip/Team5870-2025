@@ -2,6 +2,8 @@ package frc.robot.Subsystems.Swerve;
 
 
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -30,8 +32,16 @@ public class SwerveSubsystem extends SubsystemBase {
     private AHRS navx = new AHRS(NavXComType.kMXP_SPI);
     public SwerveModule[] SwerveMods;
     private SwerveDriveOdometry odometer; 
+    // private PhotonCamera sourceCam; 
+    // private PhotonCamera reefCam; 
+    // private PhotonPipelineResult sourceResults;
+    // private PhotonPipelineResult reefResults;  
 
     public SwerveSubsystem(){
+
+        // sourceCam = new PhotonCamera("source cam"); 
+        // reefCam = new PhotonCamera("reef cam"); 
+
         new Thread(() -> {
             try{
                 Thread.sleep(1000);
@@ -145,6 +155,8 @@ public class SwerveSubsystem extends SubsystemBase {
         odometer.update(getRotation2d(), getModulePositions());
         Logger.recordOutput("Pose", getPose());
         Logger.recordOutput("Mod Positions", getModulePositions());
+        // reefResults = reefCam.getLatestResult();
+        // sourceResults = sourceCam.getLatestResult(); 
 
         getAbsoluteEncoder();
         getTurningEnc();
@@ -221,6 +233,64 @@ public class SwerveSubsystem extends SubsystemBase {
         setModuleStates(states);
     }
 
+        // // ARDUCAM STUFF
+        // public double getPhotonAprilTagX(int ID, PhotonPipelineResult results) {
+        //     if (results.hasTargets()) {  
+        //         var finalResults = results.getTargets();
+        //         for (int i = 0; i < finalResults.size(); i++) {
+        //             if (finalResults.get(i).getFiducialId() == ID) {
+        //             return finalResults.get(i).getBestCameraToTarget().getX();
+        //             }
+        //         }
+        //     } else {
+        //         return 0;
+        //     }
+        //     return 0;
+        // }
+    
+    
+        // public boolean hasPhotonAprilTagTarget(PhotonPipelineResult results) {
+        //     if (results.hasTargets()) { 
+        //         return true;
+        //     }
+        //     return false;
+        // }
+    
+        // public double getPhotonAprilTagY(int ID, PhotonPipelineResult results) {
+        //     if (results.hasTargets()) { 
+        //         var finalResults = results.getTargets();
+        //         for (int i = 0; i < finalResults.size(); i++) {
+        //             if (finalResults.get(i).getFiducialId() == ID) {
+        //             return finalResults.get(i).getBestCameraToTarget().getY();
+        //             }
+        //         }
+        //     } else {
+        //         return 0;
+        //     }
+        //     return 0;
+        // }
+    
+        // public double getPhotonAprilTagTheta(int ID, PhotonPipelineResult results) { 
+        //     if(results.hasTargets()) { 
+        //         var finalResults = results.getTargets(); 
+        //         for(int i = 0; i < finalResults.size(); i++) { 
+        //             if(finalResults.get(i).getFiducialId() == ID) { 
+        //                 return finalResults.get(i).getBestCameraToTarget().getRotation().getZ();
+        //             }
+        //         }
+        //     } else { 
+        //         return 0; 
+        //     }
+        //     return 0; 
+        // }
+
+        // public PhotonPipelineResult getSourceResults() { 
+        //     return sourceResults; 
+        // }
+
+        // public PhotonPipelineResult getReefResults() { 
+        //     return reefResults; 
+        // }
 
 
 } // end Class

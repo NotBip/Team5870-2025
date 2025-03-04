@@ -105,9 +105,9 @@ public class Robot extends LoggedRobot {
       else if (pidTuner.getSelected().equals("Elevator PID")){
          m_robotContainer.updateElevatorPID(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D);
       }
-      else if (pidTuner.getSelected().equals("Intake PID")){
-         m_robotContainer.updateIntakePID(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D); 
-      }
+      // else if (pidTuner.getSelected().equals("Intake PID")){
+      //    m_robotContainer.updateIntakePID(tunePID_Dashboard_P, tunePID_Dashboard_I, tunePID_Dashboard_D); 
+      // }
     }
 
       tunePID_KP = tunePID_Dashboard_P;

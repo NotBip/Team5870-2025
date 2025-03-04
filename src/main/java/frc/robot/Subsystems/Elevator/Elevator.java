@@ -77,6 +77,10 @@ public class Elevator extends SubsystemBase {
         elevatorController.setReference(position, ControlType.kPosition);
     }
 
+    public double getElevatorEncoder() { 
+        return elevatorEncoder.getPosition();
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Elevator Encoder", elevatorEncoder.getPosition()); 
