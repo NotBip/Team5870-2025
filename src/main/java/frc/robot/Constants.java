@@ -14,7 +14,7 @@ public final class Constants {
 
     // Module for Each Swerve Module.
     public static final class ModuleConstants {
-        public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
+        public static final double kWheelDiameterMeters = Units.inchesToMeters(4);  
         public static final double kDriveMotorGearRatio = 6.75;
         public static final double kTurningMotorGearRatio = (150.0/7); 
         public static final double TurnpositionConversionFactor = (1 / kTurningMotorGearRatio) * Math.PI * 2;
@@ -147,15 +147,16 @@ public final class Constants {
         public static final int gripperReverseChannel = 7; 
         public static final int pneumaticHubID = 0; 
 
-        public static final double restPosition = 42; 
+        public static final double grabPosition = 42; 
         public static final double level1Position = 12; 
         public static final double level2Position = 13; 
         public static final double level3Position = 18; 
         public static final double level4Position = 18; 
         public static final double maxPosition = 0; 
         public static final double minPosition = 0; 
+        public static final double restPosition = 0; 
 
-        public static final double armP = 0.09;
+        public static final double armP = 0.14;
         public static final double armI = 0; 
         public static final double armD = 0; 
     }
@@ -164,13 +165,14 @@ public final class Constants {
         public static final int leaderMotorID = 13; 
         public static final int followerMotorID = 10;
         
-        public static final double restPosition = 102.97858428955078; 
+        public static final double grabPosition = 102.97858428955078; 
         public static final double level1Position = 0; 
         public static final double level2Position = 0; 
         public static final double level3Position = 0; 
         public static final double level4Position = 145; 
+        public static final double restPosition = 102.97858428955078; 
  
-        public static final double elevatorP = 0.03; 
+        public static final double elevatorP = 0.08; 
         public static final double elevatorI = 0; 
         public static final double elevatorD = 0;
     }

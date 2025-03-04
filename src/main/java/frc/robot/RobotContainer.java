@@ -20,9 +20,9 @@ import frc.robot.commands.AutoCommands.Level1AutoAlign;
 import frc.robot.commands.AutoCommands.Level2AutoAlign;
 import frc.robot.commands.AutoCommands.Level3AutoAlign;
 import frc.robot.commands.AutoCommands.Level4AutoAlign;
+import frc.robot.commands.AutoCommands.RestAutoAlign;
 import frc.robot.commands.AutoCommands.SourceIntakeAutoAlign;
 import frc.robot.commands.ElevatorCommands.ElevatorDown;
-import frc.robot.commands.ElevatorCommands.ElevatorRest;
 import frc.robot.commands.ElevatorCommands.ElevatorUp;
 import frc.robot.commands.GripperCommands.GripperClose;
 import frc.robot.commands.GripperCommands.GripperOpen;
@@ -53,6 +53,7 @@ public class RobotContainer {
     private final Level3AutoAlign level3AutoAlign = new Level3AutoAlign(arm, elevator); 
     private final Level4AutoAlign level4AutoAlign = new Level4AutoAlign(arm, elevator); 
     private final SourceIntakeAutoAlign sIntakeAutoAlign = new SourceIntakeAutoAlign(elevator, arm); 
+    private final RestAutoAlign restAutoAlign = new RestAutoAlign(arm, elevator); 
 
 
     // Initialzing Controllers
@@ -103,8 +104,8 @@ public class RobotContainer {
         operatorController.axisGreaterThan(2, .1).whileTrue(new ElevatorDown(elevator, () -> operatorController.getRawAxis(2)));
         operatorController.axisGreaterThan(3, .1).whileTrue(new ElevatorUp(elevator, () -> operatorController.getRawAxis(3)));
 
-        operatorController.leftBumper().whileTrue(armLeft); 
-        operatorController.rightBumper().whileTrue(armRight); 
+        operatorController.rightBumper().whileTrue(armLeft); 
+        operatorController.leftBumper().whileTrue(armRight); 
 
         operatorController.povUp().whileTrue(level4AutoAlign); 
         operatorController.povLeft().whileTrue(level3AutoAlign); 
@@ -114,6 +115,7 @@ public class RobotContainer {
         operatorController.y().whileTrue(sIntakeAutoAlign); 
         operatorController.x().onTrue(gripperOpen); 
         operatorController.b().onTrue(gripperClose);
+        operatorController.a().whileTrue(restAutoAlign); 
 
     }
 

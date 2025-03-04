@@ -29,7 +29,7 @@ public class ElevatorRest extends Command {
         
        elevator.setPoint(setpoint);
        if(elevator.getElevatorEncoder() > 100) { 
-        arm.setPosition(Constants.DeliveryConstants.restPosition);
+        arm.setPosition(Constants.DeliveryConstants.grabPosition);
        }
     }
 

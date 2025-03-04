@@ -24,9 +24,9 @@ public class SourceIntakeAutoAlign extends Command {
     @Override
     public void execute() {
         
-       elevator.setPoint(Constants.ElevatorConstants.restPosition);
+       elevator.setPoint(Constants.ElevatorConstants.grabPosition);
        if(elevator.getElevatorEncoder() > 100) { 
-        arm.setPosition(Constants.DeliveryConstants.restPosition);
+        arm.setPosition(Constants.DeliveryConstants.grabPosition);
        }
     }
 
