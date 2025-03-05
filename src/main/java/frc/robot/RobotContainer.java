@@ -18,16 +18,16 @@ import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToReef;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToSource;
 import frc.robot.commands.ArmCommands.ArmLeft;
 import frc.robot.commands.ArmCommands.ArmRight;
-import frc.robot.commands.AutoCommands.Level1AutoAlign;
-import frc.robot.commands.AutoCommands.Level2AutoAlign;
-import frc.robot.commands.AutoCommands.Level3AutoAlign;
-import frc.robot.commands.AutoCommands.Level4AutoAlign;
-import frc.robot.commands.AutoCommands.RestAutoAlign;
-import frc.robot.commands.AutoCommands.SourceIntakeAutoAlign;
 import frc.robot.commands.ElevatorCommands.ElevatorDown;
 import frc.robot.commands.ElevatorCommands.ElevatorUp;
 import frc.robot.commands.GripperCommands.GripperClose;
 import frc.robot.commands.GripperCommands.GripperOpen;
+import frc.robot.commands.SubsystemAlignmentCommands.Level1Align;
+import frc.robot.commands.SubsystemAlignmentCommands.Level2Align;
+import frc.robot.commands.SubsystemAlignmentCommands.Level3Align;
+import frc.robot.commands.SubsystemAlignmentCommands.Level4Align;
+import frc.robot.commands.SubsystemAlignmentCommands.RestAlign;
+import frc.robot.commands.SubsystemAlignmentCommands.SourceIntakeAlign;
 import frc.robot.commands.Swerve.ResetOdometry;
 import frc.robot.commands.Swerve.SwerveJoystickCmd;
 import frc.robot.commands.Swerve.ZeroGyro;
@@ -50,12 +50,12 @@ public class RobotContainer {
     private final GripperClose gripperClose = new GripperClose(arm); 
 
     // Initalizing Auto Align Commands
-    private final Level1AutoAlign level1AutoAlign = new Level1AutoAlign(arm, elevator); 
-    private final Level2AutoAlign level2AutoAlign = new Level2AutoAlign(arm, elevator); 
-    private final Level3AutoAlign level3AutoAlign = new Level3AutoAlign(arm, elevator); 
-    private final Level4AutoAlign level4AutoAlign = new Level4AutoAlign(arm, elevator); 
-    private final SourceIntakeAutoAlign sIntakeAutoAlign = new SourceIntakeAutoAlign(elevator, arm); 
-    private final RestAutoAlign restAutoAlign = new RestAutoAlign(arm, elevator); 
+    private final Level1Align level1Align = new Level1Align(arm, elevator); 
+    private final Level2Align level2Align = new Level2Align(arm, elevator); 
+    private final Level3Align level3Align = new Level3Align(arm, elevator); 
+    private final Level4Align level4Align = new Level4Align(arm, elevator); 
+    private final SourceIntakeAlign sIntakeAlign = new SourceIntakeAlign(elevator, arm); 
+    private final RestAlign restAlign = new RestAlign(arm, elevator); 
 
 
     // Initialzing Controllers
@@ -106,22 +106,24 @@ public class RobotContainer {
         drBtnSelect.onTrue(resetOdometry); 
 
         driverController.a().whileTrue(new AutoAlignToSource(swerveSubsystem, false, false));
-        driverController.b().whileTrue(new AutoAlignToReef(swerveSubsystem, false, false, 6)); 
+        driverController.b().whileTrue(new AutoAlignToReef(swerveSubsystem, 6, true)); 
+        driverController.x().whileTrue(new AutoAlignToReef(swerveSubsystem, 6, false)); 
+
         operatorController.axisGreaterThan(2, .1).whileTrue(new ElevatorDown(elevator, () -> operatorController.getRawAxis(2)));
         operatorController.axisGreaterThan(3, .1).whileTrue(new ElevatorUp(elevator, () -> operatorController.getRawAxis(3)));
 
         operatorController.rightBumper().whileTrue(armLeft); 
         operatorController.leftBumper().whileTrue(armRight); 
 
-        operatorController.povUp().whileTrue(level4AutoAlign); 
-        operatorController.povLeft().whileTrue(level3AutoAlign); 
-        operatorController.povDown().whileTrue(level2AutoAlign); 
-        operatorController.povRight().whileTrue(level1AutoAlign); 
+        operatorController.povUp().whileTrue(level4Align); 
+        operatorController.povLeft().whileTrue(level3Align); 
+        operatorController.povDown().whileTrue(level2Align); 
+        operatorController.povRight().whileTrue(level1Align); 
 
-        operatorController.y().whileTrue(sIntakeAutoAlign); 
+        operatorController.y().whileTrue(sIntakeAlign); 
         operatorController.x().onTrue(gripperOpen); 
         operatorController.b().onTrue(gripperClose);
-        operatorController.a().whileTrue(restAutoAlign); 
+        operatorController.a().whileTrue(restAlign); 
 
     }
 

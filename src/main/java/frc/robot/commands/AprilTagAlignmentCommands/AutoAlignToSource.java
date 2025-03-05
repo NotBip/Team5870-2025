@@ -26,7 +26,6 @@ public class AutoAlignToSource extends Command {
     private PhotonPipelineResult results;
     private boolean initialAlignment; 
     private boolean isDone; 
-    private Pose2d initialPose; 
 
     public AutoAlignToSource(SwerveSubsystem swerveSubsystem, boolean isRedAlliance, boolean isRightSide) { 
         this.isRightSide = isRightSide;
@@ -39,7 +38,6 @@ public class AutoAlignToSource extends Command {
     public void initialize() { 
         initialAlignment = false; 
         isDone = false; 
-        initialPose = new Pose2d(); 
         if(isRedAlliance == true) { 
             if(isRightSide == true) { 
                 trackerID = 1;  
@@ -72,8 +70,7 @@ public class AutoAlignToSource extends Command {
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
 
-            if((xDist <= 1.7 && xDist >= 1.3) && (yDist <=   0.37 && yDist >= 0)) { 
-                initialPose = swerveSubsystem.getPose(); 
+            if((xDist <= 1.7 && xDist >= 1.3) && (yDist <= 0.37 && yDist >= 0)) { 
                 swerveSubsystem.resetOdometry(new Pose2d()); 
                 initialAlignment = true; 
             }
@@ -88,10 +85,10 @@ public class AutoAlignToSource extends Command {
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
 
-            // if(xDist >= 1.5) { 
-            //     isDone = true; 
-            //     swerveSubsystem.stopModules();
-            // }
+            if(xDist >= 1.5) { 
+                isDone = true; 
+                swerveSubsystem.stopModules();
+            }
         }
     }
     
@@ -104,7 +101,7 @@ public class AutoAlignToSource extends Command {
 
     @Override
     public boolean isFinished() {
-        return false; 
+        return isDone; 
     }
 
     

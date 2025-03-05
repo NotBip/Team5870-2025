@@ -1,16 +1,16 @@
-package frc.robot.commands.AutoCommands;
+package frc.robot.commands.SubsystemAlignmentCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Subsystems.Arm.Arm;
 import frc.robot.Subsystems.Elevator.Elevator;
 
-public class Level3AutoAlign extends Command {
+public class Level3Align extends Command {
 
     private Elevator elevator; 
     private Arm arm; 
 
-    public Level3AutoAlign(Arm arm, Elevator elevator) { 
+    public Level3Align(Arm arm, Elevator elevator) { 
         this.elevator = elevator; 
         this.arm = arm; 
         addRequirements(arm, elevator);

@@ -8,6 +8,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.path.PathConstraints;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -23,6 +24,7 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -232,6 +234,15 @@ public class SwerveSubsystem extends SubsystemBase {
         ChassisSpeeds newSpeeds = new ChassisSpeeds(-robotRelativeSpeeds.vxMetersPerSecond,- robotRelativeSpeeds.vyMetersPerSecond, -robotRelativeSpeeds.omegaRadiansPerSecond);
         SwerveModuleState[] states = DriveConstants.kDriveKinematics.toSwerveModuleStates(newSpeeds); 
         setModuleStates(states);
+    }
+
+    public Command findPathToPose(double x, double y, double rotation, PathConstraints constraints, boolean isRedAlliance) {
+        if (isRedAlliance) {
+            return AutoBuilder.pathfindToPoseFlipped(new Pose2d(new Translation2d(x, y), new Rotation2d(Math.toRadians(rotation))), constraints);    
+        }
+        else {
+            return AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(x, y), new Rotation2d(Math.toRadians(rotation))), constraints);    
+        }
     }
 
         // ARDUCAM STUFF

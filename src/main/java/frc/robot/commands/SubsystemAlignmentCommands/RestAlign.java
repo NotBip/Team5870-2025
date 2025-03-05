@@ -1,53 +1,43 @@
-package frc.robot.commands.AutoCommands;
+package frc.robot.commands.SubsystemAlignmentCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Subsystems.Arm.Arm;
 import frc.robot.Subsystems.Elevator.Elevator;
 
-public class Level1AutoAlign extends Command {
-    
-    private Arm arm; 
-    private Elevator elevator;
+public class RestAlign extends Command {
 
-    public Level1AutoAlign(Arm arm, Elevator elevator) { 
+    private Elevator elevator; 
+    private Arm arm; 
+
+    public RestAlign(Arm arm, Elevator elevator) { 
         this.elevator = elevator; 
         this.arm = arm; 
         addRequirements(arm, elevator);
     }
-    
+
     @Override
     public void initialize() {
-        if(arm.getGripper() == true) { 
-            arm.closeGripper();
-        }
+
     }
 
     @Override
     public void execute() {
-        arm.setPosition(Constants.DeliveryConstants.level1Position);
-        if(arm.getArmEncoder() < Constants.DeliveryConstants.level1Position + 10.0) { 
-            elevator.setPoint(Constants.ElevatorConstants.level1Position);
+        arm.setPosition(Constants.DeliveryConstants.restPosition);
+        if(arm.getArmEncoder() < Constants.DeliveryConstants.restPosition + 5) { 
+            elevator.setPoint(Constants.ElevatorConstants.restPosition);
         }
     }
 
-
-
     @Override
     public void end(boolean interrupted) {
-        arm.openGripper();
         arm.armStop();
         elevator.stopElevator();
     }
-
 
     @Override
     public boolean isFinished() {
         return false; 
     }
-
-
-
-
     
 }

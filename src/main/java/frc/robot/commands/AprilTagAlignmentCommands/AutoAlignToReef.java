@@ -22,18 +22,17 @@ public class AutoAlignToReef extends Command {
     private SwerveSubsystem swerveSubsystem; 
     private PIDController driveController = new PIDController(Constants.photonVisionConstants.driveP, Constants.photonVisionConstants.driveI, Constants.photonVisionConstants.driveD); 
     private PIDController rotController = new PIDController(Constants.photonVisionConstants.rotP, Constants.photonVisionConstants.rotI, Constants.photonVisionConstants.rotD); 
-    private boolean isRedAlliance, isRightSide; 
     private int trackerID; 
     private PhotonPipelineResult results;
     private boolean initialAlignment; 
     private boolean isDone; 
-    private Pose2d initialPose; 
+    private boolean rightSide;
+    double ySetpoint; 
 
-    public AutoAlignToReef(SwerveSubsystem swerveSubsystem, boolean isRedAlliance, boolean isRightSide, int trackerID) { 
-        this.isRightSide = isRightSide;
+    public AutoAlignToReef(SwerveSubsystem swerveSubsystem, int trackerID, boolean rightSide) { 
         this.trackerID = trackerID; 
         this.swerveSubsystem = swerveSubsystem; 
-        this.isRedAlliance = isRedAlliance; 
+        this.rightSide = rightSide;
         addRequirements(swerveSubsystem);
     }
     
@@ -41,7 +40,11 @@ public class AutoAlignToReef extends Command {
     public void initialize() { 
         initialAlignment = false; 
         isDone = false; 
-        initialPose = new Pose2d(); 
+        if(rightSide) { 
+            ySetpoint = -.05; 
+        } else { 
+            ySetpoint = .05; 
+        }
     }
     
     @Override
@@ -52,17 +55,17 @@ public class AutoAlignToReef extends Command {
             double xDist = swerveSubsystem.getPhotonAprilTagX(trackerID, results);
             double yDist = swerveSubsystem.getPhotonAprilTagY(trackerID, results); 
             // double rotDist = swerveSubsystem.getPhotonAprilTagTheta(trackerID, results); 
-      
+            
+
             double xSpeed = driveController.calculate(xDist, .9);
-            double ySpeed = driveController.calculate(yDist, -.05); 
+            double ySpeed = driveController.calculate(yDist, ySetpoint); 
             // double rotSpeed = rotController.calculate(rotDist, -178); 
 
             ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, -ySpeed, 0);
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
 
-            if((xDist <= 1.1 && xDist >= .7) && (yDist <=   0 && yDist >= -.1)) { 
-                initialPose = swerveSubsystem.getPose(); 
+            if((xDist <= 1.1 && xDist >= .7) && (yDist <=   ySetpoint + .05 && yDist >= ySetpoint - .05)) { 
                 swerveSubsystem.resetOdometry(new Pose2d()); 
                 initialAlignment = true; 
             }
@@ -77,10 +80,10 @@ public class AutoAlignToReef extends Command {
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
 
-            // if(xDist >= 1.5) { 
-            //     isDone = true; 
-            //     swerveSubsystem.stopModules();
-            // }
+            if(xDist >= 1.27) { 
+                isDone = true; 
+                swerveSubsystem.stopModules();
+            }
         }
     }
     
@@ -93,7 +96,7 @@ public class AutoAlignToReef extends Command {
 
     @Override
     public boolean isFinished() {
-        return false; 
+        return isDone; 
     }
 
     
