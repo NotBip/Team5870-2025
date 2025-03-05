@@ -71,7 +71,7 @@ public class SwerveJoystickCmd extends Command{
         } else { 
             // Activate Slow Mode
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                        (xSpeed * ModuleConstants.slowModeMultiplier), (ySpeed * ModuleConstants.slowModeMultiplier), --turningSpeed, swerveSubsystem.getRotation2d());
+                        (xSpeed * ModuleConstants.slowModeMultiplier), (ySpeed * ModuleConstants.slowModeMultiplier), -turningSpeed, swerveSubsystem.getRotation2d());
         }
         
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);

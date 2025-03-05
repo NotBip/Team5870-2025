@@ -14,6 +14,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Subsystems.Arm.Arm;
 import frc.robot.Subsystems.Elevator.Elevator;
 import frc.robot.Subsystems.Swerve.SwerveSubsystem;
+import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToReef;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToSource;
 import frc.robot.commands.ArmCommands.ArmLeft;
 import frc.robot.commands.ArmCommands.ArmRight;
@@ -105,7 +106,7 @@ public class RobotContainer {
         drBtnSelect.onTrue(resetOdometry); 
 
         driverController.a().whileTrue(new AutoAlignToSource(swerveSubsystem, false, false));
-
+        driverController.b().whileTrue(new AutoAlignToReef(swerveSubsystem, false, false, 6)); 
         operatorController.axisGreaterThan(2, .1).whileTrue(new ElevatorDown(elevator, () -> operatorController.getRawAxis(2)));
         operatorController.axisGreaterThan(3, .1).whileTrue(new ElevatorUp(elevator, () -> operatorController.getRawAxis(3)));
 
