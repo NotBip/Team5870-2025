@@ -1,8 +1,5 @@
  package frc.robot;
 
-import javax.imageio.plugins.tiff.FaxTIFFTagSet;
-
-import org.w3c.dom.html.HTMLAnchorElement;
 
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -156,7 +153,7 @@ public final class Constants {
         public static final double minPosition = 0; 
         public static final double restPosition = 0; 
 
-        public static final double armP = 0.14;
+        public static final double armP = 0.16;
         public static final double armI = 0; 
         public static final double armD = 0; 
     }
@@ -184,10 +181,10 @@ public final class Constants {
     }
 
     public static final class photonVisionConstants {
-        public static final double driveP = 0; 
+        public static final double driveP = 1; 
         public static final double driveI = 0; 
         public static final double driveD = 0;  
-        public static final double rotP = 0; 
+        public static final double rotP = 0.01; 
         public static final double rotI = 0; 
         public static final double rotD = 0; 
     }

@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
@@ -23,9 +24,8 @@ public class AutoAlignToSource extends Command {
     private boolean isRedAlliance, isRightSide; 
     private int trackerID; 
     private PhotonPipelineResult results;
-    private boolean initialAlignment = false; 
-    private boolean isDone = false; 
-    private double initalX; 
+    private boolean initialAlignment; 
+    private boolean isDone; 
     private Pose2d initialPose; 
 
     public AutoAlignToSource(SwerveSubsystem swerveSubsystem, boolean isRedAlliance, boolean isRightSide) { 
@@ -37,6 +37,9 @@ public class AutoAlignToSource extends Command {
     
     @Override
     public void initialize() { 
+        initialAlignment = false; 
+        isDone = false; 
+        initialPose = new Pose2d(); 
         if(isRedAlliance == true) { 
             if(isRightSide == true) { 
                 trackerID = 1;  
@@ -60,17 +63,16 @@ public class AutoAlignToSource extends Command {
             double xDist = swerveSubsystem.getPhotonAprilTagX(trackerID, results);
             double yDist = swerveSubsystem.getPhotonAprilTagY(trackerID, results); 
             double rotDist = swerveSubsystem.getPhotonAprilTagTheta(trackerID, results); 
-
+      
             double xSpeed = driveController.calculate(xDist, 1.5);
-            double ySpeed = driveController.calculate(yDist, 0); 
-            double rotSpeed = rotController.calculate(rotDist, 0); 
+            double ySpeed = driveController.calculate(yDist, .34); 
+            double rotSpeed = rotController.calculate(rotDist, -178); 
 
             ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, 0);
-            
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
 
-            if((xDist <= 1.7 && xDist >= 1.3) && (yDist <= 0.2 && yDist >= -0.2)) { 
+            if((xDist <= 1.7 && xDist >= 1.3) && (yDist <=   0.37 && yDist >= 0)) { 
                 initialPose = swerveSubsystem.getPose(); 
                 swerveSubsystem.resetOdometry(new Pose2d()); 
                 initialAlignment = true; 
@@ -79,30 +81,30 @@ public class AutoAlignToSource extends Command {
 
         if(initialAlignment == true) { 
             double xDist = swerveSubsystem.getPose().getTranslation().getX(); 
-            double xSpeed = driveController.calculate(xDist, 1.5);
+            double xSpeed = driveController.calculate(xDist, 1.7);
             
-            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, 0, 0);
+            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, 0, 0);
             
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
 
-            if(xDist > 1.3) { 
-                isDone = true; 
-                swerveSubsystem.stopModules();
-            }
+            // if(xDist >= 1.5) { 
+            //     isDone = true; 
+            //     swerveSubsystem.stopModules();
+            // }
         }
     }
     
     @Override
     public void end(boolean interrupted) {
-        swerveSubsystem.resetOdometry(new Pose2d(new Translation2d(initialPose.getTranslation().getX() + swerveSubsystem.getPose().getTranslation().getX(), swerveSubsystem.getPose().getTranslation().getY()), swerveSubsystem.getPose().getRotation()));
+        // swerveSubsystem.resetOdometry(new Pose2d(new Translation2d(initialPose.getTranslation().getX() + swerveSubsystem.getPose().getTranslation().getX(), swerveSubsystem.getPose().getTranslation().getY()), swerveSubsystem.getPose().getRotation()));
     }
 
 
 
     @Override
     public boolean isFinished() {
-        return isDone; 
+        return false; 
     }
 
     

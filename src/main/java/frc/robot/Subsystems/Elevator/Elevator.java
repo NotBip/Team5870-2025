@@ -39,7 +39,7 @@ public class Elevator extends SubsystemBase {
         
         leaderConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .outputRange(-.7, .7)
+            .outputRange(-1, 1)
             .pid(Constants.ElevatorConstants.elevatorP, Constants.ElevatorConstants.elevatorI, Constants.ElevatorConstants.elevatorD);  
 
         followerConfig

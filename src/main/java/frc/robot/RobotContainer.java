@@ -14,6 +14,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Subsystems.Arm.Arm;
 import frc.robot.Subsystems.Elevator.Elevator;
 import frc.robot.Subsystems.Swerve.SwerveSubsystem;
+import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToSource;
 import frc.robot.commands.ArmCommands.ArmLeft;
 import frc.robot.commands.ArmCommands.ArmRight;
 import frc.robot.commands.AutoCommands.Level1AutoAlign;
@@ -59,7 +60,9 @@ public class RobotContainer {
     // Initialzing Controllers
     private final Joystick driverJoystick = new Joystick(OIConstants.kDriverControllerPort);
     private final CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
-    private final CommandXboxController operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort); 
+    private final CommandXboxController operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
+    
+    // Auto April Tag Alignment Systems
 
 
     // Game Controllers
@@ -100,6 +103,8 @@ public class RobotContainer {
     private void configureBindings() {
         drBtnStrt.onTrue(zeroGyro);
         drBtnSelect.onTrue(resetOdometry); 
+
+        driverController.a().whileTrue(new AutoAlignToSource(swerveSubsystem, false, false));
 
         operatorController.axisGreaterThan(2, .1).whileTrue(new ElevatorDown(elevator, () -> operatorController.getRawAxis(2)));
         operatorController.axisGreaterThan(3, .1).whileTrue(new ElevatorUp(elevator, () -> operatorController.getRawAxis(3)));

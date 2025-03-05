@@ -39,7 +39,7 @@ public class Arm extends SubsystemBase {
             .inverted(false); 
         m_Config.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .outputRange(-.3,.3)
+            .outputRange(-.4,.4)
             .pid(Constants.DeliveryConstants.armP, Constants.DeliveryConstants.armI, Constants.DeliveryConstants.armD); 
 
         armMotor.configure(m_Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
