@@ -12,6 +12,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -26,6 +27,8 @@ public class Arm extends SubsystemBase {
 
     private RelativeEncoder armEncoder; 
     private SparkClosedLoopController armController;
+
+    DigitalInput proxSensor = new DigitalInput(0); 
     
     private Solenoid openChannel = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.DeliveryConstants.gripperReverseChannel); 
 
@@ -81,6 +84,8 @@ public class Arm extends SubsystemBase {
         armController.setReference(position, ControlType.kPosition); 
     }   
 
+
+
     public void setArmPID(double P, double I, double D) { 
         m_Config.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -94,6 +99,7 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Arm Encoder", armEncoder.getPosition()); 
+        SmartDashboard.putBoolean("Prox Sensor", proxSensor.get());
     }
 
     public void armStop() { 

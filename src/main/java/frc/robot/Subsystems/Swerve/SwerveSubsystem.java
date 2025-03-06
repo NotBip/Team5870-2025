@@ -111,7 +111,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 this::getPose, 
                 this::resetOdometry, 
                 this::getSpeeds, 
-                (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards, 
+                this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards, 
                 AutoConstants.ppConfig, 
                 config, 
                 () -> {

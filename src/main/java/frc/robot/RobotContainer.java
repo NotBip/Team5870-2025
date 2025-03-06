@@ -34,6 +34,7 @@ import frc.robot.commands.ArmCommands.ArmLeft;
 import frc.robot.commands.ArmCommands.ArmRight;
 import frc.robot.commands.AutoCommands.MidToRightAuto;
 import frc.robot.commands.AutoCommands.TestAuto;
+import frc.robot.commands.AutoCommands.TestAuto2;
 import frc.robot.commands.ElevatorCommands.ElevatorDown;
 import frc.robot.commands.ElevatorCommands.ElevatorUp;
 import frc.robot.commands.GripperCommands.GripperClose;
@@ -92,11 +93,8 @@ public class RobotContainer {
         configureNamedCommands();
 
         sendableChooser.setDefaultOption("NOTHING", null);
-        try {
-            sendableChooser.addOption("5 meters", AutoBuilder.followPath(PathPlannerPath.fromPathFile("Straight")));
-        } catch (Exception e) { 
-            e.printStackTrace();
-        }
+        sendableChooser.addOption("1 Coral Auto", new TestAuto(swerveSubsystem, arm, elevator));
+        sendableChooser.addOption("Test Auto", new TestAuto2(swerveSubsystem, arm, elevator, false));
         
         SmartDashboard.putData(sendableChooser);
 
@@ -164,11 +162,7 @@ public class RobotContainer {
 
 
     public Command getAutonomousCommand() {
-    return new SequentialCommandGroup(
-        new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(0.731, 2.772, new Rotation2d(0)))), 
-        AutoBuilder.buildAuto("TestPath")
-    );
-        
+        return sendableChooser.getSelected();
     }
 
     public Command selfTestCommand() {
