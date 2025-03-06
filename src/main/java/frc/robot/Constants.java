@@ -184,7 +184,7 @@ public final class Constants {
         public static final double driveP = 1.5; 
         public static final double driveI = 0; 
         public static final double driveD = 0;  
-        public static final double rotP = 0.01; 
+        public static final double rotP = 0; 
         public static final double rotI = 0; 
         public static final double rotD = 0; 
     }

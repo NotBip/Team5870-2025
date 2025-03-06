@@ -59,9 +59,9 @@ public class AutoAlignToReef extends Command {
 
             double xSpeed = driveController.calculate(xDist, .9);
             double ySpeed = driveController.calculate(yDist, ySetpoint); 
-            // double rotSpeed = rotController.calculate(rotDist, -178); 
+            double rotSpeed = rotController.calculate(swerveSubsystem.getHeading(), 0); 
 
-            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, -ySpeed, 0);
+            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, -ySpeed, rotSpeed);
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
 
@@ -80,7 +80,7 @@ public class AutoAlignToReef extends Command {
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
             SmartDashboard.putNumber("x dist", xDist);
-            if(xDist >= 1.25) { 
+            if(xDist >= 0.87) { 
                 isDone = true; 
                 swerveSubsystem.stopModules();
             }
