@@ -75,7 +75,7 @@ public class AutoAlignToSource extends Command {
                 initialAlignment = true; 
             }
         }
-
+        
         if(initialAlignment == true) { 
             double xDist = swerveSubsystem.getPose().getTranslation().getX(); 
             double xSpeed = driveController.calculate(xDist, 1.7);
@@ -84,7 +84,8 @@ public class AutoAlignToSource extends Command {
             
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
-
+            
+            SmartDashboard.putNumber("SOURCE X DIST AUTO", xDist);
             if(xDist >= 1.5) { 
                 isDone = true; 
                 swerveSubsystem.stopModules();

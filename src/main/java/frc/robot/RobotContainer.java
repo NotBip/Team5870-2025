@@ -32,6 +32,7 @@ import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToReef;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToSource;
 import frc.robot.commands.ArmCommands.ArmLeft;
 import frc.robot.commands.ArmCommands.ArmRight;
+import frc.robot.commands.AutoCommands.GrabCoral;
 import frc.robot.commands.AutoCommands.MidToRightAuto;
 import frc.robot.commands.AutoCommands.TestAuto;
 import frc.robot.commands.AutoCommands.TestAuto2;
@@ -73,6 +74,7 @@ public class RobotContainer {
     private final Level4Align level4Align = new Level4Align(arm, elevator); 
     private final SourceIntakeAlign sIntakeAlign = new SourceIntakeAlign(elevator, arm); 
     private final RestAlign restAlign = new RestAlign(arm, elevator); 
+    private final GrabCoral grabCoral = new GrabCoral(elevator, arm); 
 
 
     // Initialzing Controllers
@@ -125,10 +127,12 @@ public class RobotContainer {
         drBtnStrt.onTrue(zeroGyro);
         drBtnSelect.onTrue(resetOdometry); 
 
+        
+
         driverController.a().whileTrue(new AutoAlignToSource(swerveSubsystem, false, false));
         driverController.b().whileTrue(new AutoAlignToReef(swerveSubsystem, 6, true)); 
         driverController.x().whileTrue(new AutoAlignToReef(swerveSubsystem, 6, false)); 
-
+        // driverController.x().onTrue(grabCoral); 
         operatorController.axisGreaterThan(2, .1).whileTrue(new ElevatorDown(elevator, () -> operatorController.getRawAxis(2)));
         operatorController.axisGreaterThan(3, .1).whileTrue(new ElevatorUp(elevator, () -> operatorController.getRawAxis(3)));
 

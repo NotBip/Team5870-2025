@@ -9,7 +9,7 @@ public class GrabCoral extends Command {
 
     private Elevator elevator;
     private Arm arm; 
-    private boolean isDone = false; 
+    private boolean isDone; 
     
     public GrabCoral(Elevator elevator, Arm arm){
         this.elevator = elevator;
@@ -19,6 +19,7 @@ public class GrabCoral extends Command {
 
     @Override
     public void initialize() {
+        isDone = false;
         arm.openGripper();
     }
 
@@ -30,7 +31,7 @@ public class GrabCoral extends Command {
         arm.setPosition(Constants.DeliveryConstants.grabPosition);
        }
 
-       if(arm.getArmEncoder() > 40) { 
+       if(arm.getArmEncoder() > 41) { 
         isDone = true; 
        }
     }
@@ -44,6 +45,6 @@ public class GrabCoral extends Command {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return isDone;
     }
 }

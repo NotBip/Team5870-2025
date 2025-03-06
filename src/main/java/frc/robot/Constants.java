@@ -92,7 +92,7 @@ public final class Constants {
     public static final class AutoConstants {
         public static final PPHolonomicDriveController ppConfig = new PPHolonomicDriveController(
         // test .137 
-        new PIDConstants(1.5,0,0),
+        new PIDConstants(1.5,0,0), 
         // .137
         new PIDConstants(0, 0, .1)
         ); 
@@ -166,7 +166,7 @@ public final class Constants {
         public static final double level1Position = 0; 
         public static final double level2Position = 0; 
         public static final double level3Position = 0; 
-        public static final double level4Position = 142; 
+        public static final double level4Position = 139; 
         public static final double restPosition = 102.97858428955078; 
  
         public static final double elevatorP = 0.08; 
@@ -181,7 +181,7 @@ public final class Constants {
     }
 
     public static final class photonVisionConstants {
-        public static final double driveP = 1; 
+        public static final double driveP = 1.5; 
         public static final double driveI = 0; 
         public static final double driveD = 0;  
         public static final double rotP = 0.01; 

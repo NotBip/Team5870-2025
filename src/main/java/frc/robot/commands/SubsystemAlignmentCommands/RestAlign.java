@@ -18,7 +18,7 @@ public class RestAlign extends Command {
 
     @Override
     public void initialize() {
-
+        arm.closeGripper();
     }
 
     @Override

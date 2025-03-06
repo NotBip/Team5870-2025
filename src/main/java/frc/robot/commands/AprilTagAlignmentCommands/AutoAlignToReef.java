@@ -53,7 +53,7 @@ public class AutoAlignToReef extends Command {
 
         if(swerveSubsystem.hasPhotonAprilTagTarget(results) && initialAlignment == false) { 
             double xDist = swerveSubsystem.getPhotonAprilTagX(trackerID, results);
-            double yDist = swerveSubsystem.getPhotonAprilTagY(trackerID, results); 
+            double yDist = swerveSubsystem.getPhotonAprilTagY(trackerID, results);
             // double rotDist = swerveSubsystem.getPhotonAprilTagTheta(trackerID, results); 
             
 
@@ -79,8 +79,8 @@ public class AutoAlignToReef extends Command {
             
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
-
-            if(xDist >= 1.27) { 
+            SmartDashboard.putNumber("x dist", xDist);
+            if(xDist >= 1.25) { 
                 isDone = true; 
                 swerveSubsystem.stopModules();
             }

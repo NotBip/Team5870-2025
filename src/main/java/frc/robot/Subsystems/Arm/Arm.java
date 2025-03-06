@@ -13,6 +13,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -29,14 +30,13 @@ public class Arm extends SubsystemBase {
     private SparkClosedLoopController armController;
 
     DigitalInput proxSensor = new DigitalInput(0); 
-    
+        
     private Solenoid openChannel = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.DeliveryConstants.gripperReverseChannel); 
 
     public Arm() { 
        // c =  new Compressor(PneumaticsModuleType.CTREPCM); 
         armEncoder = armMotor.getEncoder(); 
         armController = armMotor.getClosedLoopController(); 
-
         m_Config
             .idleMode(IdleMode.kBrake)
             .inverted(false); 
@@ -52,7 +52,7 @@ public class Arm extends SubsystemBase {
     }
 
     public void rotateArm() { 
-        armMotor.set(0.2);
+        armMotor.set(0.4);
     }
 
     public double getArmEncoder() { 
@@ -65,7 +65,7 @@ public class Arm extends SubsystemBase {
 
     public void rotateArmReverse() { 
         if(armEncoder.getPosition() < 0){
-            armMotor.set(.3);
+            armMotor.set(.4);
         }
         else{
         armMotor.set(-0.2);
