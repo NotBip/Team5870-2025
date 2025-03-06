@@ -29,10 +29,10 @@ import frc.robot.commands.SubsystemAlignmentCommands.Level4Align;
 
 public class TestAuto extends SequentialCommandGroup {
 
-    PathConstraints defaultContraints = new PathConstraints(4.1, 6, Units.degreesToRadians(540), Units.degreesToRadians(720));  
+    PathConstraints defaultContraints = new PathConstraints(4.5, 3, Units.degreesToRadians(540), Units.degreesToRadians(720));  
     private Pose2d initialPose = new Pose2d(); 
 
-    public TestAuto(SwerveSubsystem swerveSubsystem, Intake intake, Arm arm, Elevator elevator, boolean isRedAlliance) { 
+    public TestAuto(SwerveSubsystem swerveSubsystem, Arm arm, Elevator elevator, boolean isRedAlliance) { 
         int id1; //javiera did everything
         int id2; 
         double x; 
@@ -40,22 +40,12 @@ public class TestAuto extends SequentialCommandGroup {
         double rot; 
 
         if (isRedAlliance) { 
-            try {
-                initialPose = PathPlannerPath.fromPathFile("TestPath").flipPath().getStartingHolonomicPose().get();
-            } catch (Exception e) { 
-                e.printStackTrace();
-            }  
             id1 = 10;
             id2 = 6; 
             x = 3.000; 
             y = 5.750; 
             rot = -55; 
         } else { 
-            try {
-                initialPose = PathPlannerPath.fromPathFile("TestPath").getStartingHolonomicPose().get();
-            } catch (Exception e) { 
-                e.printStackTrace();
-            }
             id1 = 21; 
             id2 = 19;  
             x = 14; 
@@ -63,36 +53,26 @@ public class TestAuto extends SequentialCommandGroup {
             rot = -55; 
         }   
 
-        new InstantCommand(() -> swerveSubsystem.resetOdometry(initialPose)); 
-        try {
-            AutoBuilder.followPath(PathPlannerPath.fromPathFile("TestPath"));
-        } catch (Exception e) { 
-            e.printStackTrace();
-        }
-         new ParallelDeadlineGroup(
-            new AutoAlignToReef(swerveSubsystem, id2, true), 
-            new Level4Align(arm, elevator)
-        );
-        swerveSubsystem.findPathToPose(x, y, rot, defaultContraints, isRedAlliance);
-        new AutoAlignToSource(swerveSubsystem, isRedAlliance, true);
-        new WaitCommand(2);  
-        new ParallelRaceGroup(
-            swerveSubsystem.findPathToPose(x, y, -60, defaultContraints, isRedAlliance),
-            new GrabCoral(elevator, arm)
-        ); 
-        new ParallelDeadlineGroup(
-            new AutoAlignToReef(swerveSubsystem, id2, true), 
-            new Level4Align(arm, elevator)
-        );
-        new AutoAlignToSource(swerveSubsystem, isRedAlliance, true); 
-        new ParallelRaceGroup(
-            swerveSubsystem.findPathToPose(x, y, -60, defaultContraints, isRedAlliance),
-            new GrabCoral(elevator, arm)
-        ); 
-        new ParallelDeadlineGroup(
-            new AutoAlignToReef(swerveSubsystem, id2, false), 
-            new Level4Align(arm, elevator)
-        );
+        AutoBuilder.buildAuto("TestPath");
+    //     new AutoAlignToSource(swerveSubsystem, isRedAlliance, true);
+    //     new WaitCommand(2);  
+    //     new ParallelRaceGroup(
+    //         swerveSubsystem.findPathToPose(x, y, -60, defaultContraints, isRedAlliance),
+    //         new GrabCoral(elevator, arm)
+    //     ); 
+    //     new ParallelDeadlineGroup(
+    //         new AutoAlignToReef(swerveSubsystem, 6, true), 
+    //         new Level4Align(arm, elevator)
+    //     );
+    //     new AutoAlignToSource(swerveSubsystem, isRedAlliance, true); 
+    //     new ParallelRaceGroup(
+    //         swerveSubsystem.findPathToPose(x, y, -60, defaultContraints, isRedAlliance),
+    //         new GrabCoral(elevator, arm)
+    //     ); 
+    //     new ParallelDeadlineGroup(
+    //         new AutoAlignToReef(swerveSubsystem, id2, false), 
+    //         new Level4Align(arm, elevator)
+    //     );
     }
     
 }

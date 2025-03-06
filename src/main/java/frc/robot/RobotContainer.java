@@ -4,10 +4,24 @@
 
 package frc.robot;
 
+import java.io.IOException;
+
+import org.json.simple.parser.ParseException;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FileVersionException;
+import com.pathplanner.lib.util.PathPlannerLogging;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
@@ -18,6 +32,8 @@ import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToReef;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToSource;
 import frc.robot.commands.ArmCommands.ArmLeft;
 import frc.robot.commands.ArmCommands.ArmRight;
+import frc.robot.commands.AutoCommands.MidToRightAuto;
+import frc.robot.commands.AutoCommands.TestAuto;
 import frc.robot.commands.ElevatorCommands.ElevatorDown;
 import frc.robot.commands.ElevatorCommands.ElevatorUp;
 import frc.robot.commands.GripperCommands.GripperClose;
@@ -76,6 +92,12 @@ public class RobotContainer {
         configureNamedCommands();
 
         sendableChooser.setDefaultOption("NOTHING", null);
+        try {
+            sendableChooser.addOption("5 meters", AutoBuilder.followPath(PathPlannerPath.fromPathFile("Straight")));
+        } catch (Exception e) { 
+            e.printStackTrace();
+        }
+        
         SmartDashboard.putData(sendableChooser);
 
 
@@ -142,8 +164,11 @@ public class RobotContainer {
 
 
     public Command getAutonomousCommand() {
-        return sendableChooser.getSelected();
-
+    return new SequentialCommandGroup(
+        new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(0.731, 2.772, new Rotation2d(0)))), 
+        AutoBuilder.buildAuto("TestPath")
+    );
+        
     }
 
     public Command selfTestCommand() {

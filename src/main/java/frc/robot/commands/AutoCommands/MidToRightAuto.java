@@ -23,7 +23,7 @@ public class MidToRightAuto extends SequentialCommandGroup {
     PathConstraints defaultContraints = new PathConstraints(4.1, 6, Units.degreesToRadians(540), Units.degreesToRadians(720));  
 
 
-    public MidToRightAuto(SwerveSubsystem swerveSubsystem, Intake intake, Arm arm, Elevator elevator, boolean isRedAlliance) { 
+    public MidToRightAuto(SwerveSubsystem swerveSubsystem, Arm arm, Elevator elevator, boolean isRedAlliance) { 
 
         Pose2d initialPose; 
         int id1; 

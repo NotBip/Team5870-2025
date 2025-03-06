@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.util.DriveFeedforwards;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -160,6 +161,7 @@ public class SwerveSubsystem extends SubsystemBase {
         Logger.recordOutput("Mod Positions", getModulePositions());
         reefResults = reefCam.getLatestResult();
         sourceResults = sourceCam.getLatestResult(); 
+        SmartDashboard.putNumber("GYRO", getHeading());
 
         getAbsoluteEncoder();
         getTurningEnc();

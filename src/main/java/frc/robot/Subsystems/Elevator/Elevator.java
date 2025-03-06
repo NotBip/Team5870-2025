@@ -11,6 +11,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -19,10 +20,9 @@ public class Elevator extends SubsystemBase {
 
     private SparkMax leaderMotor = new SparkMax(Constants.ElevatorConstants.leaderMotorID, MotorType.kBrushless); 
     private SparkMax followerMotor = new SparkMax(Constants.ElevatorConstants.followerMotorID, MotorType.kBrushless); 
-
     private RelativeEncoder elevatorEncoder; 
     private SparkClosedLoopController elevatorController; 
-
+    
     private SparkMaxConfig leaderConfig = new SparkMaxConfig(); 
     private SparkMaxConfig followerConfig = new SparkMaxConfig(); 
     private SparkMaxConfig globalConfig = new SparkMaxConfig();
