@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,21 +17,23 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Subsystems.Swerve.SwerveSubsystem;
 
-public class AutoAlignToSource extends Command {
+public class AutoAlignToReefTest extends Command {
 
     private SwerveSubsystem swerveSubsystem; 
     private PIDController driveController = new PIDController(Constants.photonVisionConstants.driveP, Constants.photonVisionConstants.driveI, Constants.photonVisionConstants.driveD); 
     private PIDController rotController = new PIDController(Constants.photonVisionConstants.rotP, Constants.photonVisionConstants.rotI, Constants.photonVisionConstants.rotD); 
-    private boolean isRedAlliance, isRightSide; 
     private int trackerID; 
     private PhotonPipelineResult results;
     private boolean initialAlignment; 
     private boolean isDone; 
+    private boolean rightSide;
+    double ySetpoint; 
+    double xSetpoint; 
 
-    public AutoAlignToSource(SwerveSubsystem swerveSubsystem, boolean isRedAlliance, boolean isRightSide) { 
-        this.isRightSide = isRightSide;
+    public AutoAlignToReefTest(SwerveSubsystem swerveSubsystem, int trackerID, boolean rightSide) { 
+        this.trackerID = trackerID; 
         this.swerveSubsystem = swerveSubsystem; 
-        this.isRedAlliance = isRedAlliance; 
+        this.rightSide = rightSide;
         addRequirements(swerveSubsystem);
     }
     
@@ -38,55 +41,50 @@ public class AutoAlignToSource extends Command {
     public void initialize() { 
         initialAlignment = false; 
         isDone = false; 
-        if(isRedAlliance == true) { 
-            if(isRightSide == true) { 
-                trackerID = 1;  
-            } else { 
-                trackerID = 2;
-            }
+        if(rightSide) { 
+            ySetpoint = -.12; 
+            xSetpoint = .9; 
         } else { 
-            if(isRightSide == true) { 
-                trackerID = 13;  
-            } else { 
-                trackerID = 12;
-            }
+            ySetpoint = -.52;
+            xSetpoint = 1.5;  
         }
     }
     
     @Override
     public void execute() {
-        results = swerveSubsystem.getSourceResults(); 
+        results = swerveSubsystem.getReefResults(); 
 
         if(swerveSubsystem.hasPhotonAprilTagTarget(results) && initialAlignment == false) { 
             double xDist = swerveSubsystem.getPhotonAprilTagX(trackerID, results);
-            double yDist = swerveSubsystem.getPhotonAprilTagY(trackerID, results); 
-            double rotDist = swerveSubsystem.getPhotonAprilTagTheta(trackerID, results); 
-      
-            double xSpeed = driveController.calculate(xDist, 1.5);
-            double ySpeed = driveController.calculate(yDist, .34); 
-            double rotSpeed = rotController.calculate(rotDist, -178); 
+            double yDist = swerveSubsystem.getPhotonAprilTagY(trackerID, results);
+            // double rotDist = swerveSubsystem.getPhotonAprilTagTheta(trackerID, results); 
+             
+            double xSpeed = driveController.calculate(xDist, xSetpoint);
+            double ySpeed = driveController.calculate(yDist, ySetpoint); 
+            double rotSpeed = rotController.calculate(swerveSubsystem.getHeading(), 179); 
 
-            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, 0);
+            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, -ySpeed, 0);
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
 
-            if((xDist <= 1.7 && xDist >= 1.3) && (yDist <= 0.37 && yDist >= 0)) { 
+            if((xDist <= xSetpoint + .2 && xDist >= xSetpoint - .2) && (yDist <=   ySetpoint + .05 && yDist >= ySetpoint - .05)) { 
                 swerveSubsystem.resetOdometry(new Pose2d()); 
                 initialAlignment = true; 
             }
         }
-        
+
         if(initialAlignment == true) { 
-            double xDist = swerveSubsystem.getPose().getTranslation().getX(); 
-            double xSpeed = driveController.calculate(xDist, 1.9);
+            double xDist = Math.abs(swerveSubsystem.getPose().getX()); 
+            double xSpeed = driveController.calculate(xDist, xSetpoint + .4);
+
             
-            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, 0, 0);
+            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, 0, 0);
             
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
-            
-            SmartDashboard.putNumber("SOURCE X DIST AUTO", xDist);
-            if(xDist >= 1.47) { 
+            SmartDashboard.putNumber("x dist", xDist);
+
+            if(xDist >= xSetpoint - 0.43) { 
                 isDone = true; 
                 swerveSubsystem.stopModules();
             }

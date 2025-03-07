@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.json.simple.parser.ParseException;
 
@@ -16,8 +17,10 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS5Controller;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,7 +39,7 @@ import frc.robot.commands.ArmCommands.ArmLeft;
 import frc.robot.commands.ArmCommands.ArmRight;
 import frc.robot.commands.AutoCommands.GrabCoral;
 import frc.robot.commands.AutoCommands.MidToRightAuto;
-import frc.robot.commands.AutoCommands.TestAuto;
+import frc.robot.commands.AutoCommands.One_CoralAuto;
 import frc.robot.commands.AutoCommands.TestAuto2;
 import frc.robot.commands.ElevatorCommands.ElevatorDown;
 import frc.robot.commands.ElevatorCommands.ElevatorUp;
@@ -76,7 +79,6 @@ public class RobotContainer {
     private final Level4Align level4Align = new Level4Align(arm, elevator); 
     private final SourceIntakeAlign sIntakeAlign = new SourceIntakeAlign(elevator, arm); 
     private final RestAlign restAlign = new RestAlign(arm, elevator); 
-    private final GrabCoral grabCoral = new GrabCoral(elevator, arm); 
 
     //dio port 9, if 5 volts then coral if not then no coral
 
@@ -89,7 +91,6 @@ public class RobotContainer {
     
     // Auto April Tag Alignment Systems
 
-
     // Game Controllers
     public JoystickButton drBtnA, drBtnB, drBtnX, drBtnY, drBtnLB, drBtnRB, drBtnStrt, drBtnSelect;
 
@@ -99,8 +100,14 @@ public class RobotContainer {
 
         configureNamedCommands();
 
+        Optional<Alliance> ally = DriverStation.getAlliance();
+        boolean isRedAlliance = false; 
+        if(ally.get() == Alliance.Red) { 
+            isRedAlliance = true; 
+        }
+
         sendableChooser.setDefaultOption("NOTHING", null);
-        sendableChooser.addOption("1 Coral Auto", new TestAuto(swerveSubsystem, arm, elevator));
+        sendableChooser.addOption("1 Coral Auto", new One_CoralAuto(swerveSubsystem, arm, elevator, isRedAlliance));
         sendableChooser.addOption("Test Auto", new TestAuto2(swerveSubsystem, arm, elevator, false));
         
         SmartDashboard.putData(sendableChooser);
@@ -138,21 +145,21 @@ public class RobotContainer {
         driverController.b().whileTrue(new AutoAlignToReef(swerveSubsystem, 6, true)); 
 
         // LOGITECH CONTROLLER
-        // operatorController.axisGreaterThan(2, .1).whileTrue(new ElevatorDown(elevator, () -> operatorController.getRawAxis(2)));
-        // operatorController.axisGreaterThan(3, .1).whileTrue(new ElevatorUp(elevator, () -> operatorController.getRawAxis(3)));
+        operatorController.axisGreaterThan(2, .1).whileTrue(new ElevatorDown(elevator, () -> operatorController.getRawAxis(2)));
+        operatorController.axisGreaterThan(3, .1).whileTrue(new ElevatorUp(elevator, () -> operatorController.getRawAxis(3)));
 
-        // operatorController.rightBumper().whileTrue(armLeft); 
-        // operatorController.leftBumper().whileTrue(armRight); 
+        operatorController.rightBumper().whileTrue(armLeft); 
+        operatorController.leftBumper().whileTrue(armRight); 
 
-        // operatorController.povUp().whileTrue(level4Align); 
-        // operatorController.povLeft().whileTrue(level3Align); 
-        // operatorController.povDown().whileTrue(level2Align); 
-        // operatorController.povRight().whileTrue(level1Align); 
+        operatorController.povUp().whileTrue(level4Align); 
+        operatorController.povLeft().whileTrue(level3Align); 
+        operatorController.povDown().whileTrue(level2Align); 
+        operatorController.povRight().whileTrue(level1Align); 
 
-        // operatorController.y().whileTrue(sIntakeAlign); 
-        // operatorController.x().onTrue(gripperOpen); 
-        // operatorController.b().onTrue(gripperClose);
-        // operatorController.a().whileTrue(restAlign); 
+        operatorController.y().whileTrue(sIntakeAlign); 
+        operatorController.x().onTrue(gripperOpen); 
+        operatorController.b().onTrue(gripperClose);
+        operatorController.a().whileTrue(restAlign); 
 
         // PS5 CONTROLLER
         // commandPS5Controller.axisGreaterThan(3, 0).whileTrue(new ElevatorDown(elevator, () -> operatorController.getRawAxis(3)));

@@ -25,7 +25,7 @@ public class SourceIntakeAlign extends Command {
     public void execute() {
         
        elevator.setPoint(Constants.ElevatorConstants.grabPosition);
-       if(elevator.getElevatorEncoder() > 90) { 
+       if(elevator.getElevatorEncoder() > Constants.ElevatorConstants.grabPosition - 5) { 
         arm.setPosition(Constants.DeliveryConstants.grabPosition);
        }
     }

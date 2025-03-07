@@ -10,11 +10,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.PWM;
-import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,12 +25,11 @@ public class Arm extends SubsystemBase {
     private RelativeEncoder armEncoder; 
     private SparkClosedLoopController armController;
 
-    DigitalInput proxSensor = new DigitalInput(0); 
+    DigitalInput proxSensor = new DigitalInput(9); 
         
     private Solenoid openChannel = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.DeliveryConstants.gripperReverseChannel); 
 
     public Arm() { 
-       // c =  new Compressor(PneumaticsModuleType.CTREPCM); 
         armEncoder = armMotor.getEncoder(); 
         armController = armMotor.getClosedLoopController(); 
         m_Config
@@ -46,9 +41,6 @@ public class Arm extends SubsystemBase {
             .pid(Constants.DeliveryConstants.armP, Constants.DeliveryConstants.armI, Constants.DeliveryConstants.armD); 
 
         armMotor.configure(m_Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
-
-        //c.enableDigital();
-        // pneumaticHub.enableCompressorDigital();
     }
 
     public void rotateArm() { 
