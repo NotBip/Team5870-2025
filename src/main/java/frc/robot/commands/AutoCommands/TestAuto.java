@@ -14,7 +14,7 @@ public class TestAuto extends SequentialCommandGroup {
     public TestAuto(SwerveSubsystem swerveSubsystem, Arm arm, Elevator elevator) { 
         addCommands(
             new GrabCoral(elevator, arm),     
-            new WaitCommand(2),
+            new WaitCommand(1.5),
             new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 6, true), new Level4Align(arm, elevator))
         );
     }

@@ -59,6 +59,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void elevatorDown(double speed) { 
+
         if(elevatorEncoder.getPosition() < 0) { 
             leaderMotor.set(.5);
         } else { 

@@ -17,11 +17,13 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
@@ -83,6 +85,7 @@ public class RobotContainer {
     private final Joystick driverJoystick = new Joystick(OIConstants.kDriverControllerPort);
     private final CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
     private final CommandXboxController operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
+    CommandPS5Controller commandPS5Controller = new CommandPS5Controller(OIConstants.kOperatorControllerPort); 
     
     // Auto April Tag Alignment Systems
 
@@ -133,23 +136,40 @@ public class RobotContainer {
 
         driverController.a().whileTrue(new AutoAlignToSource(swerveSubsystem, false, false));
         driverController.b().whileTrue(new AutoAlignToReef(swerveSubsystem, 6, true)); 
-        driverController.x().whileTrue(new AutoAlignToReef(swerveSubsystem, 6, false)); 
-        // driverController.x().onTrue(grabCoral); 
-        operatorController.axisGreaterThan(2, .1).whileTrue(new ElevatorDown(elevator, () -> operatorController.getRawAxis(2)));
-        operatorController.axisGreaterThan(3, .1).whileTrue(new ElevatorUp(elevator, () -> operatorController.getRawAxis(3)));
 
-        operatorController.rightBumper().whileTrue(armLeft); 
-        operatorController.leftBumper().whileTrue(armRight); 
+        // LOGITECH CONTROLLER
+        // operatorController.axisGreaterThan(2, .1).whileTrue(new ElevatorDown(elevator, () -> operatorController.getRawAxis(2)));
+        // operatorController.axisGreaterThan(3, .1).whileTrue(new ElevatorUp(elevator, () -> operatorController.getRawAxis(3)));
 
-        operatorController.povUp().whileTrue(level4Align); 
-        operatorController.povLeft().whileTrue(level3Align); 
-        operatorController.povDown().whileTrue(level2Align); 
-        operatorController.povRight().whileTrue(level1Align); 
+        // operatorController.rightBumper().whileTrue(armLeft); 
+        // operatorController.leftBumper().whileTrue(armRight); 
 
-        operatorController.y().whileTrue(sIntakeAlign); 
-        operatorController.x().onTrue(gripperOpen); 
-        operatorController.b().onTrue(gripperClose);
-        operatorController.a().whileTrue(restAlign); 
+        // operatorController.povUp().whileTrue(level4Align); 
+        // operatorController.povLeft().whileTrue(level3Align); 
+        // operatorController.povDown().whileTrue(level2Align); 
+        // operatorController.povRight().whileTrue(level1Align); 
+
+        // operatorController.y().whileTrue(sIntakeAlign); 
+        // operatorController.x().onTrue(gripperOpen); 
+        // operatorController.b().onTrue(gripperClose);
+        // operatorController.a().whileTrue(restAlign); 
+
+        // PS5 CONTROLLER
+        // commandPS5Controller.axisGreaterThan(3, 0).whileTrue(new ElevatorDown(elevator, () -> operatorController.getRawAxis(3)));
+        // commandPS5Controller.axisGreaterThan(4, 0).whileTrue(new ElevatorUp(elevator, () -> operatorController.getRawAxis(4)));
+        
+        // commandPS5Controller.R1().whileTrue(armLeft); 
+        // commandPS5Controller.L1().whileTrue(armRight);
+        
+        // commandPS5Controller.povUp().whileTrue(level4Align); 
+        // commandPS5Controller.povLeft().whileTrue(level3Align); 
+        // commandPS5Controller.povDown().whileTrue(level2Align); 
+        // commandPS5Controller.povRight().whileTrue(level1Align);
+
+        // commandPS5Controller.triangle().whileTrue(sIntakeAlign); 
+        // commandPS5Controller.square().onTrue(gripperOpen); 
+        // commandPS5Controller.circle().onTrue(gripperClose);
+        // commandPS5Controller.cross().whileTrue(restAlign);
 
     }
 

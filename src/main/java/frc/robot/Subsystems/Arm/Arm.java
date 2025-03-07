@@ -52,6 +52,7 @@ public class Arm extends SubsystemBase {
     }
 
     public void rotateArm() { 
+        SmartDashboard.putNumber("Rotatee Arm", .4); 
         armMotor.set(0.4);
     }
 
@@ -64,6 +65,7 @@ public class Arm extends SubsystemBase {
     }
 
     public void rotateArmReverse() { 
+        SmartDashboard.putNumber("Rotatee Arm", -.2); 
         if(armEncoder.getPosition() < 0){
             armMotor.set(.4);
         }
@@ -98,6 +100,7 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putBoolean("Gripper", getGripper());
         SmartDashboard.putNumber("Arm Encoder", armEncoder.getPosition()); 
         SmartDashboard.putBoolean("Prox Sensor", proxSensor.get());
     }

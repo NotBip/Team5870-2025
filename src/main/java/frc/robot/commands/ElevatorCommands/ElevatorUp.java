@@ -2,6 +2,7 @@ package frc.robot.commands.ElevatorCommands;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.Elevator.Elevator;
 
@@ -18,12 +19,14 @@ public class ElevatorUp extends Command {
     @Override
     public void execute() {
         double speed = rightTrigger.get();
+        SmartDashboard.putNumber("Elevator Up", speed); 
         elevator.elevatorUp(speed);
         System.out.println(speed);
     }
 
     @Override
     public void end(boolean interrupted) {
+        SmartDashboard.putNumber("Elevator Up", 0); 
        elevator.stopElevator();
     }
 
