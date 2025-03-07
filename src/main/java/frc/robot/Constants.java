@@ -162,12 +162,13 @@ public final class Constants {
         public static final int leaderMotorID = 13; 
         public static final int followerMotorID = 10;
         
-        public static final double grabPosition = 102.97858428955078; 
+        //new needed values for pole coral 95.64620208740234
+        public static final double grabPosition = 95.64620208740234; 
         public static final double level1Position = 0; 
         public static final double level2Position = 0; 
         public static final double level3Position = 0; 
         public static final double level4Position = 139; 
-        public static final double restPosition = 102.97858428955078; 
+        public static final double restPosition = 95.64620208740234;//102.97858428955078 - original encoder value; 
  
         public static final double elevatorP = 0.08; 
         public static final double elevatorI = 0; 

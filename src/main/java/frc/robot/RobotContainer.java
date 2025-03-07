@@ -76,6 +76,8 @@ public class RobotContainer {
     private final RestAlign restAlign = new RestAlign(arm, elevator); 
     private final GrabCoral grabCoral = new GrabCoral(elevator, arm); 
 
+    //dio port 9, if 5 volts then coral if not then no coral
+
 
     // Initialzing Controllers
     private final Joystick driverJoystick = new Joystick(OIConstants.kDriverControllerPort);

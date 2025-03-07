@@ -55,11 +55,10 @@ public class AutoAlignToReef extends Command {
             double xDist = swerveSubsystem.getPhotonAprilTagX(trackerID, results);
             double yDist = swerveSubsystem.getPhotonAprilTagY(trackerID, results);
             // double rotDist = swerveSubsystem.getPhotonAprilTagTheta(trackerID, results); 
-            
-
+             
             double xSpeed = driveController.calculate(xDist, .9);
             double ySpeed = driveController.calculate(yDist, ySetpoint); 
-            double rotSpeed = rotController.calculate(swerveSubsystem.getHeading(), 0); 
+            double rotSpeed = rotController.calculate(swerveSubsystem.getHeading(), 179); 
 
             ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, -ySpeed, rotSpeed);
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
@@ -74,12 +73,14 @@ public class AutoAlignToReef extends Command {
         if(initialAlignment == true) { 
             double xDist = Math.abs(swerveSubsystem.getPose().getX()); 
             double xSpeed = driveController.calculate(xDist, 1.3);
+
             
             ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, 0, 0);
             
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
             SmartDashboard.putNumber("x dist", xDist);
+
             if(xDist >= 0.87) { 
                 isDone = true; 
                 swerveSubsystem.stopModules();

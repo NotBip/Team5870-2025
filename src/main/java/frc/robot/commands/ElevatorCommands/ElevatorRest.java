@@ -28,7 +28,7 @@ public class ElevatorRest extends Command {
     public void execute() {
         
        elevator.setPoint(setpoint);
-       if(elevator.getElevatorEncoder() > 100) { 
+       if(elevator.getElevatorEncoder() > 93) { 
         arm.setPosition(Constants.DeliveryConstants.grabPosition);
        }
     }
