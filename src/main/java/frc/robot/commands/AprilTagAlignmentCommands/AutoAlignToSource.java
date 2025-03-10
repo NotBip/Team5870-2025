@@ -1,15 +1,10 @@
 package frc.robot.commands.AprilTagAlignmentCommands;
 
 import org.photonvision.targeting.PhotonPipelineResult;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -21,16 +16,13 @@ public class AutoAlignToSource extends Command {
     private SwerveSubsystem swerveSubsystem; 
     private PIDController driveController = new PIDController(Constants.photonVisionConstants.driveP, Constants.photonVisionConstants.driveI, Constants.photonVisionConstants.driveD); 
     private PIDController rotController = new PIDController(Constants.photonVisionConstants.rotP, Constants.photonVisionConstants.rotI, Constants.photonVisionConstants.rotD); 
-    private boolean isRedAlliance, isRightSide; 
     private int trackerID; 
     private PhotonPipelineResult results;
     private boolean initialAlignment; 
     private boolean isDone; 
 
-    public AutoAlignToSource(SwerveSubsystem swerveSubsystem, boolean isRedAlliance, boolean isRightSide) { 
-        this.isRightSide = isRightSide;
+    public AutoAlignToSource(SwerveSubsystem swerveSubsystem) { 
         this.swerveSubsystem = swerveSubsystem; 
-        this.isRedAlliance = isRedAlliance; 
         addRequirements(swerveSubsystem);
     }
     
@@ -38,19 +30,6 @@ public class AutoAlignToSource extends Command {
     public void initialize() { 
         initialAlignment = false; 
         isDone = false; 
-        if(isRedAlliance == true) { 
-            if(isRightSide == true) { 
-                trackerID = 1;  
-            } else { 
-                trackerID = 2;
-            }
-        } else { 
-            if(isRightSide == true) { 
-                trackerID = 13;  
-            } else { 
-                trackerID = 12;
-            }
-        }
     }
     
     @Override
@@ -64,7 +43,7 @@ public class AutoAlignToSource extends Command {
       
             double xSpeed = driveController.calculate(xDist, 1.5);
             double ySpeed = driveController.calculate(yDist, .34); 
-            double rotSpeed = rotController.calculate(rotDist, -178); 
+            double rotSpeed = driveController.calculate(rotDist, -180); 
 
             ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, 0);
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 

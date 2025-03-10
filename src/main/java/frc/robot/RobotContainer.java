@@ -33,14 +33,14 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Subsystems.Arm.Arm;
 import frc.robot.Subsystems.Elevator.Elevator;
 import frc.robot.Subsystems.Swerve.SwerveSubsystem;
+import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignSwerve;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToReef;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToSource;
 import frc.robot.commands.ArmCommands.ArmLeft;
 import frc.robot.commands.ArmCommands.ArmRight;
 import frc.robot.commands.AutoCommands.GrabCoral;
-import frc.robot.commands.AutoCommands.MidToRightAuto;
-import frc.robot.commands.AutoCommands.One_CoralAuto;
-import frc.robot.commands.AutoCommands.TestAuto2;
+import frc.robot.commands.AutoCommands.RedOneCoral;
+import frc.robot.commands.AutoCommands.BlueOneCoral;
 import frc.robot.commands.ElevatorCommands.ElevatorDown;
 import frc.robot.commands.ElevatorCommands.ElevatorUp;
 import frc.robot.commands.GripperCommands.GripperClose;
@@ -87,7 +87,7 @@ public class RobotContainer {
     private final Joystick driverJoystick = new Joystick(OIConstants.kDriverControllerPort);
     private final CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
     private final CommandXboxController operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
-    CommandPS5Controller commandPS5Controller = new CommandPS5Controller(OIConstants.kOperatorControllerPort); 
+    // CommandPS5Controller commandPS5Controller = new CommandPS5Controller(OIConstants.kOperatorControllerPort); 
     
     // Auto April Tag Alignment Systems
 
@@ -100,15 +100,11 @@ public class RobotContainer {
 
         configureNamedCommands();
 
-        Optional<Alliance> ally = DriverStation.getAlliance();
-        boolean isRedAlliance = false; 
-        if(ally.get() == Alliance.Red) { 
-            isRedAlliance = true; 
-        }
-
         sendableChooser.setDefaultOption("NOTHING", null);
-        sendableChooser.addOption("1 Coral Auto", new One_CoralAuto(swerveSubsystem, arm, elevator, isRedAlliance));
-        sendableChooser.addOption("Test Auto", new TestAuto2(swerveSubsystem, arm, elevator, false));
+        sendableChooser.addOption(" Blue 1 Coral Auto", new BlueOneCoral(swerveSubsystem, arm, elevator));
+        sendableChooser.addOption(" Red 1 Coral Auto", new RedOneCoral(swerveSubsystem, arm, elevator));
+        sendableChooser.addOption("Leave Auto", AutoBuilder.buildAuto("Straight"));
+
         
         SmartDashboard.putData(sendableChooser);
 
@@ -139,10 +135,8 @@ public class RobotContainer {
         drBtnStrt.onTrue(zeroGyro);
         drBtnSelect.onTrue(resetOdometry); 
 
-        
-
-        driverController.a().whileTrue(new AutoAlignToSource(swerveSubsystem, false, false));
-        driverController.b().whileTrue(new AutoAlignToReef(swerveSubsystem, 6, true)); 
+        driverController.a().whileTrue(new AutoAlignSwerve(swerveSubsystem, true));
+        // driverController.y().whileTrue(new AutoAlignToReef(swerveSubsystem, 22, true)); 
 
         // LOGITECH CONTROLLER
         operatorController.axisGreaterThan(2, .1).whileTrue(new ElevatorDown(elevator, () -> operatorController.getRawAxis(2)));

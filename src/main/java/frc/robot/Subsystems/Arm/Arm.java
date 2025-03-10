@@ -44,8 +44,15 @@ public class Arm extends SubsystemBase {
     }
 
     public void rotateArm() { 
-        SmartDashboard.putNumber("Rotatee Arm", .4); 
-        armMotor.set(0.4);
+        if(armEncoder.getPosition() > Constants.DeliveryConstants.grabPosition + .2) { 
+            armMotor.set(-.4);
+        }
+    
+        if(armEncoder.getPosition() > 24) { 
+            armMotor.set(.05);
+        } else { 
+            armMotor.set(0.4);
+        }
     }
 
     public double getArmEncoder() { 
@@ -57,13 +64,18 @@ public class Arm extends SubsystemBase {
     }
 
     public void rotateArmReverse() { 
-        SmartDashboard.putNumber("Rotatee Arm", -.2); 
-        if(armEncoder.getPosition() < 0){
+        
+        if(armEncoder.getPosition() < 0) {
             armMotor.set(.4);
+        } else {
+            if(armEncoder.getPosition() < 24) { 
+                armMotor.set(-.07);
+            } else {
+                armMotor.set(-.2);
+            }
         }
-        else{
-        armMotor.set(-0.2);
-        }
+        
+
     }
 
     public void closeGripper() { 
@@ -95,6 +107,12 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putBoolean("Gripper", getGripper());
         SmartDashboard.putNumber("Arm Encoder", armEncoder.getPosition()); 
         SmartDashboard.putBoolean("Prox Sensor", proxSensor.get());
+        // if(armEncoder.getPosition() < 16) { 
+        //     if(openChannel.get() == true) { 
+        //         closeGripper();
+        //     }
+        
+        // }
     }
 
     public void armStop() { 

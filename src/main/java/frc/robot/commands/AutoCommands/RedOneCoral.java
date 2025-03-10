@@ -9,20 +9,14 @@ import frc.robot.Subsystems.Swerve.SwerveSubsystem;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToReef;
 import frc.robot.commands.SubsystemAlignmentCommands.Level4Align;
 
-public class One_CoralAuto extends SequentialCommandGroup {
+public class RedOneCoral extends SequentialCommandGroup {
 
-    public One_CoralAuto(SwerveSubsystem swerveSubsystem, Arm arm, Elevator elevator, boolean isRedAlliance) {
-        int id;
-        if(isRedAlliance) { 
-            id = 10; 
-        }  else { 
-            id = 21; 
-        }
+    public RedOneCoral(SwerveSubsystem swerveSubsystem, Arm arm, Elevator elevator) {
 
         addCommands(
             new GrabCoral(elevator, arm),     
-            new WaitCommand(1.5),
-            new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, id, true), new Level4Align(arm, elevator))
+            new WaitCommand(.5),
+            new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 10, true), new Level4Align(arm, elevator))
         );
     }
 }

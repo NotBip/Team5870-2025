@@ -4,6 +4,7 @@ package frc.robot.Subsystems.Swerve;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -260,6 +261,30 @@ public class SwerveSubsystem extends SubsystemBase {
                 return 0;
             }
             return 0;
+        }
+
+                // ARDUCAM STUFF
+        public double getAprilTagX(PhotonTrackedTarget target) {
+                    return target.getBestCameraToTarget().getX();
+        }
+
+            // ARDUCAM STUFF
+        public double getAprilTagY(PhotonTrackedTarget target) {
+            return target.getBestCameraToTarget().getY();
+        }
+
+        public boolean findID(PhotonPipelineResult results, int ID) { 
+            if(results.hasTargets()) { 
+                var finalResults = results.getTargets();
+                for (int i = 0; i < finalResults.size(); i++) {
+                    if (finalResults.get(i).getFiducialId() == ID) {
+                    return true;
+                    }
+                }
+            } else { 
+                return false; 
+            }
+            return false; 
         }
     
     

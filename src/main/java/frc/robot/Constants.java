@@ -144,10 +144,10 @@ public final class Constants {
         public static final int gripperReverseChannel = 7; 
         public static final int pneumaticHubID = 0; 
 
-        public static final double grabPosition = 42; 
-        public static final double level1Position = 12; 
+        public static final double grabPosition = 41.5;
+        public static final double level1Position = 10; 
         public static final double level2Position = 13; 
-        public static final double level3Position = 18; 
+        public static final double level3Position = 17; 
         public static final double level4Position = 18; 
         public static final double maxPosition = 0; 
         public static final double minPosition = 0; 
@@ -163,12 +163,12 @@ public final class Constants {
         public static final int followerMotorID = 10;
         
         //new needed values for pole coral 95.64620208740234
-        public static final double grabPosition = 95.64620208740234; 
+        public static final double grabPosition = 97.76497650146484; 
         public static final double level1Position = 0; 
         public static final double level2Position = 0; 
         public static final double level3Position = 0; 
-        public static final double level4Position = 139; 
-        public static final double restPosition = 95.64620208740234;//102.97858428955078 - original encoder value; 
+        public static final double level4Position = 137; 
+        public static final double restPosition = 97.76497650146484;//102.97858428955078 - original encoder value; 
  
         public static final double elevatorP = 0.08; 
         public static final double elevatorI = 0; 
