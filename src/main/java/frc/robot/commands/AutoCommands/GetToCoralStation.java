@@ -38,7 +38,7 @@ public class GetToCoralStation extends Command {
 
         double xSpeed = 0; 
 
-        xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), 1); 
+        xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), 2); 
 
 
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, 0, .5);

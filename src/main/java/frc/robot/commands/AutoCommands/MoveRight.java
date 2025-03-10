@@ -38,14 +38,14 @@ public class MoveRight extends Command {
 
         xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), -1); 
         if(swerveSubsystem.getPose().getX() < -0.5) { 
-            ySpeed = transController.calculate(swerveSubsystem.getPose().getY(), 2); 
+            ySpeed = transController.calculate(swerveSubsystem.getPose().getY(), 3); 
         }    
 
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, -ySpeed, 0);
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
 
-        if(swerveSubsystem.getPose().getY() > 1.5) { 
+        if(swerveSubsystem.getPose().getY() > 2.5) { 
             isDone = true; 
         }
     }
