@@ -21,12 +21,17 @@ public class BlueTwoCoral extends SequentialCommandGroup {
             new GrabCoral(elevator, arm),     
             new WaitCommand(.5),
             new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 21, true)), 
+            // ^ takes ~5 seconds with ~10 seconds left 
             new MoveRight(swerveSubsystem),
             new GetToCoralStation(swerveSubsystem, 13),
             new AutoAlignToSource(swerveSubsystem, 13),
+            // ^ takes ~3 seconds with ~7 seconds left
             new WaitCommand(2),
             new ParallelCommandGroup(new MoveBack(swerveSubsystem),new GrabCoral(elevator,arm)),
             new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 19, true), new Level4Align(arm, elevator))
+            // ^ would take the rest of the time
+
+            //give or take a few seconds we should still have time to do 2 coral auto, i dont think 3 is possible
         );
     }
 }

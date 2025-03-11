@@ -111,7 +111,6 @@ public class Arm extends SubsystemBase {
         //     if(openChannel.get() == true) { 
         //         closeGripper();
         //     }
-        
         // }
     }
 
