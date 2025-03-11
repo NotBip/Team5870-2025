@@ -21,7 +21,8 @@ public class AutoAlignToSource extends Command {
     private boolean initialAlignment; 
     private boolean isDone; 
 
-    public AutoAlignToSource(SwerveSubsystem swerveSubsystem) { 
+    public AutoAlignToSource(SwerveSubsystem swerveSubsystem, int trackerID) {
+        this.trackerID = trackerID;  
         this.swerveSubsystem = swerveSubsystem; 
         addRequirements(swerveSubsystem);
     }

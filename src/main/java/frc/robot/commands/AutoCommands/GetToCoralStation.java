@@ -41,7 +41,7 @@ public class GetToCoralStation extends Command {
         xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), 2); 
 
 
-        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, 0, .5);
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 0, .5, swerveSubsystem.getRotation2d());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
 
