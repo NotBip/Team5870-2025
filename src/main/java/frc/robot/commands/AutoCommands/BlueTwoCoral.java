@@ -13,6 +13,7 @@ public class BlueTwoCoral extends SequentialCommandGroup {
 
     public BlueTwoCoral(SwerveSubsystem swerveSubsystem, Arm arm, Elevator elevator) {
 
+        //does stuff
         addCommands(
             new GrabCoral(elevator, arm),     
             new WaitCommand(.5),
