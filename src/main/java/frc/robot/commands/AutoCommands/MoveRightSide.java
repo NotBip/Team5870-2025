@@ -9,19 +9,21 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.photonVisionConstants;
+import frc.robot.Subsystems.Arm.Arm;
+import frc.robot.Subsystems.Elevator.Elevator;
 import frc.robot.Subsystems.Swerve.SwerveSubsystem;
 
-public class GetToCoralStation extends Command {
+public class MoveRightSide extends Command {
 
     private SwerveSubsystem swerveSubsystem; 
     private boolean isDone; 
-    private PhotonPipelineResult results; 
-    private int ID; 
     private PIDController transController = new PIDController(photonVisionConstants.driveP, photonVisionConstants.driveI, photonVisionConstants.driveD);
-    
-    public GetToCoralStation(SwerveSubsystem swerveSubsystem, int ID) { 
+    private PIDController rotController = new PIDController(photonVisionConstants.rotP, photonVisionConstants.rotI, photonVisionConstants.rotD);
+    private PhotonPipelineResult results; 
+
+
+    public MoveRightSide(SwerveSubsystem swerveSubsystem) { 
         this.swerveSubsystem = swerveSubsystem; 
-        this.ID = ID; 
         addRequirements(swerveSubsystem);
     }
 
@@ -29,23 +31,28 @@ public class GetToCoralStation extends Command {
     public void initialize() {
         isDone = false; 
         swerveSubsystem.resetOdometry(new Pose2d());
+        rotController.enableContinuousInput(-180, 180);
     }
 
     @Override
     public void execute() {
 
+        double xSpeed = 0; 
+        double rotSpeed = 0; 
+
         results = swerveSubsystem.getSourceResults(); 
 
-        double xSpeed = 0; 
+        xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), -1); 
 
-        xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), 2); 
+        if(swerveSubsystem.getPose().getX() < -0.6) { 
+            rotSpeed = 1.5; 
+        }
 
-
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, 0, 1.5, swerveSubsystem.getRotation2d());
+        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, 0, rotSpeed);
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
 
-        if(swerveSubsystem.findID(results, ID)) { 
+        if(swerveSubsystem.findID(results, 13)) { 
             isDone = true; 
         }
     }

@@ -39,6 +39,7 @@ public class AutoAlignToReef extends Command {
     
     @Override
     public void initialize() { 
+        rotController.enableContinuousInput(-180, 180);
         initialAlignment = false; 
         isDone = false; 
         if(rightSide) { 
@@ -53,14 +54,18 @@ public class AutoAlignToReef extends Command {
         results = swerveSubsystem.getReefResults(); 
 
         if(swerveSubsystem.hasPhotonAprilTagTarget(results) && initialAlignment == false) { 
+
+
+
             double xDist = swerveSubsystem.getPhotonAprilTagX(trackerID, results);
             double yDist = swerveSubsystem.getPhotonAprilTagY(trackerID, results);
-            // double rotDist = swerveSubsystem.getPhotonAprilTagTheta(trackerID, results); 
+            double rotDist = swerveSubsystem.getPhotonAprilTagTheta(trackerID, results); 
              
             double xSpeed = driveController.calculate(xDist, .9);
             double ySpeed = driveController.calculate(yDist, ySetpoint); 
+            double rot = rotController.calculate(rotDist, 180); 
 
-            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, -ySpeed, 0);
+            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, -ySpeed, -rot);
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
 

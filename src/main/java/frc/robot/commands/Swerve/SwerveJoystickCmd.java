@@ -10,24 +10,31 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Subsystems.Arm.Arm;
+import frc.robot.Subsystems.Elevator.Elevator;
 import frc.robot.Subsystems.Swerve.SwerveSubsystem;
 
 public class SwerveJoystickCmd extends Command{
 
     private final SwerveSubsystem swerveSubsystem;
     private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
-    private final Supplier<Boolean> fieldOrientedFunction, isSlowMode;
+    private final Supplier<Boolean> fieldOrientedFunction, isSlowMode, isSpeedMode;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
+    private final Elevator elevator; 
+    private final Arm arm; 
     
     public SwerveJoystickCmd(SwerveSubsystem swerveSubsystem,
         Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
-        Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> isSlowMode) {
+        Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> isSlowMode, Supplier<Boolean> isSpeedMode, Elevator elevator, Arm arm) {
         this.swerveSubsystem = swerveSubsystem;
         this.xSpdFunction = xSpdFunction;
         this.ySpdFunction = ySpdFunction;
         this.turningSpdFunction = turningSpdFunction;
         this.fieldOrientedFunction = fieldOrientedFunction;
         this.isSlowMode = isSlowMode; 
+        this.isSpeedMode = isSpeedMode; 
+        this.elevator = elevator; 
+        this.arm = arm;
         this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
@@ -64,14 +71,17 @@ public class SwerveJoystickCmd extends Command{
 
         ChassisSpeeds chassisSpeeds;
 
-        if(!isSlowMode.get()) { 
+        if(isSpeedMode.get() && elevator.getElevatorEncoder() < 50 && arm.getArmEncoder() < 5) { 
             
                 chassisSpeeds = fieldOrientedFunction.get() ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                            xSpeed, ySpeed, -turningSpeed, swerveSubsystem.getRotation2d()) : new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
-        } else { 
+                            xSpeed * ModuleConstants.speedModeMultiplies, ySpeed * ModuleConstants.speedModeMultiplies, -turningSpeed, swerveSubsystem.getRotation2d()) : new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+        } else if (isSlowMode.get()) { 
             // Activate Slow Mode
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                         (xSpeed * ModuleConstants.slowModeMultiplier), (ySpeed * ModuleConstants.slowModeMultiplier), -turningSpeed, swerveSubsystem.getRotation2d());
+        } else { 
+            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                (xSpeed), (ySpeed), -turningSpeed, swerveSubsystem.getRotation2d());
         }
         
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);

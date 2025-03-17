@@ -36,11 +36,16 @@ import frc.robot.Subsystems.Swerve.SwerveSubsystem;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignSwerve;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToReef;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToSource;
+import frc.robot.commands.AprilTagAlignmentCommands.RotAlignTest;
 import frc.robot.commands.ArmCommands.ArmLeft;
 import frc.robot.commands.ArmCommands.ArmRight;
 import frc.robot.commands.AutoCommands.GrabCoral;
+import frc.robot.commands.AutoCommands.MoveRight;
 import frc.robot.commands.AutoCommands.RedOneCoral;
+import frc.robot.commands.AutoCommands.SideLeftRedTwoCoral;
+import frc.robot.commands.AutoCommands.SideRightRedTwoCoral;
 import frc.robot.commands.AutoCommands.BlueOneCoral;
+import frc.robot.commands.AutoCommands.GetToCoralStation;
 import frc.robot.commands.ElevatorCommands.ElevatorDown;
 import frc.robot.commands.ElevatorCommands.ElevatorUp;
 import frc.robot.commands.GripperCommands.GripperClose;
@@ -103,6 +108,8 @@ public class RobotContainer {
         sendableChooser.setDefaultOption("NOTHING", null);
         sendableChooser.addOption(" Blue 1 Coral Auto", new BlueOneCoral(swerveSubsystem, arm, elevator));
         sendableChooser.addOption(" Red 1 Coral Auto", new RedOneCoral(swerveSubsystem, arm, elevator));
+        sendableChooser.addOption("Red Left 2 Coral", new SideLeftRedTwoCoral(swerveSubsystem, arm, elevator));
+        sendableChooser.addOption("Red Right 2 Coral", new SideRightRedTwoCoral(swerveSubsystem, arm, elevator));
         sendableChooser.addOption("Leave Auto", AutoBuilder.buildAuto("Straight"));
 
         
@@ -115,7 +122,10 @@ public class RobotContainer {
             () -> driverJoystick.getRawAxis(OIConstants.kDriverXAxis), 
             () -> -driverJoystick.getRawAxis(OIConstants.kDriverRotAxis), 
             () -> !driverJoystick.getRawButton(6), 
-            () -> driverController.getRightTriggerAxis() > 0.5 ? true : false));
+            () -> driverController.getRightTriggerAxis() > 0.5 ? true : false, 
+            () -> driverController.getLeftTriggerAxis() > 0.5 ? true : false,
+            elevator,
+            arm));
 
 
         // Xbox Driver Controller Buttons
@@ -136,7 +146,10 @@ public class RobotContainer {
         drBtnSelect.onTrue(resetOdometry); 
 
         driverController.a().whileTrue(new AutoAlignSwerve(swerveSubsystem, true));
-        // driverController.y().whileTrue(new AutoAlignToReef(swerveSubsystem, 22, true)); 
+        // driverController.x().whileTrue(new AutoAlignToReef(swerveSubsystem, 6, true)); 
+        // driverController.a().whileTrue(new MoveRight(swerveSubsystem));
+        // driverController.y().whileTrue(new GetToCoralStation(swerveSubsystem, 1)); 
+        // driverController.a().whileTrue(new RotAlignTest(swerveSubsystem, true));
 
         // LOGITECH CONTROLLER
         operatorController.axisGreaterThan(2, .1).whileTrue(new ElevatorDown(elevator, () -> operatorController.getRawAxis(2)));

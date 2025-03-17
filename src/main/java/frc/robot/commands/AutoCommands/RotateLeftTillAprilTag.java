@@ -11,7 +11,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.photonVisionConstants;
 import frc.robot.Subsystems.Swerve.SwerveSubsystem;
 
-public class GetToCoralStation extends Command {
+public class RotateLeftTillAprilTag extends Command {
 
     private SwerveSubsystem swerveSubsystem; 
     private boolean isDone; 
@@ -19,7 +19,7 @@ public class GetToCoralStation extends Command {
     private int ID; 
     private PIDController transController = new PIDController(photonVisionConstants.driveP, photonVisionConstants.driveI, photonVisionConstants.driveD);
     
-    public GetToCoralStation(SwerveSubsystem swerveSubsystem, int ID) { 
+    public RotateLeftTillAprilTag(SwerveSubsystem swerveSubsystem, int ID) { 
         this.swerveSubsystem = swerveSubsystem; 
         this.ID = ID; 
         addRequirements(swerveSubsystem);
@@ -38,10 +38,8 @@ public class GetToCoralStation extends Command {
 
         double xSpeed = 0; 
 
-        xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), 2); 
 
-
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, 0, 1.5, swerveSubsystem.getRotation2d());
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, 1.5, swerveSubsystem.getRotation2d());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
 

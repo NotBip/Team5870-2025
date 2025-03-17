@@ -20,7 +20,8 @@ public final class Constants {
         public static final double kDriveVelocityFactor = kDrivePositionFactor/60; 
         public static final double kPTurning = 0.4; 
         public static final double kDTurning = 0.0; 
-        public static final double slowModeMultiplier = 0.5;           
+        public static final double slowModeMultiplier = 0.5;        
+        public static final double speedModeMultiplies = 2;    
     }
 
     // Module for Swerve Drive. 
@@ -144,11 +145,11 @@ public final class Constants {
         public static final int gripperReverseChannel = 7; 
         public static final int pneumaticHubID = 0; 
 
-        public static final double grabPosition = 41.5;
+        public static final double grabPosition = 41;
         public static final double level1Position = 10; 
         public static final double level2Position = 13; 
-        public static final double level3Position = 17; 
-        public static final double level4Position = 18; 
+        public static final double level3Position = 17.5; 
+        public static final double level4Position = 18.2; 
         public static final double maxPosition = 0; 
         public static final double minPosition = 0; 
         public static final double restPosition = 0; 
@@ -163,7 +164,7 @@ public final class Constants {
         public static final int followerMotorID = 10;
         
         //new needed values for pole coral 95.64620208740234
-        public static final double grabPosition = 97.76497650146484; 
+        public static final double grabPosition = 106.76497650146484; 
         public static final double level1Position = 0; 
         public static final double level2Position = 0; 
         public static final double level3Position = 0; 
@@ -185,7 +186,7 @@ public final class Constants {
         public static final double driveP = 1.5; 
         public static final double driveI = 0; 
         public static final double driveD = 0;  
-        public static final double rotP = 0; 
+        public static final double rotP = 0.05; 
         public static final double rotI = 0; 
         public static final double rotD = 0; 
     }

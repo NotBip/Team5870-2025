@@ -7,8 +7,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.photonVisionConstants;
-import frc.robot.Subsystems.Arm.Arm;
-import frc.robot.Subsystems.Elevator.Elevator;
 import frc.robot.Subsystems.Swerve.SwerveSubsystem;
 
 public class MoveBack extends Command {
@@ -16,11 +14,12 @@ public class MoveBack extends Command {
     private SwerveSubsystem swerveSubsystem; 
     private boolean isDone; 
     private PIDController transController = new PIDController(photonVisionConstants.driveP, photonVisionConstants.driveI, photonVisionConstants.driveD);
-    
+    private double dist; 
 
 
-    public MoveBack(SwerveSubsystem swerveSubsystem) { 
+    public MoveBack(SwerveSubsystem swerveSubsystem, double dist) { 
         this.swerveSubsystem = swerveSubsystem; 
+        this.dist = dist; 
         addRequirements(swerveSubsystem);
     }
 
@@ -35,13 +34,13 @@ public class MoveBack extends Command {
 
         double xSpeed = 0; 
 
-        xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), 1);   
+        xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), dist);   
 
-        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, 0, 0);
+        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed*2, 0, 0);
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
 
-        if(swerveSubsystem.getPose().getX() > .5) { 
+        if(swerveSubsystem.getPose().getX() > dist/2) { 
             isDone = true; 
         }
     }

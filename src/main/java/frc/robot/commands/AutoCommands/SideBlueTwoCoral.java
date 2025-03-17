@@ -12,20 +12,16 @@ import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToReef;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToSource;
 import frc.robot.commands.SubsystemAlignmentCommands.Level4Align;
 
-public class BlueTwoCoral extends SequentialCommandGroup {
+public class SideBlueTwoCoral extends SequentialCommandGroup {
 
-    public BlueTwoCoral(SwerveSubsystem swerveSubsystem, Arm arm, Elevator elevator) {
+    public SideBlueTwoCoral(SwerveSubsystem swerveSubsystem, Arm arm, Elevator elevator) {
 
         //does stuff
         addCommands(
-            // new GrabCoral(elevator, arm),     
-            // new WaitCommand(.5),
-            new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 21, true), new Level4Align(arm, elevator)), 
+            new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 20, true), new Level4Align(arm, elevator)), 
             // ^ takes ~5 seconds with ~10 seconds left 
-            new MoveRight(swerveSubsystem),
-            new GetToCoralStation(swerveSubsystem, 13),
+            new MoveRightSide(swerveSubsystem),
             new AutoAlignToSource(swerveSubsystem, 13),
-            // ^ takes ~3 seconds with ~7 seconds left
             new WaitCommand(2),
             new ParallelCommandGroup(new MoveBack(swerveSubsystem, 1),new GrabCoral(elevator,arm)),
             new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 19, true), new Level4Align(arm, elevator))

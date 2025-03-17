@@ -24,7 +24,7 @@ public class RedTwoCoral extends SequentialCommandGroup {
             new GetToCoralStation(swerveSubsystem, 1),
             new AutoAlignToSource(swerveSubsystem,1),
             new WaitCommand(2),
-            new ParallelCommandGroup(new MoveBack(swerveSubsystem),new GrabCoral(elevator,arm)),
+            new ParallelCommandGroup(new MoveBack(swerveSubsystem, 1),new GrabCoral(elevator,arm)),
             new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 6, true), new Level4Align(arm, elevator))
             
         );

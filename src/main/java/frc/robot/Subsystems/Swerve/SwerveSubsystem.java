@@ -318,7 +318,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 var finalResults = results.getTargets(); 
                 for(int i = 0; i < finalResults.size(); i++) { 
                     if(finalResults.get(i).getFiducialId() == ID) { 
-                        return finalResults.get(i).getBestCameraToTarget().getRotation().getZ();
+                        return Math.toDegrees(finalResults.get(i).getBestCameraToTarget().getRotation().getZ()); 
                     }
                 }
             } else { 
