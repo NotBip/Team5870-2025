@@ -21,7 +21,7 @@ public final class Constants {
         public static final double kPTurning = 0.4; 
         public static final double kDTurning = 0.0; 
         public static final double slowModeMultiplier = 0.5;        
-        public static final double speedModeMultiplies = 2;    
+        public static final double speedModeMultiplies = 1;    
     }
 
     // Module for Swerve Drive. 
