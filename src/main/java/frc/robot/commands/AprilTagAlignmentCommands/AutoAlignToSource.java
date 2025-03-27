@@ -25,7 +25,7 @@ import frc.robot.Subsystems.Swerve.SwerveSubsystem;
 public class AutoAlignToSource extends Command {
 
     private SwerveSubsystem swerveSubsystem; 
-    private PIDController driveController = new PIDController(1, Constants.photonVisionConstants.driveI, Constants.photonVisionConstants.driveD); 
+    private PIDController driveController = new PIDController(Constants.photonVisionConstants.driveP, Constants.photonVisionConstants.driveI, Constants.photonVisionConstants.driveD); 
     private PIDController rotContoller = new PIDController(photonVisionConstants.rotP, photonVisionConstants.rotI, photonVisionConstants.rotD);
     private PhotonPipelineResult results;
     private boolean initialAlignment; 

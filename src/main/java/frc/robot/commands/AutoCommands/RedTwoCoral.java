@@ -30,7 +30,6 @@ public class RedTwoCoral extends SequentialCommandGroup {
             new ParallelDeadlineGroup(new GrabCoral(elevator, arm), new MoveBackReverse(swerveSubsystem, -.2)),
             new WaitCommand(.5),
             new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 6, true), new Level4Align(arm, elevator))
-            
         );
     }
 }
