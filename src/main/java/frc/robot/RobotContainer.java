@@ -36,15 +36,12 @@ import frc.robot.Subsystems.Swerve.SwerveSubsystem;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignSwerve;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToReef;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToSource;
-import frc.robot.commands.AprilTagAlignmentCommands.RotAlignTest;
 import frc.robot.commands.ArmCommands.ArmLeft;
 import frc.robot.commands.ArmCommands.ArmRight;
 import frc.robot.commands.AutoCommands.GrabCoral;
 import frc.robot.commands.AutoCommands.MoveRight;
 import frc.robot.commands.AutoCommands.RedOneCoral;
 import frc.robot.commands.AutoCommands.RedTwoCoral;
-import frc.robot.commands.AutoCommands.SideLeftRedTwoCoral;
-import frc.robot.commands.AutoCommands.SideRightRedTwoCoral;
 import frc.robot.commands.AutoCommands.BlueOneCoral;
 import frc.robot.commands.AutoCommands.GetToCoralStation;
 import frc.robot.commands.ElevatorCommands.ElevatorDown;
@@ -109,8 +106,8 @@ public class RobotContainer {
         sendableChooser.setDefaultOption("NOTHING", null);
         sendableChooser.addOption(" Blue 1 Coral Auto", new BlueOneCoral(swerveSubsystem, arm, elevator));
         sendableChooser.addOption(" Red 1 Coral Auto", new RedOneCoral(swerveSubsystem, arm, elevator));
-        sendableChooser.addOption("Red Left 2 Coral", new SideLeftRedTwoCoral(swerveSubsystem, arm, elevator));
-        sendableChooser.addOption("Red Right 2 Coral", new SideRightRedTwoCoral(swerveSubsystem, arm, elevator));
+        // sendableChooser.addOption("Red Left 2 Coral", new SideLeftRedTwoCoral(swerveSubsystem, arm, elevator));
+        // sendableChooser.addOption("Red Right 2 Coral", new SideRightRedTwoCoral(swerveSubsystem, arm, elevator));
         sendableChooser.addOption("Leave Auto", AutoBuilder.buildAuto("Straight"));
 
         

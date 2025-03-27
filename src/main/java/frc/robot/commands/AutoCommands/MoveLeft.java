@@ -42,7 +42,7 @@ public class MoveLeft extends Command {
 
         ySpeed = transController.calculate(swerveSubsystem.getPose().getY(), 1.6); 
         if(swerveSubsystem.getPose().getY() > 1.4) { 
-            xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), -4); 
+            xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), -2.5); 
             rotSpeed = 0; 
         }    
 
@@ -50,7 +50,7 @@ public class MoveLeft extends Command {
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
 
-        if(swerveSubsystem.getPose().getX() < -3.6) { 
+        if(swerveSubsystem.getPose().getX() < -2.3) { 
             isDone = true; 
         }
     }
