@@ -31,10 +31,13 @@ public class MoveLeft extends Command {
     public void initialize() {
         isDone = false; 
         swerveSubsystem.resetOdometry(new Pose2d());
+        swerveSubsystem.zeroHeading();
     }
 
     @Override
     public void execute() {
+
+        results = swerveSubsystem.getSourceResults(); 
 
         double xSpeed = 0; 
         double ySpeed = 0;
@@ -42,15 +45,15 @@ public class MoveLeft extends Command {
 
         ySpeed = transController.calculate(swerveSubsystem.getPose().getY(), 1.6); 
         if(swerveSubsystem.getPose().getY() > 1.4) { 
-            xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), -2.5); 
+            xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), -2); 
             rotSpeed = 0; 
         }    
 
-        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, -ySpeed, rotSpeed);
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, -ySpeed, 1.5, swerveSubsystem.getRotation2d());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
 
-        if(swerveSubsystem.getPose().getX() < -2.3) { 
+        if(swerveSubsystem.getPose().getX() < -1.7 || swerveSubsystem.findID(results, 12)) { 
             isDone = true; 
         }
     }

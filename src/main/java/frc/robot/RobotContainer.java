@@ -144,7 +144,9 @@ public class RobotContainer {
         drBtnSelect.onTrue(resetOdometry); 
 
         driverController.a().whileTrue(new RedTwoCoral(swerveSubsystem, arm, elevator)); 
-        driverController.y().whileTrue(new RedOneCoral(swerveSubsystem, arm, elevator)); 
+        // driverController.y().whileTrue(new RedOneCoral(swerveSubsystem, arm, elevator)); 
+        driverController.y().whileTrue(new AutoAlignToReef(swerveSubsystem, 6, true));
+        driverController.x().whileTrue(new AutoAlignToSource(swerveSubsystem, true));
 
         // driverController.y().whileTrue(new AutoAlignSwerve(swerveSubsystem, false));
         // driverController.x().whileTrue(new AutoAlignToSource(swerveSubsystem, true));

@@ -70,7 +70,7 @@ public class AutoAlignSwerve extends Command {
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
 
-            if((xDist <= 1.1 && xDist >= .7) && (yDist <=   ySetpoint + .1 && yDist >= ySetpoint - .1)) { 
+            if((xDist <= 1.1 && xDist >= .7) && (yDist <=   ySetpoint + .04 && yDist >= ySetpoint - .04)) { 
                 swerveSubsystem.resetOdometry(new Pose2d()); 
                 initialAlignment = true; 
             }

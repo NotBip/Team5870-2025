@@ -27,7 +27,7 @@ import frc.robot.Subsystems.Swerve.SwerveSubsystem;
 public class AutoAlignToReef extends Command {
 
     private SwerveSubsystem swerveSubsystem; 
-    private PIDController driveController = new PIDController(Constants.photonVisionConstants.driveP, Constants.photonVisionConstants.driveI, Constants.photonVisionConstants.driveD); 
+    private PIDController driveController = new PIDController(1.7, Constants.photonVisionConstants.driveI, Constants.photonVisionConstants.driveD); 
     private PIDController rotContoller = new PIDController(photonVisionConstants.rotP, photonVisionConstants.rotI, photonVisionConstants.rotD);
     private PhotonPipelineResult results;
     private boolean initialAlignment; 
@@ -54,7 +54,7 @@ public class AutoAlignToReef extends Command {
             ySetpoint = -.48; 
         }
     }
-    
+
     @Override
     public void execute() {
         results = swerveSubsystem.getReefResults(); 
@@ -73,9 +73,10 @@ public class AutoAlignToReef extends Command {
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
 
-            if((xDist <= 1.1 && xDist >= .7) && (yDist <=   ySetpoint + .1 && yDist >= ySetpoint - .1)) { 
+            if((xDist <= 1.1 && xDist >= .7) && (yDist <=   ySetpoint + .04 && yDist >= ySetpoint - .04)) { 
                 swerveSubsystem.resetOdometry(new Pose2d()); 
                 initialAlignment = true; 
+                rotSpeed = 0;
             }
         }
 
