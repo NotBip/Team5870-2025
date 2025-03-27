@@ -1,7 +1,5 @@
 package frc.robot.commands.AutoCommands;
 
-import org.photonvision.targeting.PhotonPipelineResult;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -11,17 +9,17 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.photonVisionConstants;
 import frc.robot.Subsystems.Swerve.SwerveSubsystem;
 
-public class GetToCoralStation extends Command {
+public class MoveBackReverse extends Command {
 
     private SwerveSubsystem swerveSubsystem; 
     private boolean isDone; 
-    private PhotonPipelineResult results; 
-    private int ID; 
     private PIDController transController = new PIDController(photonVisionConstants.driveP, photonVisionConstants.driveI, photonVisionConstants.driveD);
-    
-    public GetToCoralStation(SwerveSubsystem swerveSubsystem, int ID) { 
+    private double dist; 
+
+
+    public MoveBackReverse(SwerveSubsystem swerveSubsystem, double dist) { 
         this.swerveSubsystem = swerveSubsystem; 
-        this.ID = ID; 
+        this.dist = dist; 
         addRequirements(swerveSubsystem);
     }
 
@@ -34,18 +32,15 @@ public class GetToCoralStation extends Command {
     @Override
     public void execute() {
 
-        results = swerveSubsystem.getSourceResults(); 
-
         double xSpeed = 0; 
 
-        xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), 2); 
+        xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), dist);   
 
-
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, 1.5, swerveSubsystem.getRotation2d());
+        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed*2, 0, 0);
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
 
-        if(swerveSubsystem.findID(results, ID)) { 
+        if(swerveSubsystem.getPose().getX() < dist/2) { 
             isDone = true; 
         }
     }

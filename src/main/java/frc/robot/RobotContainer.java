@@ -42,6 +42,7 @@ import frc.robot.commands.ArmCommands.ArmRight;
 import frc.robot.commands.AutoCommands.GrabCoral;
 import frc.robot.commands.AutoCommands.MoveRight;
 import frc.robot.commands.AutoCommands.RedOneCoral;
+import frc.robot.commands.AutoCommands.RedTwoCoral;
 import frc.robot.commands.AutoCommands.SideLeftRedTwoCoral;
 import frc.robot.commands.AutoCommands.SideRightRedTwoCoral;
 import frc.robot.commands.AutoCommands.BlueOneCoral;
@@ -145,7 +146,11 @@ public class RobotContainer {
         drBtnStrt.onTrue(zeroGyro);
         drBtnSelect.onTrue(resetOdometry); 
 
-        driverController.a().whileTrue(new AutoAlignSwerve(swerveSubsystem, true));
+        driverController.a().whileTrue(new RedTwoCoral(swerveSubsystem, arm, elevator)); 
+        driverController.y().whileTrue(new RedOneCoral(swerveSubsystem, arm, elevator)); 
+
+        // driverController.y().whileTrue(new AutoAlignSwerve(swerveSubsystem, false));
+        // driverController.x().whileTrue(new AutoAlignToSource(swerveSubsystem, true));
         //driverController.b().whileTrue();
         // driverController.x().whileTrue(new AutoAlignToReef(swerveSubsystem, 6, true)); 
         // driverController.a().whileTrue(new MoveRight(swerveSubsystem));

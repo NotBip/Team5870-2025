@@ -1,5 +1,7 @@
 package frc.robot.commands.AutoCommands;
 
+import org.photonvision.targeting.PhotonPipelineResult;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -16,7 +18,8 @@ public class MoveLeft extends Command {
     private SwerveSubsystem swerveSubsystem; 
     private boolean isDone; 
     private PIDController transController = new PIDController(photonVisionConstants.driveP, photonVisionConstants.driveI, photonVisionConstants.driveD);
-    
+        private PhotonPipelineResult results; 
+
 
 
     public MoveLeft(SwerveSubsystem swerveSubsystem) { 
@@ -34,18 +37,20 @@ public class MoveLeft extends Command {
     public void execute() {
 
         double xSpeed = 0; 
-        double ySpeed = 0; 
+        double ySpeed = 0;
+        double rotSpeed = 0;  
 
-        xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), -1); 
-        if(swerveSubsystem.getPose().getX() < -0.5) { 
-            ySpeed = transController.calculate(swerveSubsystem.getPose().getY(), 2); 
+        ySpeed = transController.calculate(swerveSubsystem.getPose().getY(), 1.6); 
+        if(swerveSubsystem.getPose().getY() > 1.4) { 
+            xSpeed = transController.calculate(swerveSubsystem.getPose().getX(), -4); 
+            rotSpeed = 0; 
         }    
 
-        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, -ySpeed, 0);
+        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, -ySpeed, rotSpeed);
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
 
-        if(swerveSubsystem.getPose().getY() < -1.5) { 
+        if(swerveSubsystem.getPose().getX() < -3.6) { 
             isDone = true; 
         }
     }

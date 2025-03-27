@@ -45,9 +45,9 @@ public class AutoAlignSwerve extends Command {
         initialAlignment = false; 
         isDone = false;
         if(rightSide) { 
-            ySetpoint = -.12; 
+            ySetpoint = -.15; 
         } else { 
-            ySetpoint = -.52; 
+            ySetpoint = -.48; 
         }
     }
     
@@ -64,13 +64,13 @@ public class AutoAlignSwerve extends Command {
              
             double xSpeed = driveController.calculate(xDist, .9);
             double ySpeed = driveController.calculate(yDist, ySetpoint); 
-            double rotSpeed = rotContoller.calculate(rotDist, 180);
+            double rotSpeed = rotContoller.calculate(rotDist, 175);
 
             ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, -ySpeed, -rotSpeed);
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
 
-            if((xDist <= 1.1 && xDist >= .7) && (yDist <=   ySetpoint + .05 && yDist >= ySetpoint - .05)) { 
+            if((xDist <= 1.1 && xDist >= .7) && (yDist <=   ySetpoint + .1 && yDist >= ySetpoint - .1)) { 
                 swerveSubsystem.resetOdometry(new Pose2d()); 
                 initialAlignment = true; 
             }

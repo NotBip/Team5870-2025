@@ -10,6 +10,7 @@ import frc.robot.Subsystems.Swerve.SwerveSubsystem;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToReef;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToSource;
 import frc.robot.commands.SubsystemAlignmentCommands.Level4Align;
+import frc.robot.commands.SubsystemAlignmentCommands.RestAlign;
 
 public class RedTwoCoral extends SequentialCommandGroup {
 
@@ -19,13 +20,17 @@ public class RedTwoCoral extends SequentialCommandGroup {
         addCommands(
             // new GrabCoral(elevator, arm),     
             // new WaitCommand(.5),
-            new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 10, true), new Level4Align(arm, elevator)), 
-            new MoveRight(swerveSubsystem), 
-            new GetToCoralStation(swerveSubsystem, 1),
-            new AutoAlignToSource(swerveSubsystem,1),
-            new WaitCommand(2),
-            new ParallelCommandGroup(new MoveBack(swerveSubsystem, 1),new GrabCoral(elevator,arm)),
-            new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 6, true), new Level4Align(arm, elevator))
+            // new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 6, true), new Level4Align(arm, elevator)),
+            // new WaitCommand(1),
+            new ParallelDeadlineGroup(new RestAlign(arm, elevator), new MoveBack(swerveSubsystem, .15)     
+            ),
+            new MoveLeft(swerveSubsystem),
+            new GetToCoralStation(swerveSubsystem, 12)
+            // new AutoAlignToSource(swerveSubsystem,true),
+            // new WaitCommand(2),
+            // new ParallelDeadlineGroup(new GrabCoral(elevator,arm), new MoveBackReverse(swerveSubsystem, -.2)),
+            // new WaitCommand(.5),
+            // new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 6, true), new Level4Align(arm, elevator))
             
         );
     }

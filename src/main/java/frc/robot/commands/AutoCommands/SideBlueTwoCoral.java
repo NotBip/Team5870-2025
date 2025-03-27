@@ -21,7 +21,7 @@ public class SideBlueTwoCoral extends SequentialCommandGroup {
             new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 20, true), new Level4Align(arm, elevator)), 
             // ^ takes ~5 seconds with ~10 seconds left 
             new MoveRightSide(swerveSubsystem),
-            new AutoAlignToSource(swerveSubsystem, 13),
+            new AutoAlignToSource(swerveSubsystem, true),
             new WaitCommand(2),
             new ParallelCommandGroup(new MoveBack(swerveSubsystem, 1),new GrabCoral(elevator,arm)),
             new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 19, true), new Level4Align(arm, elevator))

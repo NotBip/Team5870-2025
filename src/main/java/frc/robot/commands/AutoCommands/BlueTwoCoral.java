@@ -24,7 +24,7 @@ public class BlueTwoCoral extends SequentialCommandGroup {
             // ^ takes ~5 seconds with ~10 seconds left 
             new MoveRight(swerveSubsystem),
             new GetToCoralStation(swerveSubsystem, 13),
-            new AutoAlignToSource(swerveSubsystem, 13),
+            new AutoAlignToSource(swerveSubsystem, true),
             // ^ takes ~3 seconds with ~7 seconds left
             new WaitCommand(2),
             new ParallelCommandGroup(new MoveBack(swerveSubsystem, 1),new GrabCoral(elevator,arm)),

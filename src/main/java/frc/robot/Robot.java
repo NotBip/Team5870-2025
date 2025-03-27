@@ -10,12 +10,13 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-public class Robot extends LoggedRobot {
+public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private final SendableChooser<String> pidTuner; 
@@ -42,9 +43,10 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
-    Logger.addDataReceiver(new NT4Publisher());
-    Logger.start();
+    // Logger.addDataReceiver(new NT4Publisher());
+    // Logger.start();
     m_robotContainer = new RobotContainer();
+    CameraServer.startAutomaticCapture();
   
     // tunePID_KP = 0; 
     // tunePID_KI = 0; 

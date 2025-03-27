@@ -43,7 +43,7 @@ public class AutoAlignToReef extends Command {
         initialAlignment = false; 
         isDone = false; 
         if(rightSide) { 
-            ySetpoint = -.12; 
+            ySetpoint = -.11; 
         } else { 
             ySetpoint = -.52; 
         }

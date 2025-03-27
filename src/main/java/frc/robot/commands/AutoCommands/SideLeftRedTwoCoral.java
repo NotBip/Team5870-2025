@@ -24,7 +24,7 @@ public class SideLeftRedTwoCoral extends SequentialCommandGroup {
             new WaitCommand(1), 
             new ParallelDeadlineGroup(new MoveLeft(swerveSubsystem), new RestAlign(arm, elevator)),  
             new RotateRightTillAprilTag(swerveSubsystem, 2),
-            new AutoAlignToSource(swerveSubsystem, 2),
+            new AutoAlignToSource(swerveSubsystem, true),
             new WaitCommand(2),
             new ParallelCommandGroup(new MoveBack(swerveSubsystem, .5),new GrabCoral(elevator,arm)),
             new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 8, true), new Level4Align(arm, elevator)),

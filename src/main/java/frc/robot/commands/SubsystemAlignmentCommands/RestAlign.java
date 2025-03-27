@@ -9,6 +9,7 @@ public class RestAlign extends Command {
 
     private Elevator elevator; 
     private Arm arm; 
+    private boolean isDone; 
 
     public RestAlign(Arm arm, Elevator elevator) { 
         this.elevator = elevator; 
@@ -18,6 +19,7 @@ public class RestAlign extends Command {
 
     @Override
     public void initialize() {
+        isDone = false; 
         arm.closeGripper();
     }
 
@@ -25,7 +27,10 @@ public class RestAlign extends Command {
     public void execute() {
         arm.setPosition(Constants.DeliveryConstants.restPosition);
         if(arm.getArmEncoder() < Constants.DeliveryConstants.restPosition + 5) { 
-            elevator.setPoint(Constants.ElevatorConstants.restPosition);
+            elevator.setPoint(Constants.ElevatorConstants.restPosition - 30);
+            if(elevator.getElevatorEncoder() < Constants.ElevatorConstants.restPosition - 25) { 
+                isDone = true ;
+            }
         }
     }
 
@@ -37,7 +42,7 @@ public class RestAlign extends Command {
 
     @Override
     public boolean isFinished() {
-        return false; 
+        return isDone; 
     }
     
 }

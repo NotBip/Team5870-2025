@@ -19,18 +19,22 @@ public class SideRightRedTwoCoral extends SequentialCommandGroup {
 
         //does stuff
         addCommands(
-            new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 11, true), new Level4Align(arm, elevator)), 
+
+            //actual field id is 11
+            new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 6, true), new Level4Align(arm, elevator)), 
             new WaitCommand(1), 
             // would 
             new ParallelDeadlineGroup(new MoveLeft(swerveSubsystem), new RestAlign(arm, elevator)),  
-            new RotateLeftTillAprilTag(swerveSubsystem, 1),
-            new AutoAlignToSource(swerveSubsystem, 1),
+            //source field id is 1 
+            new RotateLeftTillAprilTag(swerveSubsystem, 12),
+            new AutoAlignToSource(swerveSubsystem, true),
             new WaitCommand(2),
             new ParallelCommandGroup(new MoveBack(swerveSubsystem, .5),new GrabCoral(elevator,arm)),
             new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 6, true), new Level4Align(arm, elevator)),
             new WaitCommand(.5), 
             new MoveBack(swerveSubsystem, .3)            // ^ would take the rest of the time
             //give or take a few seconds we should still have time to do 2 coral auto, i dont think 3 is possible
+
         );
     }
 }

@@ -18,7 +18,7 @@ public class RedOneCoral extends SequentialCommandGroup {
         addCommands(
             new GrabCoral(elevator, arm),     
             new WaitCommand(.5),
-            new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 10, true), new Level4Align(arm, elevator)),
+            new ParallelDeadlineGroup(new AutoAlignToReef(swerveSubsystem, 6, true), new Level4Align(arm, elevator)),
             new WaitCommand(2),
             new MoveBack(swerveSubsystem,.15),
             new RestAlign(arm, elevator).withTimeout(2)
