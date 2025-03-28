@@ -31,7 +31,7 @@ public class Level4Align extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        arm.openGripper();
+        // arm.openGripper();
         arm.armStop();
         elevator.stopElevator();
     }

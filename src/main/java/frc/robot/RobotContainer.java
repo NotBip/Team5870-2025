@@ -162,10 +162,10 @@ public class RobotContainer {
         operatorController.rightBumper().whileTrue(armLeft); 
         operatorController.leftBumper().whileTrue(armRight); 
 
-        operatorController.povUp().whileTrue(level4Align); 
-        operatorController.povLeft().whileTrue(level3Align); 
-        operatorController.povDown().whileTrue(level2Align); 
-        operatorController.povRight().whileTrue(level1Align); 
+        operatorController.povUp().toggleOnTrue(level4Align.finallyDo(() -> arm.openGripper()).onlyIf(() -> operatorController.povUp().getAsBoolean())); 
+        operatorController.povLeft().toggleOnTrue(level3Align.finallyDo(() -> arm.openGripper()).onlyIf(() -> operatorController.povLeft().getAsBoolean())); 
+        operatorController.povDown().toggleOnTrue(level2Align.finallyDo(() -> arm.openGripper()).onlyIf(() -> operatorController.povDown().getAsBoolean())); 
+        operatorController.povRight().toggleOnTrue(level1Align.finallyDo(() -> arm.openGripper()).onlyIf(() -> operatorController.povRight().getAsBoolean())); 
 
         operatorController.y().whileTrue(sIntakeAlign); 
         operatorController.x().onTrue(gripperOpen); 
