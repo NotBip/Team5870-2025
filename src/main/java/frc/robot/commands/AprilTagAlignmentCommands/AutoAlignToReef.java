@@ -68,8 +68,8 @@ public class AutoAlignToReef extends Command {
             double xSpeed = driveController.calculate(xDist, .9);
             double ySpeed = driveController.calculate(yDist, ySetpoint); 
             double rotSpeed = rotContoller.calculate(rotDist, 175);
-
-            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, -ySpeed, -rotSpeed);
+            
+            ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, -ySpeed, -rotSpeed, swerveSubsystem.getRotation2d());
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
 

@@ -33,7 +33,6 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Subsystems.Arm.Arm;
 import frc.robot.Subsystems.Elevator.Elevator;
 import frc.robot.Subsystems.Swerve.SwerveSubsystem;
-import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignSwerve;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToReef;
 import frc.robot.commands.AprilTagAlignmentCommands.AutoAlignToSource;
 import frc.robot.commands.ArmCommands.ArmLeft;
