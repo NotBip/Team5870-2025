@@ -142,8 +142,9 @@ public class RobotContainer {
         drBtnStrt.onTrue(zeroGyro);
         drBtnSelect.onTrue(resetOdometry); 
 
-        driverController.a().whileTrue(new RedTwoCoral(swerveSubsystem, arm, elevator)); 
+        // driverController.a().whileTrue(new RedTwoCoral(swerveSubsystem, arm, elevator)); 
         // driverController.y().whileTrue(new RedOneCoral(swerveSubsystem, arm, elevator)); 
+        driverController.b().whileTrue(new AutoAlignToReef(swerveSubsystem, 6, false)); 
         driverController.y().whileTrue(new AutoAlignToReef(swerveSubsystem, 6, true));
         driverController.x().whileTrue(new AutoAlignToSource(swerveSubsystem, true));
 
@@ -162,10 +163,10 @@ public class RobotContainer {
         operatorController.rightBumper().whileTrue(armLeft); 
         operatorController.leftBumper().whileTrue(armRight); 
 
-        operatorController.povUp().toggleOnTrue(level4Align.finallyDo(() -> arm.openGripper()).onlyIf(() -> operatorController.povUp().getAsBoolean())); 
-        operatorController.povLeft().toggleOnTrue(level3Align.finallyDo(() -> arm.openGripper()).onlyIf(() -> operatorController.povLeft().getAsBoolean())); 
-        operatorController.povDown().toggleOnTrue(level2Align.finallyDo(() -> arm.openGripper()).onlyIf(() -> operatorController.povDown().getAsBoolean())); 
-        operatorController.povRight().toggleOnTrue(level1Align.finallyDo(() -> arm.openGripper()).onlyIf(() -> operatorController.povRight().getAsBoolean())); 
+        // operatorController.povUp().toggleOnTrue(level4Align); 
+        operatorController.povLeft().toggleOnTrue(level3Align); 
+        operatorController.povDown().toggleOnTrue(level2Align); 
+        operatorController.povRight().toggleOnTrue(level1Align); 
 
         operatorController.y().whileTrue(sIntakeAlign); 
         operatorController.x().onTrue(gripperOpen); 

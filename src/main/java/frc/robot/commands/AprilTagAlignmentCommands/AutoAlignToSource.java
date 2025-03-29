@@ -61,6 +61,8 @@ public class AutoAlignToSource extends Command {
             double xDist = swerveSubsystem.getAprilTagX(target);
             double yDist = swerveSubsystem.getAprilTagY(target);
             double rotDist = swerveSubsystem.getPhotonAprilTagTheta(target.getFiducialId(), results); 
+
+  
              
             double xSpeed = driveController.calculate(xDist, 1.5);
             double ySpeed = driveController.calculate(yDist, ySetpoint); 
