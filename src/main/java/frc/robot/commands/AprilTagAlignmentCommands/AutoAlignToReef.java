@@ -86,8 +86,6 @@ public class AutoAlignToReef extends Command {
 
         if(initialAlignment == true) { 
             double xDist = Math.abs(swerveSubsystem.getPose().getX()); 
-            SmartDashboard.putNumber("XDIST", xDist); 
-
             double xSpeed = driveController.calculate(xDist, 1.3);
 
             
