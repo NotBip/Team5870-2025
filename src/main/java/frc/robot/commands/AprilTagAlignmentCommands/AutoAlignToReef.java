@@ -61,13 +61,18 @@ public class AutoAlignToReef extends Command {
 
 
         if(swerveSubsystem.hasPhotonAprilTagTarget(results) && initialAlignment == false) { 
-            double xDist = swerveSubsystem.getPhotonAprilTagX(id, results); 
+            double xDist = swerveSubsystem.getPhotonAprilTagX(id, results);     
             double yDist = swerveSubsystem.getPhotonAprilTagY(id, results);
             double rotDist = swerveSubsystem.getPhotonAprilTagTheta(id, results); 
              
             double xSpeed = driveController.calculate(xDist, .9);
             double ySpeed = driveController.calculate(yDist, ySetpoint); 
             double rotSpeed = rotContoller.calculate(rotDist, 175);
+
+
+            if(swerveSubsystem.getPhotonAprilTagArea(id, results) < 50) { 
+                rotSpeed = 0; 
+            }
             
             ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, -ySpeed, -rotSpeed, swerveSubsystem.getRotation2d());
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 

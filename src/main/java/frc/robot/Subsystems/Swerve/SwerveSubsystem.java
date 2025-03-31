@@ -298,6 +298,20 @@ public class SwerveSubsystem extends SubsystemBase {
             }
             return false;
         }
+
+        public double getPhotonAprilTagArea(int ID, PhotonPipelineResult results) { 
+            if(results.hasTargets()) { 
+                var finalResults = results.getTargets(); 
+                for(int i = 0; i < finalResults.size(); i++) { 
+                    if(finalResults.get(i).getFiducialId() == ID) { 
+                        return finalResults.get(i).area; 
+                    }
+                }
+            } else { 
+                return 0;
+            }
+            return 0; 
+        }
     
         public double getPhotonAprilTagY(int ID, PhotonPipelineResult results) {
             if (results.hasTargets()) { 
