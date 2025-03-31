@@ -169,8 +169,8 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("GYRO", getHeading());
 
         getAbsoluteEncoder();
-        getTurningEnc();
-        getDriveEnc();
+        // getTurningEnc();
+        // getDriveEnc();
     }
 
 

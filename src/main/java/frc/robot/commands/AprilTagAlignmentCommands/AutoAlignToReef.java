@@ -49,7 +49,7 @@ public class AutoAlignToReef extends Command {
         initialAlignment = false; 
         isDone = false;
         if(rightSide) { 
-            ySetpoint = -.15; 
+            ySetpoint = -.066; 
         } else { 
             ySetpoint = -.48; 
         }
@@ -59,7 +59,7 @@ public class AutoAlignToReef extends Command {
     public void execute() {
         results = swerveSubsystem.getReefResults(); 
 
-
+        
         if(swerveSubsystem.hasPhotonAprilTagTarget(results) && initialAlignment == false) { 
             double xDist = swerveSubsystem.getPhotonAprilTagX(id, results);     
             double yDist = swerveSubsystem.getPhotonAprilTagY(id, results);
@@ -67,30 +67,31 @@ public class AutoAlignToReef extends Command {
              
             double xSpeed = driveController.calculate(xDist, .9);
             double ySpeed = driveController.calculate(yDist, ySetpoint); 
-            double rotSpeed = rotContoller.calculate(rotDist, 175);
+            double rotSpeed = rotContoller.calculate(rotDist, 173);
 
 
             if(swerveSubsystem.getPhotonAprilTagArea(id, results) < 50) { 
                 rotSpeed = 0; 
             }
             
-            ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, -ySpeed, -rotSpeed, swerveSubsystem.getRotation2d());
+            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(-xSpeed, -ySpeed, -rotSpeed);
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
 
-            if((xDist <= 1.1 && xDist >= .7) && (yDist <=   ySetpoint + .04 && yDist >= ySetpoint - .04)) { 
+            if((xDist <= 1.1 && xDist >= .7) && (yDist <=   ySetpoint + .05 && yDist >= ySetpoint - .05)) { 
                 swerveSubsystem.resetOdometry(new Pose2d()); 
                 initialAlignment = true; 
-                rotSpeed = 0;
             }
         }
 
         if(initialAlignment == true) { 
             double xDist = Math.abs(swerveSubsystem.getPose().getX()); 
+            SmartDashboard.putNumber("XDIST", xDist); 
+
             double xSpeed = driveController.calculate(xDist, 1.3);
 
             
-            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, 0, 0);
+            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed*0.5, 0, 0);
             
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
             swerveSubsystem.setModuleStates(moduleStates);
